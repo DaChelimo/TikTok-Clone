@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/sign_up_display_cancel_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_cancel_btn"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_cancel_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_cancel_btn"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_cancel_btn"
+            app:srcCompat="@drawable/ic_outline_cancel_24" />
+
+        <TextView
+            android:id="@+id/sign_up_for_tiktok_plain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Sign up for TikTok"
+            android:textColor="@color/titleBlack"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.22" />
+
+        <TextView
+            android:id="@+id/sign_up_description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:maxWidth="350dp"
+            android:text="Create a profile, follow other accounts, make your own videos, and more."
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_for_tiktok_plain_text"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_for_tiktok_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_for_tiktok_plain_text" />
+
+        <Button
+            android:id="@+id/sign_up_use_phone_btn"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/sign_up_background"
+            android:text="Use phone or email"
+            android:textAllCaps="false"
+            android:textColor="@color/titleBlack"
+            app:layout_constraintBottom_toTopOf="@+id/sign_up_facebook_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_description_text"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_description_text" />
+
+        <Button
+            android:id="@+id/sign_up_facebook_btn"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:background="#4267B2"
+            android:text="Continue with Facebook"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toTopOf="@+id/sign_up_google_btn"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_description_text"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_description_text"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_use_phone_btn" />
+
+        <Button
+            android:id="@+id/sign_up_google_btn"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:background="@drawable/sign_up_background"
+            android:text="Continue with Google"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@+id/sign_up_twitter_btn"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_description_text"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_description_text"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_facebook_btn" />
+
+        <com.andre_max.tiktokclone.AdvancedTwitterLoginButton
+            android:id="@+id/sign_up_twitter_btn"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/sign_up_tos_text"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_description_text"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_description_text"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_google_btn" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="#EFE4E4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/sign_up_already_have_account_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="Already have an account? "
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/sign_up_log_in_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:background="@android:color/transparent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Log in"
+                android:textColor="@color/pinkBtnBackground"
+                app:layout_constraintStart_toEndOf="@+id/sign_up_already_have_account_plain_text"
+                app:layout_constraintTop_toTopOf="@+id/sign_up_already_have_account_plain_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/sign_up_tos_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:text="By continuing, you agree to TikTok's Terms of Use and confirm that you have read TikTok's privacy policy."
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_use_phone_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_use_phone_btn" />
+
+        <ImageView
+            android:id="@+id/sign_up_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:alpha="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/close"
+            tools:srcCompat="@drawable/close" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_use_phone_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_use_phone_btn"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_use_phone_btn"
+            app:srcCompat="@drawable/ic_sign_up_dude_24" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:background="@android:color/transparent"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_facebook_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_facebook_btn"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_facebook_btn"
+            app:srcCompat="@drawable/com_facebook_button_login_logo" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_google_btn"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_google_btn"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_google_btn"
+            app:srcCompat="@drawable/googleg_standard_color_18" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

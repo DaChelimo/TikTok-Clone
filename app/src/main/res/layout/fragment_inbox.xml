@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    android:background="@android:color/white"
+    tools:context=".ui.InboxFragment">
 
     <TextView
         android:id="@+id/text_dashboard"

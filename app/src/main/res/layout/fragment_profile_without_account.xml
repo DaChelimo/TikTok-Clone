@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        tools:context=".ui.ProfileWithoutAccountFragment">
+
+        <!--    <TextView-->
+        <!--        android:id="@+id/text_home"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginStart="8dp"-->
+        <!--        android:layout_marginTop="8dp"-->
+        <!--        android:layout_marginEnd="8dp"-->
+        <!--        android:gravity="center_horizontal"-->
+        <!--        android:textAlignment="center"-->
+        <!--        android:textSize="20sp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--    <com.facebook.login.widget.LoginButton-->
+        <!--        android:id="@+id/login_button"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ImageView
+            android:id="@+id/sign_up_dummy_image"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.335"
+            app:srcCompat="@drawable/ic_baseline_perm_identity_24" />
+
+        <TextView
+            android:id="@+id/sign_up_dummy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Sign up for an account"
+            app:layout_constraintBottom_toTopOf="@+id/sign_up_btn"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_dummy_image"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_dummy_image"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_dummy_image"
+            app:layout_constraintVertical_bias="0.19" />
+
+        <Button
+            android:id="@+id/sign_up_btn"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@color/pinkBtnBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="Sign Up"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_dummy_image"
+            app:layout_constraintStart_toStartOf="@+id/sign_up_dummy_image"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_dummy_image" />
+
+        <!--    <com.google.android.gms.common.SignInButton-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"/>-->
+
+
+        <!--    <com.google.android.gms.common.SignInButton-->
+        <!--        android:id="@+id/signInButton"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content" />-->
+
+        <!--    <com.twitter.sdk.android.core.identity.TwitterLoginButton-->
+        <!--        android:id="@+id/twitterLoginButton"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        app:layout_constraintStart_toEndOf="@+id/signInButton" />-->
+
+        <!--    <com.facebook.login.widget.LoginButton-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        app:layout_constraintStart_toEndOf="@+id/twitterLoginButton"-->
+        <!--        tools:layout_editor_absoluteY="16dp" />-->
+
+        <include
+            android:id="@+id/sign_up_page"
+            layout="@layout/sign_up_page"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/log_in_page"
+            layout="@layout/log_in_page"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

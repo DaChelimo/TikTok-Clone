@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tw__solid_white"
+        tools:context=".ui.EnterCodeFragment">
+
+
+        <TextView
+            android:id="@+id/sign_up_plain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Sign up"
+            android:textColor="@color/titleBlack"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/create_username_plain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Enter code"
+            android:textColor="@color/titleBlack"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text" />
+
+
+        <Button
+            android:id="@+id/sign_up_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            android:background="@color/pinkBtnBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="Sign up"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/input_code" />
+
+        <com.bigbangbutton.editcodeview.EditCodeView
+            android:id="@+id/input_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            app:codeLength="6"
+            android:fontFamily="@font/roboto"
+            android:textColor="@color/titleBlack"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
+            app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text" />
+
+
+        <!--        <com.bigbangbutton.editcodeview.EditCodeView-->
+<!--            android:id="@+id/username_input"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:ems="10"-->
+<!--            app:codeLength="6"-->
+<!--            android:fontFamily="@font/roboto"-->
+<!--            android:textColor="@color/defaultGrey"-->
+<!--            android:textColorHint="#655F5F"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/create_username_description"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/create_username_description" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

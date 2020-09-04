@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:background="@android:color/white"
+        tools:context=".ui.BasicPhoneFragment">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/country_code_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            app:ccpDialog_backgroundColor="@android:color/white"
+            app:ccpDialog_searchEditTextTint="#000"
+            app:ccp_defaultNameCode="US"
+            app:ccp_defaultPhoneCode="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/phone_number_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:fontFamily="@font/roboto"
+            android:hint="Phone Number"
+            android:inputType="phone"
+            android:textColor="#655F5F"
+            android:textColorHint="#655F5F"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/country_code_picker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/country_code_picker"
+            app:layout_constraintTop_toTopOf="@+id/country_code_picker" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/defaultGrey"
+            app:layout_constraintEnd_toEndOf="@+id/phone_number_input"
+            app:layout_constraintStart_toStartOf="@+id/country_code_picker"
+            app:layout_constraintTop_toBottomOf="@+id/country_code_picker" />
+
+        <TextView
+            android:id="@+id/tos_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/terms_of_services_phone"
+            app:layout_constraintEnd_toEndOf="@+id/phone_number_input"
+            app:layout_constraintStart_toStartOf="@+id/country_code_picker"
+            app:layout_constraintTop_toBottomOf="@+id/line" />
+
+        <Button
+            android:id="@+id/sign_up_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@color/grey_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:text="Send code"
+            android:textAllCaps="false"
+            android:textColor="@color/textColor"
+            app:layout_constraintEnd_toEndOf="@+id/tos_text"
+            app:layout_constraintStart_toStartOf="@+id/tos_text"
+            app:layout_constraintTop_toBottomOf="@+id/tos_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1031105970956-34mdkg50tu75ahu62jrr97k69eig85dl.apps.googleusercontent.com",
+          "client_id": "1031105970956-m5v21qjkjellivmjc5r5cued0t2u3dd0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.andre_max.tiktokclone",
-            "certificate_hash": "dc93709f749a31ea753cc799708c3d1793a73f90"
+            "certificate_hash": "1bb6a588e1e78361d936e8c7ac12de50646e3c0b"
           }
         },
         {

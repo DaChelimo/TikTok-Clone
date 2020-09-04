@@ -3,23 +3,124 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.andre_max.tiktokclone.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:id="@+id/profileWithoutAccountFragment"
+        android:name="com.andre_max.tiktokclone.ui.ProfileWithoutAccountFragment"
+        android:label="Sign up"
+        tools:layout="@layout/fragment_profile_without_account">
+        <action
+            android:id="@+id/action_navigation_home_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.andre_max.tiktokclone.ui.InboxFragment"
+        android:label="Discover"
+        tools:layout="@layout/fragment_inbox" />
+
+    <fragment
+        android:id="@+id/inboxFragment"
+        android:name="com.andre_max.tiktokclone.ui.SearchFragment"
+        android:label="Inbox"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.andre_max.tiktokclone.ui.SignUpFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/sign_up_page">
+        <action
+            android:id="@+id/action_signUpFragment_to_ageFragment"
+            app:destination="@id/ageFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_createUsernameFragment"
+            app:destination="@id/createUsernameFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_createUsernameFragment2"
+            app:destination="@id/createUsernameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ageFragment"
+        android:name="com.andre_max.tiktokclone.ui.AgeFragment"
+        android:label="Sign up"
+        tools:layout="@layout/fragment_age">
+        <action
+            android:id="@+id/action_ageFragment_to_basicSignUpFragment"
+            app:destination="@id/basicSignUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createUsernameFragment"
+        android:name="com.andre_max.tiktokclone.ui.CreateUsernameFragment"
+        android:label="fragment_create_username"
+        tools:layout="@layout/fragment_create_username" >
+        <action
+            android:id="@+id/action_createUsernameFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument
+            android:name="credential"
+            app:argType="com.google.firebase.auth.AuthCredential"
+            app:nullable="true"/>
+        <argument
+            android:name="signUpUsername"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="signUpProfilePicture"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="emailBody"
+            app:argType="com.andre_max.tiktokclone.EmailBody"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.andre_max.tiktokclone.ui.HomeFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.andre_max.tiktokclone.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
+        android:id="@+id/createVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.CreateVideoFragment"
+        android:label="CreateVideoFragment"
+        tools:layout="@layout/fragment_create_video"/>
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.andre_max.tiktokclone.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/basicSignUpFragment"
+        android:name="com.andre_max.tiktokclone.ui.BasicSignUpFragment"
+        android:label="BasicSignUpFragment"
+        tools:layout="@layout/fragment_basic_sign_up">
+        <action
+            android:id="@+id/action_basicSignUpFragment_to_createPasswordFragment"
+            app:destination="@id/createPasswordFragment" />
+        <action
+            android:id="@+id/action_basicSignUpFragment_to_enterCodeFragment"
+            app:destination="@id/enterCodeFragment" />
+        <action
+            android:id="@+id/action_basicSignUpFragment_to_createUsernameFragment"
+            app:destination="@id/createUsernameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPasswordFragment"
+        android:name="com.andre_max.tiktokclone.ui.CreatePasswordFragment"
+        android:label="fragment_create_password"
+        tools:layout="@layout/fragment_create_password" >
+        <action
+            android:id="@+id/action_createPasswordFragment_to_createUsernameFragment"
+            app:destination="@id/createUsernameFragment" />
+        <argument
+            android:name="email"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/enterCodeFragment"
+        android:name="com.andre_max.tiktokclone.ui.EnterCodeFragment"
+        android:label="EnterCodeFragment"
+        tools:layout="@layout/fragment_enter_code">
+        <action
+            android:id="@+id/action_enterCodeFragment_to_createUsernameFragment"
+            app:destination="@id/createUsernameFragment" />
+    </fragment>
+
 </navigation>

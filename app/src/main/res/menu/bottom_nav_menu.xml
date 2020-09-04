@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_home_white"
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/ic_search_white"
+        android:title="Discover" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_notifications" />
+        android:id="@+id/createVideoFragment"
+        android:icon="@drawable/create_video_icon"
+        android:title="Create Video"
+        app:showAsAction="always" />
+    <item
+        android:id="@id/inboxFragment"
+        android:icon="@drawable/ic_inbox_white"
+        android:title="Inbox" />
+
+    <item
+        android:id="@+id/profileWithoutAccountFragment"
+        android:icon="@drawable/ic_identity_white"
+        android:title="Me" />
 
 </menu>

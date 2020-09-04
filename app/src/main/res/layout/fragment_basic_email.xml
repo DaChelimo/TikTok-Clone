@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:background="@android:color/white"
+        tools:context=".ui.BasicEmailFragment">
+
+        <EditText
+            android:id="@+id/email_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="32dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:fontFamily="@font/roboto"
+            android:hint="Email address"
+            android:inputType="textEmailAddress"
+            android:textColor="#655F5F"
+            android:textColorHint="#655F5F"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/defaultGrey"
+            app:layout_constraintEnd_toEndOf="@+id/email_input"
+            app:layout_constraintStart_toStartOf="@+id/email_input"
+            app:layout_constraintTop_toBottomOf="@+id/email_input" />
+
+        <TextView
+            android:id="@+id/tos_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/terms_of_services_email"
+            app:layout_constraintEnd_toEndOf="@+id/email_input"
+            app:layout_constraintStart_toStartOf="@+id/email_input"
+            app:layout_constraintTop_toBottomOf="@+id/email_input" />
+
+        <Button
+            android:id="@+id/sign_up_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@color/pinkBtnBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="Next"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/tos_text"
+            app:layout_constraintStart_toStartOf="@+id/tos_text"
+            app:layout_constraintTop_toBottomOf="@+id/tos_text" />
+
+        <Button
+            android:id="@+id/add_gmail_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginTop="14dp"
+            android:background="@android:color/white"
+            android:text="\@gmail.com"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toStartOf="@+id/add_hotmail_btn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
+
+        <Button
+            android:id="@+id/add_hotmail_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginTop="14dp"
+            android:background="@android:color/white"
+            android:text="\@hotmail.com"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toStartOf="@+id/add_outlook_btn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/add_gmail_btn"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
+
+        <Button
+            android:id="@+id/add_outlook_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginTop="14dp"
+            android:background="@android:color/white"
+            android:text="\@outlook.com"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/add_hotmail_btn"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

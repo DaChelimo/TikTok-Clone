@@ -5,4 +5,18 @@
     <string name="title_notifications">Notifications</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="facebook_app_id">3916275208389884</string>
+    <string name="fb_login_protocol_scheme">fb3916275208389884</string>
+
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">UhhM529ngXvJl4enFHnPb66KE</string>
+    <string name="twitter_consumer_secret" translatable="false">dnNqYb5Dfo6wl1NdGeH03mKEIA4jbPD9vuElHzoofCSPBTKQS9</string>
+    <string name="continue_with_twitter">Continue with Twitter</string>
+
+    <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
+
+    <string name="terms_of_services_email">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
+    <string name="valid_password">Valid password</string>
+
 </resources>
