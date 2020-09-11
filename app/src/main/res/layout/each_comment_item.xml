@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF"
+    android:paddingBottom="15dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/person_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_perm_identity_24" />
+
+    <TextView
+        android:id="@+id/person_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/person_image"
+        app:layout_constraintTop_toTopOf="@+id/person_image"
+        tools:text="thedesilad" />
+
+    <TextView
+        android:id="@+id/person_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintStart_toStartOf="@+id/person_username"
+        app:layout_constraintTop_toBottomOf="@+id/person_username"
+        tools:text="straight to work" />
+
+    <ImageView
+        android:id="@+id/like_icon_image"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/person_username"
+        app:srcCompat="@drawable/heart_grey_outline" />
+
+    <TextView
+        android:id="@+id/likes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#6A6767"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/like_icon_image"
+        app:layout_constraintStart_toStartOf="@+id/like_icon_image"
+        app:layout_constraintTop_toBottomOf="@+id/like_icon_image"
+        tools:text="43" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import timber.log.Timber
-import java.util.*
 import kotlin.random.Random
 
 
@@ -166,10 +165,11 @@ class CreateUsernameFragment : Fragment() {
         it: AuthResult
     ) {
         val user = User(username, 0, 0, 0, googleProfilePicture, it.user?.uid.toString())
-        firebaseDatabase.getReference("/users/${username}").setValue(user)
+        firebaseDatabase.getReference(getUserBasicDataPath()).setValue(user)
             .addOnSuccessListener {
                 Timber.d("Success adding user to database")
                 (activity as MainActivity).navView.visibility = View.VISIBLE
+                registerUserName(username)
                 findNavController().navigate(CreateUsernameFragmentDirections.actionCreateUsernameFragmentToHomeFragment())
             }
             .addOnFailureListener { exception ->
@@ -179,6 +179,16 @@ class CreateUsernameFragment : Fragment() {
                     "Error occurred creating account in database. Try again later.",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+    }
+
+    private fun registerUserName(username: String) {
+        firebaseDatabase.getReference("taken-usernames/$username").setValue(username)
+            .addOnSuccessListener {
+                Timber.d("Success. Registered name: $username")
+            }
+            .addOnFailureListener {
+                Timber.e(it)
             }
     }
 
@@ -222,7 +232,7 @@ class CreateUsernameFragment : Fragment() {
     }
 
     private fun checkIfUsernameExistsInDatabase(username: String): Boolean {
-        val usernameRef = firebaseDatabase.getReference("/users/$username")
+        val usernameRef = firebaseDatabase.getReference("/taken-usernames/$username")
         var doesExists = false
         usernameRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

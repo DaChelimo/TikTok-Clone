@@ -15,15 +15,14 @@
     <item
         android:id="@+id/createVideoFragment"
         android:icon="@drawable/create_video_icon"
-        android:title="Create Video"
-        app:showAsAction="always" />
+        android:title="Create Video" />
     <item
         android:id="@id/inboxFragment"
         android:icon="@drawable/ic_inbox_white"
         android:title="Inbox" />
 
     <item
-        android:id="@+id/profileWithoutAccountFragment"
+        android:id="@+id/meFragment"
         android:icon="@drawable/ic_identity_white"
         android:title="Me" />
 

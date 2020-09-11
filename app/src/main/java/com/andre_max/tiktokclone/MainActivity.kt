@@ -15,7 +15,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     lateinit var navView: BottomNavigationView
-    lateinit var appBarConfiguration: AppBarConfiguration
+//    lateinit var appBarConfiguration: AppBarConfiguration
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as ViewHolder set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.profileWithoutAccountFragment, R.id.searchFragment, R.id.inboxFragment))
+//        appBarConfiguration = AppBarConfiguration(setOf(
+//            R.id.profileWithoutAccountFragment, R.id.searchFragment, R.id.inboxFragment))
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 

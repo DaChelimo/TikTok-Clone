@@ -13,11 +13,10 @@
         android:background="#FFF">
 
         <ImageView
-            android:id="@+id/imageView10"
+            android:id="@+id/close_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -78,6 +77,7 @@
             android:id="@+id/each_media_view_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,6 +108,75 @@
                 android:text="Videos" />
 
         </com.google.android.material.tabs.TabLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/permissions_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Unable to record. Please try the following:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="sans-serif"
+                android:text="1. Video recording permission is not enabled: allow camera and microphone access under app permission settings."
+                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="2. Another app may be using your camera apps or restart your device and try again."
+                app:layout_constraintEnd_toEndOf="@+id/textView2"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="3. If your device is using Android 6.0 or above, please enable permissions for external storage."
+                app:layout_constraintEnd_toEndOf="@+id/textView4"
+                app:layout_constraintStart_toStartOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <Button
+                android:id="@+id/grant_permissions_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/transparent"
+                android:text="Grant permissions"
+                android:textColor="#151111"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--    <androidx.recyclerview.widget.RecyclerView-->
         <!--        android:layout_width="0dp"-->

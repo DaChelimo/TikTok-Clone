@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.andre_max.tiktokclone.*
 import com.andre_max.tiktokclone.databinding.FragmentEachMediaBinding
@@ -56,12 +57,12 @@ class EachMediaFragment: Fragment() {
             return
         }
 
-        val imageList = ArrayList<UserImage>()
+        val imageList = ArrayList<LocalUserImage>()
 
         while (cursor.moveToNext()){
             val url = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
             val dateCreated = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED))
-            val userImage = UserImage(url, dateCreated)
+            val userImage = LocalUserImage(url, dateCreated)
             Timber.d("url is $url")
             imageList.add(userImage)
         }
@@ -80,12 +81,12 @@ class EachMediaFragment: Fragment() {
             return
         }
 
-        val videoList = ArrayList<UserVideo>()
+        val videoList = ArrayList<LocalUserVideo>()
         while (cursor.moveToNext()){
             val url = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA))
             val duration = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DURATION))
             val dateCreated = cursor.getColumnName(cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED))
-            val userVideo = UserVideo(url, duration, dateCreated)
+            val userVideo = LocalUserVideo(url, duration, dateCreated)
             Timber.d("url is $url")
             videoList.add(userVideo)
         }
@@ -95,39 +96,39 @@ class EachMediaFragment: Fragment() {
         cursor.close()
     }
 
-    private fun addImagesToGroupieAdapter(imageList: ArrayList<UserImage>) {
+    private fun addImagesToGroupieAdapter(imageList: ArrayList<LocalUserImage>) {
         imageList.forEach{
             val userImageGroup = UserImageGroup(it)
             adapter.add(userImageGroup)
         }
     }
 
-    private fun addVideosToGroupieAdapter(videoList: ArrayList<UserVideo>) {
-        videoList.forEach {
-            val userVideoGroup = UserVideoGroup(it)
+    private fun addVideosToGroupieAdapter(videoListLocal: ArrayList<LocalUserVideo>) {
+        videoListLocal.forEach {
+            val userVideoGroup = UserVideoGroup(it, this)
             adapter.add(userVideoGroup)
         }
     }
 
-    class UserImageGroup(private val userImage: UserImage): Item<GroupieViewHolder>() {
+    class UserImageGroup(private val localUserImage: LocalUserImage): Item<GroupieViewHolder>() {
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             val image = viewHolder.itemView.user_image
 
             Glide.with(viewHolder.itemView.context)
-                .load(userImage.url)
+                .load(localUserImage.url)
                 .into(image)
         }
 
         override fun getLayout(): Int = R.layout.user_image_layout
     }
 
-    class UserVideoGroup(private val userVideo: UserVideo): Item<GroupieViewHolder>() {
+    private class UserVideoGroup(private val localUserVideo: LocalUserVideo, private val fragment: Fragment): Item<GroupieViewHolder>() {
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             val layout = viewHolder.itemView
 
             val mediaMetadataRetriever = MediaMetadataRetriever()
-            Timber.d("Cursor url is ${userVideo.url} and Uri parser uri is ${Uri.parse(userVideo.url)}")
-            mediaMetadataRetriever.setDataSource(layout.context, Uri.parse(userVideo.url))
+            Timber.d("Cursor url is ${localUserVideo.url} and Uri parser uri is ${Uri.parse(localUserVideo.url)}")
+            mediaMetadataRetriever.setDataSource(layout.context, Uri.parse(localUserVideo.url))
 
             val bmp = mediaMetadataRetriever.frameAtTime
 
@@ -136,24 +137,13 @@ class EachMediaFragment: Fragment() {
                 .load(bmp)
                 .into(layout.user_video)
 
-            layout.user_video_duration.text = convertTimeToDisplayTime(userVideo.duration ?: return)
+            layout.setOnClickListener {
+                fragment.findNavController().navigate(CreateVideoFragmentDirections.actionCreateVideoFragmentToPreviewVideoFragment(localUserVideo))
+            }
+
+            layout.user_video_duration.text = convertTimeToDisplayTime(localUserVideo.duration ?: return)
         }
 
         override fun getLayout(): Int = R.layout.user_video_layout
     }
 }
-
-/*
-arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EachMediaFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
- */

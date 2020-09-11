@@ -43,7 +43,7 @@ class ProfileWithoutAccountFragment : Fragment() {
 //        binding.signUpBtn.visibility = View.GONE
 //        binding.signUpPage.root.visibility = View.VISIBLE
 
-        findNavController().navigate(R.id.action_navigation_home_to_signUpFragment)
+        findNavController().navigate(R.id.action_meFragment_to_signUpFragment)
 
     }
 

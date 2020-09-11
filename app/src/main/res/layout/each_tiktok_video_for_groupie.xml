@@ -9,8 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/titleBlack"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/titleBlack">
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/actual_video"
@@ -43,9 +43,9 @@
             android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Tutorial #yzfamily #tutorial #fyp #fudrich" />
 
@@ -54,8 +54,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="14dp"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_baseline_share" />
 
@@ -76,7 +76,7 @@
             app:layout_constraintBottom_toTopOf="@+id/comment_section_btn"
             app:layout_constraintEnd_toEndOf="@+id/comment_section_btn"
             app:layout_constraintStart_toStartOf="@+id/comment_section_btn"
-            app:srcCompat="@drawable/heart_white" />
+            app:srcCompat="@drawable/heart_69_32" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/video_creator_icon"
@@ -136,98 +136,15 @@
             app:srcCompat="@drawable/ic_play_arrow_white"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/comment_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="80dp"
-            android:background="@drawable/comment_layout_background"
-            android:elevation="10dp"
-            android:visibility="gone"
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="55dp"
+            android:background="?android:attr/listDivider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="UnusedAttribute"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/total_comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="0 comments"
-                android:textFontWeight="700"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/exit_comment_section_btn"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/total_comments"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/total_comments"
-                app:srcCompat="@drawable/close" />
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="50dp"
-                android:background="@color/defaultGrey"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/comment_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/white"
-                android:ems="10"
-                android:gravity="start|top"
-                android:hint="Add comment..."
-                android:inputType="textLongMessage"
-                android:textColor="@color/textColor"
-                android:textColorHint="#737070"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/send_comment_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
-                tools:text="The random person who liked this comment will become a billionare one day" />
-
-            <ImageButton
-                android:id="@+id/send_comment_btn"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
-                app:srcCompat="@drawable/ic_baseline_send_24" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comment_recyclerview"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toTopOf="@+id/divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/total_comments" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

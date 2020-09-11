@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFF"
+        tools:context=".ui.PostVideoFragment">
+
+        <TextView
+            android:id="@+id/sign_up_plain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Create video"
+            android:textColor="@color/titleBlack"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/sign_up_plain_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/sign_up_plain_text"
+            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+
+        <ImageView
+            android:id="@+id/video_thumbnail"
+            android:layout_width="80dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <EditText
+            android:id="@+id/description_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:hint="Describe your video"
+            android:maxLength="150"
+            android:textColor="@color/textColor"
+            android:textColorHint="#7A7777"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/hashtag_btn"
+            app:layout_constraintEnd_toStartOf="@+id/video_thumbnail"
+            app:layout_constraintStart_toStartOf="@+id/back_btn"
+            app:layout_constraintTop_toTopOf="@+id/video_thumbnail" />
+
+        <Button
+            android:id="@+id/hashtag_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/button_background_style"
+            android:text="#Hashtags"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
+            app:layout_constraintStart_toStartOf="@+id/description_text" />
+
+        <Button
+            android:id="@+id/friends_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_background_style"
+            android:text="\@Friends"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/hashtag_btn" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/defaultGrey"
+            app:layout_constraintEnd_toEndOf="@+id/video_thumbnail"
+            app:layout_constraintStart_toStartOf="@+id/hashtag_btn"
+            app:layout_constraintTop_toBottomOf="@+id/friends_btn" />
+
+        <Button
+            android:id="@+id/post_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/pinkBtnBackground"
+            android:text="Post"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/drafts_btn" />
+
+        <Button
+            android:id="@+id/drafts_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/pinkBtnBackground"
+            android:text="Drafts"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/post_btn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

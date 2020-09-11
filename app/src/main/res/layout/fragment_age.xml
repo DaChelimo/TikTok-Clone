@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -48,7 +48,7 @@
             android:text="When's your birthday?"
             android:textColor="@color/titleBlack"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/back_btn"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text" />
 
         <TextView

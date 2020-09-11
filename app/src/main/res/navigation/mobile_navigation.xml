@@ -9,11 +9,7 @@
         android:id="@+id/profileWithoutAccountFragment"
         android:name="com.andre_max.tiktokclone.ui.ProfileWithoutAccountFragment"
         android:label="Sign up"
-        tools:layout="@layout/fragment_profile_without_account">
-        <action
-            android:id="@+id/action_navigation_home_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_profile_without_account"/>
 
     <fragment
         android:id="@+id/searchFragment"
@@ -80,12 +76,20 @@
         android:id="@+id/homeFragment"
         android:name="com.andre_max.tiktokclone.ui.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_profileWithAccountFragment"
+            app:destination="@id/profileWithAccountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createVideoFragment"
         android:name="com.andre_max.tiktokclone.ui.CreateVideoFragment"
         android:label="CreateVideoFragment"
-        tools:layout="@layout/fragment_create_video"/>
+        tools:layout="@layout/fragment_create_video">
+        <action
+            android:id="@+id/action_createVideoFragment_to_previewVideoFragment"
+            app:destination="@id/previewVideoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/basicSignUpFragment"
         android:name="com.andre_max.tiktokclone.ui.BasicSignUpFragment"
@@ -121,6 +125,66 @@
         <action
             android:id="@+id/action_enterCodeFragment_to_createUsernameFragment"
             app:destination="@id/createUsernameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/meFragment"
+        android:name="com.andre_max.tiktokclone.MeFragment"
+        android:label="MeFragment"
+        tools:layout="@layout/fragment_me">
+        <action
+            android:id="@+id/action_meFragment_to_eachTikTokVideo"
+            app:destination="@id/eachTikTokVideo" />
+        <action
+            android:id="@+id/action_meFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/eachTikTokVideo"
+        android:name="com.andre_max.tiktokclone.ui.EachTikTokVideo"
+        android:label="EachTikTokVideo"
+        tools:layout="@layout/each_tiktok_video">
+        <argument
+            android:name="remoteVideo"
+            app:argType="com.andre_max.tiktokclone.RemoteUserVideo" />
+        <action
+            android:id="@+id/action_eachTikTokVideo_to_profileWithAccountFragment"
+            app:destination="@id/profileWithAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/previewVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.PreviewVideoFragment"
+        android:label="PreviewVideoFragment"
+        tools:layout="@layout/fragment_preview_video">
+        <argument
+            android:name="localUserVideo"
+            app:argType="com.andre_max.tiktokclone.LocalUserVideo" />
+        <action
+            android:id="@+id/action_previewVideoFragment_to_postVideoFragment"
+            app:destination="@id/postVideoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.PostVideoFragment"
+        android:label="PostVideoFragment"
+        tools:layout="@layout/fragment_post_video">
+        <argument
+            android:name="localUserVideo"
+            app:argType="com.andre_max.tiktokclone.LocalUserVideo" />
+        <action
+            android:id="@+id/action_postVideoFragment_to_eachTikTokVideo"
+            app:destination="@id/eachTikTokVideo"
+            app:popUpTo="@id/meFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileWithAccountFragment"
+        android:name="com.andre_max.tiktokclone.ui.ProfileWithAccountFragment"
+        android:label="ProfileWithAccountFragment"
+        tools:layout="@layout/fragment_profile_with_account">
+
+        <argument
+            android:name="uid"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
