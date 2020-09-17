@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.andre_max.tiktokclone.*
 import com.andre_max.tiktokclone.databinding.FragmentPostVideoBinding
 import com.bumptech.glide.Glide
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -33,10 +37,11 @@ class PostVideoFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_post_video, container, false)
 
         val mediaMetadataRetriever = MediaMetadataRetriever()
-        Timber.d("Uri parser uri is ${Uri.parse(localUserVideo.url)}")
+        val uriParserUri = File(localUserVideo.url.toString()).toURI().toString()//Uri.parse(localUserVideo.url).toString().toUri()
+        Timber.d("Uri parser uri is $uriParserUri")
         mediaMetadataRetriever.setDataSource(this.requireContext(), Uri.parse(localUserVideo.url))
-
         val bmp = mediaMetadataRetriever.frameAtTime
+        mediaMetadataRetriever.release()
 
         Glide.with(this)
             .load(bmp)
@@ -49,15 +54,22 @@ class PostVideoFragment : Fragment() {
         return binding.root
     }
 
+    fun Fragment.showShortToast(text: String) {
+        Toast.makeText(this.requireContext(), text, Toast.LENGTH_SHORT).show()
+    }
+
     private fun postVideo() {
         val storageRef = firebaseStorage.getReference("/videos/${firebaseAuth.uid}/${UUID.randomUUID()}")
         val videoFile = File(localUserVideo.url!!)
-        Timber.d("videoFile is $videoFile")
-
-        storageRef.putFile(Uri.fromFile(videoFile))
+        val videoUri = localUserVideo.url!!.toString().toUri()
+        Timber.d("videoFile is $videoFile and videoUri is $videoUri")
+        showShortToast("Uploading has started.")
+        binding.postBtn.visibility = View.INVISIBLE
+        storageRef.putFile(videoUri)//localUserVideo.url!!.toString() as Uri)
             .addOnSuccessListener {
                 storageRef.downloadUrl
                     .addOnSuccessListener {
+                        showShortToast("Uploading video to Firebase Storage.")
                         addVideosToDatabase(it.toString())
                         Timber.d("Internal VideoUrl is $it")
                     }
@@ -109,9 +121,47 @@ class PostVideoFragment : Fragment() {
                 Timber.e(it)
             }
 
+        Timber.d("Start of tags loop")
+        tags.forEach {
+            val tagForFirebaseDatabase = it.replace("#", "", true)
+            val basicDataTagRef = firebaseDatabase.getReference("${getTagsPath()}/$tagForFirebaseDatabase/basic-data")
+            val videoTagRef = firebaseDatabase.getReference("${getTagsPath()}/$tagForFirebaseDatabase/tag-videos/${globalVideosRef.key}")
+
+            videoTagRef.setValue(globalVideosRef.key.toString())
+                .addOnSuccessListener {
+                    Timber.d("Added videoTagRef in database.")
+                }
+
+            basicDataTagRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        val eachTag = EachTag(it, 1)
+                        basicDataTagRef.setValue(eachTag)
+                    }
+                    else {
+                        val eachTag = snapshot.getValue(EachTag::class.java)
+                        val tagNumber = eachTag?.tagCount
+                        Timber.d("tagNumber is $tagNumber")
+
+                        tagNumber?.let {num ->
+                            eachTag.tagCount = num.plus(1)
+                            basicDataTagRef.setValue(eachTag)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.e(error.toException())
+                }
+            })
+        }
+        Timber.d("End of tags loop")
+
+
         databaseRef.setValue(remoteUserVideo)
             .addOnSuccessListener {
                 Timber.d("Added video successfully in personal profile.")
+                showShortToast("Video has been successfully uploaded.")
                 findNavController().navigate(PostVideoFragmentDirections.actionPostVideoFragmentToEachTikTokVideo(remoteUserVideo))
             }
             .addOnFailureListener {

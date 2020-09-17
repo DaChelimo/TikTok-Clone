@@ -46,9 +46,12 @@ class MainComment(
                     return
                 }
 
-                val eachCommentGroup = EachCommentGroup(comment, remoteUserVideo)
-                totalCommentsMap[comment.commentKey] = eachCommentGroup
-                adapter.add(eachCommentGroup)
+                Timber.d("totalCommentsMap.containsKey(comment.commentKey) is ${totalCommentsMap.containsKey(comment.commentKey)}")
+                if (!totalCommentsMap.containsKey(comment.commentKey)) {
+                    val eachCommentGroup = EachCommentGroup(comment, remoteUserVideo)
+                    totalCommentsMap[comment.commentKey] = eachCommentGroup
+                    adapter.add(eachCommentGroup)
+                }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {

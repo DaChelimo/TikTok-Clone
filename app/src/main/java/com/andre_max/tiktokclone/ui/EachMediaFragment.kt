@@ -129,8 +129,9 @@ class EachMediaFragment: Fragment() {
             val mediaMetadataRetriever = MediaMetadataRetriever()
             Timber.d("Cursor url is ${localUserVideo.url} and Uri parser uri is ${Uri.parse(localUserVideo.url)}")
             mediaMetadataRetriever.setDataSource(layout.context, Uri.parse(localUserVideo.url))
-
             val bmp = mediaMetadataRetriever.frameAtTime
+
+            mediaMetadataRetriever.release()
 
             Timber.d("bitmap is $bmp")
             Glide.with(layout.context)
@@ -138,7 +139,7 @@ class EachMediaFragment: Fragment() {
                 .into(layout.user_video)
 
             layout.setOnClickListener {
-                fragment.findNavController().navigate(CreateVideoFragmentDirections.actionCreateVideoFragmentToPreviewVideoFragment(localUserVideo))
+                fragment.findNavController().navigate(UploadMediaFragmentDirections.actionCreateVideoFragmentToPreviewVideoFragment(localUserVideo))
             }
 
             layout.user_video_duration.text = convertTimeToDisplayTime(localUserVideo.duration ?: return)

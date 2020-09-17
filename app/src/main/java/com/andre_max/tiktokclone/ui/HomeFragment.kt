@@ -9,21 +9,25 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.andre_max.tiktokclone.*
+import com.andre_max.tiktokclone.comments.MainComment
 import com.andre_max.tiktokclone.databinding.FragmentHomeBinding
 import com.andre_max.tiktokclone.exoplayer.Player
+import com.andre_max.tiktokclone.video_reaction.Reaction
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import kotlinx.android.synthetic.main.each_tiktok_video_for_groupie.view.*
+import kotlinx.android.synthetic.main.each_tiktok_video.view.*
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
@@ -114,8 +118,93 @@ class HomeFragment : Fragment() {
             val videoDescription = layout.video_description
             val likeBtn = layout.like_video_icon
             val shareBtn = layout.share_video_btn
-            val commentBtn = layout.comment_section_btn
+            val commentSectionBtn = layout.comment_section_btn
+            val sendCommentBtn = layout.send_comment_btn
+            val commentText = layout.comment_text
+            val commentLayout = layout.comment_layout
             val playBtn = layout.play_btn
+            val totalComments = layout.total_comments
+            val adapter = GroupAdapter<GroupieViewHolder>()
+            val followVideoCreator = layout.follow_video_creator
+            val commentRecyclerview = layout.comment_recyclerview
+            val exitCommentSectionBtn = layout.exit_comment_section_btn
+            val videoCreatorIcon = layout.video_creator_icon
+
+            val reaction = Reaction(remoteUserVideo, likeBtn)
+            val mainComment = MainComment(commentLayout, remoteUserVideo, adapter, totalComments)
+
+
+            if (firebaseAuth.uid == remoteUserVideo.creatorUid) {
+                followVideoCreator.visibility = View.GONE
+                Timber.d("firebaseAuth.uid == remoteUserVideo.creatorUid is ${firebaseAuth.uid == remoteUserVideo.creatorUid}")
+            }
+
+            val myFollowingRef = firebaseDatabase.getReference(getMyFollowingPath()).child(remoteUserVideo.creatorUid)
+
+            myFollowingRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Timber.d("snapshot.exists() is ${snapshot.exists()}")
+                    if (snapshot.exists()) {
+                        followVideoCreator.visibility = View.GONE
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Timber.e(error.toException())
+                }
+            })
+
+            reaction.checkIfVideoWasLiked()
+            Timber.d("videoLiked is ${reaction.wasLiked}")
+
+            followVideoCreator.setOnClickListener {
+                @Suppress("NAME_SHADOWING")
+                val myFollowingRef = firebaseDatabase.getReference(getMyFollowingPath()).push()
+                val otherFollowersRef = firebaseDatabase.getReference("${getOtherFollowerPath(remoteUserVideo.creatorUid)}/${firebaseAuth.uid}")
+
+                myFollowingRef.setValue(remoteUserVideo.creatorUid)
+                otherFollowersRef.setValue(firebaseAuth.uid)
+                followVideoCreator.visibility = View.GONE
+            }
+
+
+            sendCommentBtn.setOnClickListener {
+                if (commentText.text.toString().isEmpty()) {
+                    Snackbar.make(layout, "You cannot send an empty comment", Snackbar.LENGTH_SHORT).let {
+                        it.setTextColor(ColorStateList.valueOf(ResourcesCompat.getColor(layout.context.resources, android.R.color.white, null)))
+                        it.show()
+                    }
+                    return@setOnClickListener
+                }
+
+                mainComment.addComment(commentText.text.toString())
+            }
+
+            videoCreatorIcon.setOnClickListener {
+                homeFragment.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProfileWithAccountFragment(remoteUserVideo.creatorUid))
+            }
+
+            commentSectionBtn.setOnClickListener {
+                commentRecyclerview.layoutManager = LinearLayoutManager(layout.context)
+                mainComment.setUpCommentSection(commentRecyclerview)
+            }
+
+            exitCommentSectionBtn.setOnClickListener {
+                mainComment.hideCommentSection()
+            }
+
+            likeBtn.setOnClickListener {
+                reaction.checkIfVideoWasLiked()
+                if (reaction.wasLiked) {
+                    Timber.d("Is now unliking")
+                    reaction.removeLike()
+                }
+                else {
+                    Timber.d("Is now liking")
+                    reaction.likeVideo()
+                }
+            }
+
 
             videoDescription.text = remoteUserVideo.description ?: "#NoDescription"
 
@@ -130,7 +219,7 @@ class HomeFragment : Fragment() {
                         return
                     }
 
-                    videoCreatorTag.text = username
+                    videoCreatorTag.text ="@$username"
 
                     userBasicData.profilePictureUrl?.let {
                         Glide.with(layout.context)
@@ -165,7 +254,7 @@ class HomeFragment : Fragment() {
             super.onViewDetachedFromWindow(viewHolder)
         }
 
-        override fun getLayout(): Int = R.layout.each_tiktok_video_for_groupie
+        override fun getLayout(): Int = R.layout.each_tiktok_video
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

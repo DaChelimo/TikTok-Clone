@@ -74,22 +74,13 @@ class EachTikTokVideo: Fragment() {
             Timber.d("firebaseAuth.uid == remoteUserVideo.creatorUid is ${firebaseAuth.uid == remoteUserVideo.creatorUid}")
         }
 
-        val myFollowingRef = firebaseDatabase.getReference(getMyFollowingPath())
+        val myFollowingRef = firebaseDatabase.getReference(getMyFollowingPath()).child(remoteUserVideo.creatorUid)
 
         myFollowingRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val followingUidList = ArrayList<String?>()
-
-                snapshot.children.forEach {
-                    val uid = it.getValue(String::class.java)
-                    followingUidList.add(uid)
-                }
-
-                followingUidList.forEach {
-                    if (it == firebaseAuth.uid) {
-                        binding.followVideoCreator.visibility = View.GONE
-                        Timber.d("video uid in my following accounts")
-                    }
+                Timber.d("snapshot.exists() is ${snapshot.exists()}")
+                if (snapshot.exists()) {
+                    binding.followVideoCreator.visibility = View.GONE
                 }
             }
 
@@ -109,6 +100,7 @@ class EachTikTokVideo: Fragment() {
 
             myFollowingRef.setValue(remoteUserVideo.creatorUid)
             otherFollowersRef.setValue(firebaseAuth.uid)
+            binding.followVideoCreator.visibility = View.GONE
         }
 
 
@@ -160,7 +152,7 @@ class EachTikTokVideo: Fragment() {
                     return
                 }
 
-                videoCreatorTag.text = username
+                videoCreatorTag.text = "@$username"
 
                 userBasicData.profilePictureUrl?.let {
                     Glide.with(this@EachTikTokVideo)
@@ -189,7 +181,7 @@ class EachTikTokVideo: Fragment() {
     override fun onStop() {
         super.onStop()
         val simpleExoPlayerView = binding.actualVideo
-        Timber.d("onViewDetachedFromWindow called.")
+        Timber.d("onStop called.")
         simpleExoPlayerView.player?.release()
 
         simpleExoPlayerView.player = null

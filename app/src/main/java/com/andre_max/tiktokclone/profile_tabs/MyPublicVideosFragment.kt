@@ -26,7 +26,7 @@ class MyPublicVideosFragment : Fragment() {
 
     lateinit var binding: FragmentMyPublicVideosBinding
     var adapter = GroupAdapter<GroupieViewHolder>()
-
+    lateinit var ARG_UID: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +47,7 @@ class MyPublicVideosFragment : Fragment() {
     val videoMap = LinkedHashMap<String, RemoteUserVideo>()
 
     private fun getPublicVideos() {
-        val ref = firebaseDatabase.getReference(getUserPublicVideosPath())
+        val ref = firebaseDatabase.getReference(getUserPublicVideosPath(ARG_UID))
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -90,4 +90,12 @@ class MyPublicVideosFragment : Fragment() {
         override fun getLayout(): Int = R.layout.user_video_layout
     }
 
+
+    companion object {
+        fun getInstance (uid: String?): MyPublicVideosFragment {
+            val myPublicVideosFragment = MyPublicVideosFragment()
+            myPublicVideosFragment.ARG_UID = uid ?: firebaseAuth.currentUser?.uid.toString()
+            return myPublicVideosFragment
+        }
+    }
 }
