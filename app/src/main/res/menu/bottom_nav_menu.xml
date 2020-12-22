@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/homeFragment"
@@ -8,16 +7,16 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/searchFragment"
+        android:id="@+id/search_fragment"
         android:icon="@drawable/ic_search_white"
         android:title="Discover" />
 
     <item
-        android:id="@+id/createVideoFragment"
+        android:id="@+id/recordVideoFragment"
         android:icon="@drawable/create_video_icon"
         android:title="Create Video" />
     <item
-        android:id="@id/inboxFragment"
+        android:id="@id/inbox_fragment"
         android:icon="@drawable/ic_inbox_white"
         android:title="Inbox" />
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,13 +17,18 @@ import com.andre_max.tiktokclone.MainActivity
 import com.andre_max.tiktokclone.POSITION
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.FragmentCreateVideoBinding
-import com.google.android.material.snackbar.Snackbar
+import com.andre_max.tiktokclone.longToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.BaseMultiplePermissionsListener
 import timber.log.Timber
 
 
-class CreateVideoFragment: Fragment() {
+class UploadMediaFragment: Fragment() {
 
     val PERMISSIONS_REQUEST_CODE = 1234
 
@@ -45,7 +51,8 @@ class CreateVideoFragment: Fragment() {
         binding.closeBtn.setOnClickListener {
             findNavController().popBackStack()
         }
-        
+        setUpStateAdapter()
+
         viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -53,83 +60,24 @@ class CreateVideoFragment: Fragment() {
             }
         }
 
-        val permissions = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO
-        )
-
-        doPermissionRequest(permissions)
-
-        binding.grantPermissionsBtn.setOnClickListener {
-            doPermissionRequest(permissions)
-        }
 
         return binding.root
     }
 
-    private fun doPermissionRequest(permissions: Array<String>) {
-        val context = this.requireContext()
-        if (ContextCompat.checkSelfPermission(
-                context,
-                permissions[0]
-            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context,
-                permissions[1]
-            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context,
-                permissions[2]
-            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                context,
-                permissions[3]
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            setUpStateAdapter()
-        } else {
-            permissions.forEach {
-                if (shouldShowRequestPermissionRationale(it)) {
-                    Snackbar.make(this.requireView(), "Permission is needed to post a video.", Snackbar.LENGTH_LONG).show()
-                    return
-                }
-            }
-            requestPermissions(permissions, PERMISSIONS_REQUEST_CODE)
-        }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            var result = 0
-            if (grantResults.isNotEmpty()) {
-                grantResults.forEach {
-                    result += it
-                }
-            }
-
-            if (result == PackageManager.PERMISSION_GRANTED) {
-                setUpStateAdapter()
-                Snackbar.make(this.requireView(), "Permissions granted.", Snackbar.LENGTH_SHORT).show()
-            }
-            else {
-                binding.permissionsLayout.visibility = View.VISIBLE
-                Snackbar.make(this.requireView(), "Permissions denied.", Snackbar.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     private fun setUpStateAdapter() {
         viewPager2.visibility = View.VISIBLE
+        Timber.d("setUpStateAdapter() called")
         binding.permissionsLayout.visibility = View.GONE
         val mediaFragmentStateAdapter = MediaFragmentStateAdapter(this)
         viewPager2.adapter = mediaFragmentStateAdapter
 
         viewPager2.registerOnPageChangeCallback(viewPager2PageChangeCallback)
 
-        val tabConfigurationStrategy = TabLayoutMediator.TabConfigurationStrategy { tab, position -> Timber.d("tab is $tab and tab position is $position") }
+        val tabConfigurationStrategy = TabLayoutMediator.TabConfigurationStrategy { tab, position -> Timber.d(
+            "tab is $tab and tab position is $position"
+        ) }
 
         TabLayoutMediator(tabLayout, viewPager2, tabConfigurationStrategy).attach()
     }

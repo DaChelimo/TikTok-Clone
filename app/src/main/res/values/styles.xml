@@ -21,4 +21,18 @@
         <item name="android:layout_height">300dp</item>
     </style>
 
+    <style name="record_items_test">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="next_btn_style">
+        <item name="android:background">@color/pinkBtnBackground</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

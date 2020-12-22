@@ -1,12 +1,15 @@
 package com.andre_max.tiktokclone
 
 import android.os.Parcelable
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 val firebaseAuth = FirebaseAuth.getInstance()
@@ -25,6 +28,7 @@ const val LONG_USERNAME = "Username must be less than 25 characters"
 const val CONTAINS_SPACES = "Username must not contain any spaces"
 
 const val POSITION = "POSITION"
+fun getTagsPath() = "tags"
 
 fun getUserBasicDataPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String = "users/$uid/basic-data"
 fun getUserPublicVideosPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String = "users/$uid/public-videos"
@@ -44,9 +48,16 @@ fun getCommentsPath(remoteUserVideoKey: String): String = "comments/$remoteUserV
 fun getMyLikedComments(): String = "users/${firebaseAuth.currentUser?.uid}/liked-comments"
 fun getMyLikedReplies(): String = "users/${firebaseAuth.currentUser?.uid}/liked-replies"
 
+fun Fragment.shortToast(text: String) {
+    Toast.makeText(this.requireContext(), text, Toast.LENGTH_SHORT).show()
+}
+
+fun Fragment.longToast(text: String) {
+    Toast.makeText(this.requireContext(), text, Toast.LENGTH_LONG).show()
+}
 
 @Parcelize
-data class LocalUserVideo(val url: String?, val duration: String?, val dateCreated: String?): Parcelable {
+data class LocalUserVideo(var url: String?, val duration: String?, val dateCreated: String?): Parcelable {
     constructor(): this(null, null, null)
 }
 data class LocalUserImage(val url: String?, val dateCreated: String?)
@@ -64,12 +75,22 @@ data class Reply(val authorUid: String, var replyText: String, var replyLikes: L
     constructor(): this("", "", -1, -1, "")
 }
 
+data class EachTag(val tagName: String, var tagCount: Int) {
+    constructor(): this("", -1)
+}
+
 fun convertTimeToDisplayTime(timeInMillis: String): String {
     Timber.d("timeInMillis is $timeInMillis")
-    var time = ""
-    val seconds = timeInMillis.toLong() % 1000
-    val minutes = timeInMillis.toLong() / 1000
-    time = "${if (minutes.toString().length == 2)minutes else "0$minutes"}:${if (seconds.toString().length == 2)seconds else "0$seconds"}"
+//    var time = ""
+//    val seconds = timeInMillis.toLong() % 1000
+//    val minutes = timeInMillis.toLong() / 1000
+//    time = "${if (minutes.toString().length == 2)minutes else "0$minutes"}:${if (seconds.toString().length == 2)seconds else "0$seconds"}"
+    val longTime = timeInMillis.toLong()
+    val time = String.format("%d:%d",
+        TimeUnit.MILLISECONDS.toMinutes(longTime),
+         TimeUnit.MILLISECONDS.toSeconds(longTime) -
+                 TimeUnit.MINUTES.toSeconds((TimeUnit.MILLISECONDS.toMinutes(longTime)))
+    )
     Timber.d("TimeInMillis is $timeInMillis and time is $time")
     return time
 }

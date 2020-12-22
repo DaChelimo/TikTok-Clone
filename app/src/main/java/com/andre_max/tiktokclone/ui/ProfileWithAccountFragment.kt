@@ -29,6 +29,7 @@ class ProfileWithAccountFragment : Fragment() {
     private lateinit var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback
     private lateinit var tabLayout: TabLayout
     private var user: User? = null
+    var uid: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,9 +37,9 @@ class ProfileWithAccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_with_account, container, false)
+        uid = ProfileWithAccountFragmentArgs.fromBundle(requireArguments()).uid
 
-
-        val ref = firebaseDatabase.getReference(getUserBasicDataPath())
+        val ref = firebaseDatabase.getReference(getUserBasicDataPath(uid ?: firebaseAuth.currentUser?.uid.toString()))
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 user = snapshot.getValue(User::class.java)
@@ -89,7 +90,7 @@ class ProfileWithAccountFragment : Fragment() {
         followerCount.text = user?.followers.toString()
         followingCount.text = user?.following.toString()
         totalLikesCount.text = user?.totalLikes.toString()
-        userTag.text = user?.username
+        userTag.text = "@${user?.username}"
 
         if (user?.profilePictureUrl != null) {
             Glide.with(this)
@@ -98,13 +99,13 @@ class ProfileWithAccountFragment : Fragment() {
         }
     }
 
-    class MyFragmentStateAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
+    class MyFragmentStateAdapter(val fragment: Fragment): FragmentStateAdapter(fragment) {
 
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when(position) {
-                0 -> MyPublicVideosFragment()
+                0 -> MyPublicVideosFragment.getInstance((fragment as ProfileWithAccountFragment).uid)
                 1 -> MyPrivateVideosFragment()
                 2 -> MyLikedVideosFragment()
                 else -> throw ArrayIndexOutOfBoundsException(3)
