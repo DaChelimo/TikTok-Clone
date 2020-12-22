@@ -5,13 +5,12 @@ import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -58,7 +57,8 @@ class RecordVideoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_record_video, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_record_video, container, false)
         cameraView = binding.cameraView
 
         binding.closeBtn.setOnClickListener {
@@ -79,7 +79,7 @@ class RecordVideoFragment : Fragment() {
 
     private fun initCameraView() {
         cameraView.facing = Facing.BACK
-        cameraView.audio = Audio.ON
+        cameraView.audio = MediaStore.Audio.ON
         cameraView.mode = Mode.VIDEO
         cameraView.addCameraListener(cameraListener)
 
@@ -103,7 +103,8 @@ class RecordVideoFragment : Fragment() {
 
         binding.flipCameraBtn.setOnClickListener {
             Timber.d("camera facing is ${cameraView.facing}")
-            if(cameraView.facing == Facing.FRONT) cameraView.facing = Facing.BACK else cameraView.facing = Facing.FRONT
+            if (cameraView.facing == Facing.FRONT) cameraView.facing =
+                Facing.BACK else cameraView.facing = Facing.FRONT
         }
 
         binding.startRecordingBtn.setOnClickListener {
@@ -113,8 +114,16 @@ class RecordVideoFragment : Fragment() {
             timeCreated = System.currentTimeMillis()
             val childPath = "${Environment.DIRECTORY_DCIM}/TikTokClone/MyRecordedVideos"
             val dir = File(Environment.getExternalStorageDirectory().path, childPath).mkdirs()
-            Timber.d("dir is ${File(Environment.getExternalStorageDirectory().path, childPath)} and dir.created is $dir")
-            file = File(Environment.getExternalStorageDirectory().path, "$childPath/$timeCreated.mp4")
+            Timber.d(
+                "dir is ${
+                    File(
+                        Environment.getExternalStorageDirectory().path,
+                        childPath
+                    )
+                } and dir.created is $dir"
+            )
+            file =
+                File(Environment.getExternalStorageDirectory().path, "$childPath/$timeCreated.mp4")
             Timber.d("File is $file and file path is ${file.path}")
             cameraView.takeVideo(file)
         }
@@ -137,8 +146,7 @@ class RecordVideoFragment : Fragment() {
             binding.stopRecordingBtn.visibility = View.VISIBLE
             binding.stopRecordingDisplayIcon.visibility = View.VISIBLE
             binding.finishRecordingBtn.visibility = View.VISIBLE
-        }
-        else {
+        } else {
             binding.startRecordingBtn.visibility = View.VISIBLE
             binding.uploadImageBtn.visibility = View.VISIBLE
             binding.uploadPlainText.visibility = View.VISIBLE
@@ -164,11 +172,22 @@ class RecordVideoFragment : Fragment() {
         override fun onVideoTaken(result: VideoResult) {
             super.onVideoTaken(result)
             Timber.d("Video has been taken and result.size is ${result.size}")
-            val mp = MediaPlayer.create(this@RecordVideoFragment.requireContext(), result.file.toURI().toString().toUri())
+            val mp = MediaPlayer.create(
+                this@RecordVideoFragment.requireContext(),
+                result.file.toURI().toString().toUri()
+            )
             val duration = mp.duration
             Timber.d("result.duration is $duration")
-            localUserVideo = LocalUserVideo(result.file.toURI().toString(), duration.toString(), timeCreated.toString())
-            findNavController().navigate(RecordVideoFragmentDirections.actionRecordVideoFragmentToPreviewRecordedVideoFragment(localUserVideo))
+            localUserVideo = LocalUserVideo(
+                result.file.toURI().toString(),
+                duration.toString(),
+                timeCreated.toString()
+            )
+            findNavController().navigate(
+                RecordVideoFragmentDirections.actionRecordVideoFragmentToPreviewRecordedVideoFragment(
+                    localUserVideo
+                )
+            )
         }
     }
 
@@ -212,6 +231,7 @@ class RecordVideoFragment : Fragment() {
                 }
             }
         }
+
         override fun onPermissionRationaleShouldBeShown(
             permissions: MutableList<PermissionRequest>?,
             token: PermissionToken?
