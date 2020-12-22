@@ -7,6 +7,7 @@
         <item name="colorAccent">@android:color/transparent</item>
 <!--        <item name="android:background">@android:color/white</item>-->
         <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">@dimen/_13ssp</item>
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
 <!--        <item name="android:datePickerStyle">@style/DatePickerStyle</item>-->
 

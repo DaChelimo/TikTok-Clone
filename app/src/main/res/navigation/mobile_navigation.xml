@@ -7,11 +7,12 @@
 
     <fragment
         android:id="@+id/profileWithoutAccountFragment"
-        android:name="com.andre_max.tiktokclone.ui.ProfileWithoutAccountFragment"
+        android:name="com.andre_max.tiktokclone.ui.profile.without_account.ProfileWithoutAccountFragment"
         android:label="Sign up"
         tools:layout="@layout/fragment_profile_without_account"/>
 
     <fragment
+<<<<<<< Updated upstream
         android:id="@+id/inbox_fragment"
         android:name="com.andre_max.tiktokclone.ui.InboxFragment"
         android:label="Inbox"
@@ -32,9 +33,21 @@
             android:id="@+id/action_search_fragment_to_hashtagPageFragment"
             app:destination="@id/hashtagPageFragment" />
     </fragment>
+=======
+        android:id="@+id/searchFragment"
+        android:name="com.andre_max.tiktokclone.ui.inbox.InboxFragment"
+        android:label="Discover"
+        tools:layout="@layout/fragment_inbox" />
+
+    <fragment
+        android:id="@+id/inboxFragment"
+        android:name="com.andre_max.tiktokclone.ui.search.SearchFragment"
+        android:label="Inbox"
+        tools:layout="@layout/fragment_search" />
+>>>>>>> Stashed changes
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.andre_max.tiktokclone.ui.SignUpFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.SignUpFragment"
         android:label="SignUpFragment"
         tools:layout="@layout/sign_up_page">
         <action
@@ -49,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/ageFragment"
-        android:name="com.andre_max.tiktokclone.ui.AgeFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.age_verification.AgeFragment"
         android:label="Sign up"
         tools:layout="@layout/fragment_age">
         <action
@@ -58,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/createUsernameFragment"
-        android:name="com.andre_max.tiktokclone.ui.CreateUsernameFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.create_username.CreateUsernameFragment"
         android:label="fragment_create_username"
         tools:layout="@layout/fragment_create_username" >
         <action
@@ -84,7 +97,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.andre_max.tiktokclone.ui.HomeFragment"
+        android:name="com.andre_max.tiktokclone.ui.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -92,9 +105,15 @@
             app:destination="@id/profileWithAccountFragment" />
     </fragment>
     <fragment
+<<<<<<< Updated upstream
         android:id="@+id/uploadMediaFragment"
         android:name="com.andre_max.tiktokclone.ui.UploadMediaFragment"
         android:label="UploadMediaFragment"
+=======
+        android:id="@+id/createVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.upload.create_video.CreateVideoFragment"
+        android:label="CreateVideoFragment"
+>>>>>>> Stashed changes
         tools:layout="@layout/fragment_create_video">
         <action
             android:id="@+id/action_createVideoFragment_to_previewVideoFragment"
@@ -102,7 +121,7 @@
     </fragment>
     <fragment
         android:id="@+id/basicSignUpFragment"
-        android:name="com.andre_max.tiktokclone.ui.BasicSignUpFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.BasicSignUpFragment"
         android:label="BasicSignUpFragment"
         tools:layout="@layout/fragment_basic_sign_up">
         <action
@@ -117,7 +136,7 @@
     </fragment>
     <fragment
         android:id="@+id/createPasswordFragment"
-        android:name="com.andre_max.tiktokclone.ui.CreatePasswordFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.create_password.CreatePasswordFragment"
         android:label="fragment_create_password"
         tools:layout="@layout/fragment_create_password" >
         <action
@@ -129,7 +148,7 @@
     </fragment>
     <fragment
         android:id="@+id/enterCodeFragment"
-        android:name="com.andre_max.tiktokclone.ui.EnterCodeFragment"
+        android:name="com.andre_max.tiktokclone.ui.sign_up.phone_sign_up.EnterCodeFragment"
         android:label="EnterCodeFragment"
         tools:layout="@layout/fragment_enter_code">
         <action
@@ -138,7 +157,7 @@
     </fragment>
     <fragment
         android:id="@+id/meFragment"
-        android:name="com.andre_max.tiktokclone.MeFragment"
+        android:name="com.andre_max.tiktokclone.ui.profile.MeFragment"
         android:label="MeFragment"
         tools:layout="@layout/fragment_me">
         <action
@@ -162,7 +181,7 @@
     </fragment>
     <fragment
         android:id="@+id/previewVideoFragment"
-        android:name="com.andre_max.tiktokclone.ui.PreviewVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.upload.preview.PreviewVideoFragment"
         android:label="PreviewVideoFragment"
         tools:layout="@layout/fragment_preview_video">
         <argument
@@ -174,7 +193,7 @@
     </fragment>
     <fragment
         android:id="@+id/postVideoFragment"
-        android:name="com.andre_max.tiktokclone.ui.PostVideoFragment"
+        android:name="com.andre_max.tiktokclone.ui.upload.post_video.PostVideoFragment"
         android:label="PostVideoFragment"
         tools:layout="@layout/fragment_post_video">
         <argument
@@ -187,7 +206,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileWithAccountFragment"
-        android:name="com.andre_max.tiktokclone.ui.ProfileWithAccountFragment"
+        android:name="com.andre_max.tiktokclone.ui.profile.with_account.ProfileWithAccountFragment"
         android:label="ProfileWithAccountFragment"
         tools:layout="@layout/fragment_profile_with_account">
 

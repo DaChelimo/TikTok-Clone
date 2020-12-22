@@ -53,7 +53,7 @@ class MyPublicVideosFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     val userVideo = it.getValue(RemoteUserVideo::class.java) ?: return@forEach
-                    videoMap[userVideo.key] = userVideo
+                    videoMap[userVideo.firestoreId] = userVideo
                 }
 
                 videoMap.values.forEach {

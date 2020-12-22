@@ -5,6 +5,12 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="pinkBtnBackground">#FF0051</color>
 
+    <color name="light_white">#EFEDED</color>
+    <color name="light_black">#474646</color>
+
+    <color name="dark_black">#171616</color>
+
+
     <color name="titleBlack">#171616</color>
     <color name="defaultGrey">#9E9B9B</color>
     <color name="textColor">#474646</color>

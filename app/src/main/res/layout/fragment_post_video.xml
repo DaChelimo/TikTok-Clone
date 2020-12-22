@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFF"
-        tools:context=".ui.PostVideoFragment">
+        tools:context=".ui.upload.post_video.PostVideoFragment">
 
         <TextView
             android:id="@+id/sign_up_plain_text"

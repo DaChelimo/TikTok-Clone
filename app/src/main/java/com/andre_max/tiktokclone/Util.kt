@@ -7,22 +7,27 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import timber.log.Timber
+<<<<<<< Updated upstream
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+=======
+>>>>>>> Stashed changes
 
 val firebaseAuth = FirebaseAuth.getInstance()
 val firebaseDatabase = FirebaseDatabase.getInstance()
 val firebaseStorage = FirebaseStorage.getInstance()
 
-var userVerificationId : String? = null
+var userVerificationId: String? = null
 var userToken: PhoneAuthProvider.ForceResendingToken? = null
 
 const val GOOGLE_RC_SIGN_IN = 8223
-const val CLIENT_ID_TYPE_3 = "1031105970956-mmutkrvn9fqo92mq5j2a32lh8nsu9qkf.apps.googleusercontent.com"
+const val CLIENT_ID_TYPE_3 =
+    "1031105970956-mmutkrvn9fqo92mq5j2a32lh8nsu9qkf.apps.googleusercontent.com"
 
-const val NAME_UNAVAILABLE = "This username isn't available. Try a suggested username, or enter a new one."
+const val NAME_UNAVAILABLE =
+    "This username isn't available. Try a suggested username, or enter a new one."
 const val SHORT_USERNAME = "Include at least 2 characters in your username"
 const val LONG_USERNAME = "Username must be less than 25 characters"
 const val CONTAINS_SPACES = "Username must not contain any spaces"
@@ -30,8 +35,12 @@ const val CONTAINS_SPACES = "Username must not contain any spaces"
 const val POSITION = "POSITION"
 fun getTagsPath() = "tags"
 
-fun getUserBasicDataPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String = "users/$uid/basic-data"
-fun getUserPublicVideosPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String = "users/$uid/public-videos"
+fun getUserBasicDataPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String =
+    "users/$uid/basic-data"
+
+fun getUserPublicVideosPath(uid: String = firebaseAuth.currentUser?.uid.toString()): String =
+    "users/$uid/public-videos"
+
 fun getUserPrivateVideosPath(): String = "users/${firebaseAuth.currentUser?.uid}/private-videos"
 fun getUserLikedVideosPath(): String = "users/${firebaseAuth.currentUser?.uid}/liked-videos"
 
@@ -42,7 +51,8 @@ fun getOtherFollowerPath(otherUid: String): String = "users/$otherUid/followers"
 fun getOthersFollowingPath(otherUid: String): String = "users/$otherUid/following"
 
 fun getAllVideosPath(): String = "videos"
-fun getCommentsPath(remoteUserVideoKey: String): String = "comments/$remoteUserVideoKey/actual-comments"
+fun getCommentsPath(remoteUserVideoKey: String): String =
+    "comments/$remoteUserVideoKey/actual-comments"
 //fun getCommentsSizePath(remoteUserVideoKey: String): String = "comments/$remoteUserVideoKey/comments-size"
 
 fun getMyLikedComments(): String = "users/${firebaseAuth.currentUser?.uid}/liked-comments"
@@ -57,22 +67,54 @@ fun Fragment.longToast(text: String) {
 }
 
 @Parcelize
+<<<<<<< Updated upstream
 data class LocalUserVideo(var url: String?, val duration: String?, val dateCreated: String?): Parcelable {
     constructor(): this(null, null, null)
+=======
+data class LocalUserVideo(val url: String?, val duration: String?, val dateCreated: String?) :
+    Parcelable {
+    constructor() : this(null, null, null)
+>>>>>>> Stashed changes
 }
+
 data class LocalUserImage(val url: String?, val dateCreated: String?)
 
 @Parcelize
-data class RemoteUserVideo(val url: String, val description: String?, val tags: List<String>, val duration: Long, val key: String, val dateCreated: Long, var likes: Long = 0, var views: Long = 0, val creatorUid: String,  var totalCommentsSize: Long = 0): Parcelable {
-    constructor(): this("", null, listOf(), -1, "", -1, -1, -1, "",  -1)
+data class RemoteUserVideo(
+    val url: String,
+    val description: String?,
+    val tags: List<String>,
+    val duration: Long,
+    val firestoreId: String,
+    val dateCreated: Long,
+    var likes: Long = 0,
+    var views: Long = 0,
+    val creatorUid: String,
+    var totalCommentsSize: Long = 0
+) : Parcelable {
+    constructor() : this("", null, listOf(), -1, "", -1, -1, -1, "", -1)
 }
 
 
-data class Comment(val authorUid: String, var commentText: String, var commentLikes: Long, val replies: ArrayList<Reply>, val dateCreated: Long, val commentKey: String) {
-    constructor(): this("", "", -1, arrayListOf(), -1, "")
+data class Comment(
+    val authorUid: String,
+    var commentText: String,
+    var commentLikes: Long,
+    val replies: ArrayList<Reply>,
+    val dateCreated: Long,
+    val commentKey: String
+) {
+    constructor() : this("", "", -1, arrayListOf(), -1, "")
 }
-data class Reply(val authorUid: String, var replyText: String, var replyLikes: Long, val dateCreated: Long, val replyKey: String) {
-    constructor(): this("", "", -1, -1, "")
+
+data class Reply(
+    val authorUid: String,
+    var replyText: String,
+    var replyLikes: Long,
+    val dateCreated: Long,
+    val replyKey: String
+) {
+    constructor() : this("", "", -1, -1, "")
 }
 
 data class EachTag(val tagName: String, var tagCount: Int) {
@@ -81,6 +123,7 @@ data class EachTag(val tagName: String, var tagCount: Int) {
 
 fun convertTimeToDisplayTime(timeInMillis: String): String {
     Timber.d("timeInMillis is $timeInMillis")
+<<<<<<< Updated upstream
 //    var time = ""
 //    val seconds = timeInMillis.toLong() % 1000
 //    val minutes = timeInMillis.toLong() / 1000
@@ -91,6 +134,13 @@ fun convertTimeToDisplayTime(timeInMillis: String): String {
          TimeUnit.MILLISECONDS.toSeconds(longTime) -
                  TimeUnit.MINUTES.toSeconds((TimeUnit.MILLISECONDS.toMinutes(longTime)))
     )
+=======
+    var time = ""
+    val seconds = timeInMillis.toLong() % 1000
+    val minutes = timeInMillis.toLong() / 1000
+    time =
+        "${if (minutes.toString().length == 2) minutes else "0$minutes"}:${if (seconds.toString().length == 2) seconds else "0$seconds"}"
+>>>>>>> Stashed changes
     Timber.d("TimeInMillis is $timeInMillis and time is $time")
     return time
 }
@@ -114,13 +164,19 @@ fun getCurrentUser(): User? {
     return currentUser
 }
 
-data class User(var username: String, var followers: Long, var following: Long, var totalLikes: Long, var profilePictureUrl: String?, val uid: String) {
-    constructor(): this("", -1, -1, -1, null, "")
+data class User(
+    var username: String,
+    var followers: ArrayList<String>,
+    var following: ArrayList<String>,
+    var totalLikes: Long,
+    var profilePictureUrl: String?,
+    val uid: String
+) {
+    constructor() : this("", arrayListOf(), arrayListOf(), -1, null, "")
 }
 
 @Parcelize
-data class EmailBody(val email: String, val password: String): Parcelable
-
+data class EmailBody(val email: String, val password: String) : Parcelable
 
 
 fun likeVideoValueEventFun(ref: DatabaseReference): ValueEventListener {

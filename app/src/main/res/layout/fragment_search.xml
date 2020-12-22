@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+<<<<<<< Updated upstream
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -8,6 +9,16 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+=======
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".ui.search.SearchFragment">
+
+    <TextView
+        android:id="@+id/text_notifications"
+>>>>>>> Stashed changes
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"

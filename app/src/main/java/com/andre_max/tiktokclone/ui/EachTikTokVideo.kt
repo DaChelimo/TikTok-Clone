@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andre_max.tiktokclone.*
-import com.andre_max.tiktokclone.comments.MainComment
+import com.andre_max.tiktokclone.models.MainComment
 import com.andre_max.tiktokclone.databinding.EachTiktokVideoBinding
 import com.andre_max.tiktokclone.exoplayer.Player
-import com.andre_max.tiktokclone.video_reaction.Reaction
+import com.andre_max.tiktokclone.models.Reaction
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
@@ -54,7 +54,6 @@ class EachTikTokVideo: Fragment() {
         player = Player(
             simpleExoplayerView,
             this.requireContext(),
-            simpleExoPlayer,
             remoteUserVideo.url
         )
 

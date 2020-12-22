@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
         android:background="@android:color/white"
-        tools:context=".ui.BasicPhoneFragment">
+        tools:context=".ui.sign_up.phone_sign_up.BasicPhoneFragment">
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/country_code_picker"

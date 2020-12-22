@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
         android:background="@android:color/white"
-        tools:context=".ui.BasicEmailFragment">
+        tools:context=".ui.sign_up.email_sign_up.BasicEmailFragment">
 
         <EditText
             android:id="@+id/email_input"
