@@ -1,94 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/tw__solid_white"
-        tools:context=".ui.sign_up.phone_sign_up.EnterCodeFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tw__solid_white"
+    tools:context=".presentation.ui.sign_up.phone_sign_up.EnterCodeFragment">
 
 
-        <TextView
-            android:id="@+id/sign_up_plain_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="Sign up"
-            android:textColor="@color/titleBlack"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/sign_up_plain_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/sign_up"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_16ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/create_username_plain_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="40dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="Enter code"
-            android:textColor="@color/titleBlack"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text" />
-
-
-        <Button
-            android:id="@+id/sign_up_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="32dp"
-            android:background="@color/pinkBtnBackground"
-            android:fontFamily="sans-serif-medium"
-            android:text="Sign up"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/input_code" />
-
-        <com.bigbangbutton.editcodeview.EditCodeView
-            android:id="@+id/input_code"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            app:codeLength="6"
-            android:fontFamily="@font/roboto"
-            android:textColor="@color/titleBlack"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
-            app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text" />
+    <TextView
+        android:id="@+id/create_username_plain_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_36sdp"
+        android:fontFamily="@font/cabin_medium"
+        android:text="@string/enter_code"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_18ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text" />
 
 
-        <!--        <com.bigbangbutton.editcodeview.EditCodeView-->
-<!--            android:id="@+id/username_input"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            android:ems="10"-->
-<!--            app:codeLength="6"-->
-<!--            android:fontFamily="@font/roboto"-->
-<!--            android:textColor="@color/defaultGrey"-->
-<!--            android:textColorHint="#655F5F"-->
-<!--            android:textSize="16sp"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"-->
-<!--            app:layout_constraintStart_toStartOf="@+id/create_username_description"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/create_username_description" />-->
+    <Button
+        android:id="@+id/sign_up_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/pinkBtnBackground"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/sign_up"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
+        app:layout_constraintTop_toBottomOf="@+id/input_code" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <com.bigbangbutton.editcodeview.EditCodeView
+        android:id="@+id/input_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:fontFamily="@font/cabin_medium"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_14ssp"
+        app:codeLength="6"
+        app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
+        app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
+        app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text"
+        app:textSize="@dimen/_14ssp"
+        app:underlineBaseColor="@color/light_black"
+        app:underlineFilledColor="@color/dark_black"
+        app:underlineSelectedColor="@color/pinkBtnBackground"
+        app:underlineStroke="@dimen/_1sdp" />
+
+
+    <!--        <com.bigbangbutton.editcodeview.EditCodeView-->
+    <!--            android:id="@+id/username_input"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="16dp"-->
+    <!--            android:background="@android:color/transparent"-->
+    <!--            android:ems="10"-->
+    <!--            app:codeLength="6"-->
+    <!--            android:fontFamily="@font/roboto"-->
+    <!--            android:textColor="@color/defaultGrey"-->
+    <!--            android:textColorHint="#655F5F"-->
+    <!--            android:textSize="16sp"-->
+    <!--            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"-->
+    <!--            app:layout_constraintStart_toStartOf="@+id/create_username_description"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/create_username_description" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,23 +5,27 @@
 
     <data>
 
+        <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.create_username.CreateUsernameViewModel"/>
+        <variable
+            name="viewModel"
+            type="CreateUsernameViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        tools:context=".ui.sign_up.create_username.CreateUsernameFragment">
+        tools:context=".presentation.ui.sign_up.create_username.CreateUsernameFragment">
 
         <TextView
             android:id="@+id/sign_up_plain_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_6sdp"
             android:fontFamily="@font/roboto_medium"
-            android:text="Sign up"
-            android:textColor="@color/titleBlack"
-            android:textSize="18sp"
+            android:text="@string/sign_up"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,12 +34,11 @@
             android:id="@+id/skip_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:fontFamily="sans-serif-condensed"
-            android:text="Skip"
-            android:textColor="#706B6B"
-            android:textSize="18sp"
+            android:padding="@dimen/_6sdp"
+            android:text="@string/skip"
+            android:textColor="@color/medium_grey"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintBottom_toBottomOf="@+id/sign_up_plain_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/sign_up_plain_text" />
@@ -44,13 +47,12 @@
             android:id="@+id/create_username_plain_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="40dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="Create username"
-            android:textColor="@color/titleBlack"
-            android:textSize="20sp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:fontFamily="@font/cabin_medium"
+            android:text="@string/create_username"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_18ssp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text" />
 
@@ -58,8 +60,8 @@
             android:id="@+id/create_username_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="You can always change this later"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:text="@string/create_username_description"
             app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
             app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text" />
 
@@ -67,56 +69,66 @@
             android:id="@+id/sign_up_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:text="Sign up"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:text="@string/sign_up"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/create_username_description"
             app:layout_constraintTop_toBottomOf="@+id/error_text"
             style="@style/next_btn_style" />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/username_layout"
+            android:layout_width="0dp"
+            app:boxStrokeErrorColor="@color/medium_red"
+            app:boxStrokeColor="@color/light_grey"
+            app:errorEnabled="@{viewModel.errorTextRes != null}"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/light_black"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_username_description" >
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@android:color/transparent"
             android:ems="10"
+            android:text="@={viewModel.liveUsername}"
             android:fontFamily="@font/roboto"
-            android:hint="Username"
+            android:hint="@string/username"
             android:inputType="textPersonName"
-            android:textColor="#655F5F"
-            android:textColorHint="#655F5F"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
-            app:layout_constraintStart_toStartOf="@+id/create_username_description"
-            app:layout_constraintTop_toBottomOf="@+id/create_username_description" />
+            android:textColor="@color/dark_black"
+            android:textColorHint="@color/medium_grey"
+            android:textSize="@dimen/_14ssp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/error_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Include at least 2 characters in your username"
-            android:textColor="#F43636"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/username_input"
-            app:layout_constraintStart_toStartOf="@+id/username_input"
-            app:layout_constraintTop_toBottomOf="@+id/username_input"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            tools:text="Include at least 2 characters in your username"
+            android:textColor="@color/medium_red"
+            app:changeVisibility="@{viewModel.errorTextRes != null}"
+            app:layout_constraintEnd_toEndOf="@+id/username_layout"
+            app:layout_constraintStart_toStartOf="@+id/username_layout"
+            app:layout_constraintTop_toBottomOf="@+id/username_layout"
             tools:visibility="visible" />
 
         <View
             android:id="@+id/line"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/defaultGrey"
-            app:layout_constraintEnd_toEndOf="@+id/username_input"
-            app:layout_constraintStart_toStartOf="@+id/username_input"
-            app:layout_constraintTop_toBottomOf="@+id/username_input" />
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="@+id/username_layout"
+            app:layout_constraintStart_toStartOf="@+id/username_layout"
+            app:layout_constraintTop_toBottomOf="@+id/username_layout" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

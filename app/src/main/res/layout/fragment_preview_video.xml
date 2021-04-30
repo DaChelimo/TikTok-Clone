@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        tools:context=".ui.upload.preview.PreviewVideoFragment">
+        tools:context=".presentation.ui.upload.preview_video.PreviewVideoFragment">
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/titleBlack"
+            android:background="@color/dark_black"
             app:use_controller="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_arrow_white"
+            app:srcCompat="@drawable/ic_round_play"
             tools:visibility="visible" />
 
         <Button

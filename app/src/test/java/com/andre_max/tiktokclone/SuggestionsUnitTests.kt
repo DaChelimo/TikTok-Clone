@@ -1,6 +1,5 @@
 package com.andre_max.tiktokclone
 
-import com.andre_max.tiktokclone.suggestions.Suggestions
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert

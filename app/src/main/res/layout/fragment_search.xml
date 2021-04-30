@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-<<<<<<< Updated upstream
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,20 +8,17 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-=======
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    tools:context=".ui.search.SearchFragment">
-
-    <TextView
-        android:id="@+id/text_notifications"
->>>>>>> Stashed changes
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        tools:context=".ui.SearchFragment">
+        tools:context=".presentation.ui.search.SearchFragment">
+
+        <TextView
+            android:id="@+id/text_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            tools:context=".ui.SearchFragment" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -67,7 +63,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/search_text_background"
             app:layout_constraintStart_toStartOf="@+id/search_text_background"
             app:layout_constraintTop_toTopOf="@+id/search_text_background"
-            app:srcCompat="@drawable/ic_baseline_search_24" />
+            app:srcCompat="@drawable/ic_search" />
 
         <EditText
             android:id="@+id/search_input"

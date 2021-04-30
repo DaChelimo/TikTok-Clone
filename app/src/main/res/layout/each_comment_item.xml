@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_perm_identity_24" />
+        app:srcCompat="@drawable/ic_perm_identity" />
 
     <TextView
         android:id="@+id/person_username"

@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+
+        <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.phone_sign_up.BasicPhoneViewModel"/>
+        <variable
+            name="viewModel"
+            type="BasicPhoneViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="@dimen/_36sdp"
         android:background="@android:color/white"
-        tools:context=".ui.sign_up.phone_sign_up.BasicPhoneFragment">
+        tools:context=".presentation.ui.sign_up.phone_sign_up.BasicPhoneFragment">
 
         <com.hbb20.CountryCodePicker
             android:id="@+id/country_code_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="@dimen/_20sdp"
             app:ccpDialog_backgroundColor="@android:color/white"
-            app:ccpDialog_searchEditTextTint="#000"
+            app:ccpDialog_searchEditTextTint="@color/dark_black"
             app:ccp_defaultNameCode="US"
             app:ccp_defaultPhoneCode="1"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,16 +35,17 @@
             android:id="@+id/phone_number_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:background="@android:color/transparent"
             android:ems="10"
-            android:fontFamily="@font/roboto"
-            android:hint="Phone Number"
+            android:text="@={viewModel.livePhoneNumber}"
+            android:hint="@string/phone_number"
             android:inputType="phone"
-            android:textColor="#655F5F"
-            android:textColorHint="#655F5F"
-            android:textSize="18sp"
+            android:fontFamily="@font/cabin"
+            android:textColor="@color/light_black"
+            android:textColorHint="@color/medium_grey"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintBottom_toBottomOf="@+id/country_code_picker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/country_code_picker"
@@ -49,9 +54,9 @@
         <View
             android:id="@+id/line"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/defaultGrey"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:background="@color/light_grey"
             app:layout_constraintEnd_toEndOf="@+id/phone_number_input"
             app:layout_constraintStart_toStartOf="@+id/country_code_picker"
             app:layout_constraintTop_toBottomOf="@+id/country_code_picker" />
@@ -60,22 +65,24 @@
             android:id="@+id/tos_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_12sdp"
             android:text="@string/terms_of_services_phone"
             app:layout_constraintEnd_toEndOf="@+id/phone_number_input"
             app:layout_constraintStart_toStartOf="@+id/country_code_picker"
             app:layout_constraintTop_toBottomOf="@+id/line" />
 
         <Button
-            android:id="@+id/sign_up_btn"
+            android:id="@+id/send_code_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/_24sdp"
             android:background="@color/grey_button_background"
             android:fontFamily="sans-serif-medium"
-            android:text="Send code"
+            android:text="@string/send_code"
             android:textAllCaps="false"
-            android:textColor="@color/textColor"
+            android:clickable="@{viewModel.livePhoneNumber.length() == 9}"
+            android:textColor="@color/light_black"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintEnd_toEndOf="@+id/tos_text"
             app:layout_constraintStart_toStartOf="@+id/tos_text"
             app:layout_constraintTop_toBottomOf="@+id/tos_text" />

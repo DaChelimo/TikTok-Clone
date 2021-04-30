@@ -1,249 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        tools:context=".presentation.ui.profile.with_account.ProfileWithAccountFragment">
 
-    </data>
 
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
+        <ImageView
+            android:id="@+id/send_invite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/send_invite"
+            android:padding="@dimen/_8sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_add_person" />
+
+        <ImageView
+            android:id="@+id/menu_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/open_menu"
+            android:padding="@dimen/_8sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_more_vert" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@+id/send_invite_icon" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_photo"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line"
+            app:srcCompat="@drawable/white_person_icon" />
+
+        <TextView
+            android:id="@+id/user_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/light_grey"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/user_photo"
+            app:layout_constraintStart_toStartOf="@+id/user_photo"
+            app:layout_constraintTop_toBottomOf="@+id/user_photo"
+            tools:text="\@user83827289" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFF"
-            tools:context=".ui.profile.with_account.ProfileWithAccountFragment">
-
-
-            <ImageView
-                android:id="@+id/send_invite_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_person_add_black"
-                tools:ignore="UnusedAttribute" />
-
-            <ImageView
-                android:id="@+id/menu_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:elevation="4dp"
-                app:srcCompat="@drawable/ic_more_vert_black"
-                tools:ignore="UnusedAttribute" />
-
-            <View
-                android:id="@+id/line"
-                android:layout_width="match_parent"
-                android:layout_height="0.2dp"
-                android:layout_marginTop="12dp"
-                android:background="@color/defaultGrey"
-                app:layout_constraintTop_toBottomOf="@+id/send_invite_icon" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_photo"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/line"
-                app:srcCompat="@drawable/white_person_icon" />
+            android:id="@+id/profile_constraint_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_tag">
 
             <TextView
-                android:id="@+id/user_tag"
+                android:id="@+id/following_count_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/defaultGrey"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="@+id/user_photo"
-                app:layout_constraintStart_toStartOf="@+id/user_photo"
-                app:layout_constraintTop_toBottomOf="@+id/user_photo"
-                tools:text="\@user83827289" />
+                android:textColor="@color/dark_black"
+                app:layout_constraintEnd_toEndOf="@+id/following_plain_text"
+                app:layout_constraintStart_toStartOf="@+id/following_plain_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="0" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/profile_constraint_layout"
+            <TextView
+                android:id="@+id/following_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/following"
+                app:layout_constraintEnd_toStartOf="@+id/follower_plain_text"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_tag">
+                app:layout_constraintTop_toBottomOf="@+id/following_count_number" />
 
-                <TextView
-                    android:id="@+id/following_count_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textColor="@color/titleBlack"
-                    app:layout_constraintEnd_toEndOf="@+id/following_plain_text"
-                    app:layout_constraintStart_toStartOf="@+id/following_plain_text"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="0" />
-
-                <TextView
-                    android:id="@+id/following_plain_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Following"
-                    app:layout_constraintEnd_toStartOf="@+id/follower_plain_text"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/following_count_number" />
-
-                <TextView
-                    android:id="@+id/followers_count_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textColor="@color/titleBlack"
-                    app:layout_constraintEnd_toEndOf="@+id/follower_plain_text"
-                    app:layout_constraintStart_toStartOf="@+id/follower_plain_text"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="0" />
-
-                <TextView
-                    android:id="@+id/follower_plain_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Followers"
-                    app:layout_constraintEnd_toStartOf="@+id/like_plain_text"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/following_plain_text"
-                    app:layout_constraintTop_toBottomOf="@+id/followers_count_number" />
-
-                <TextView
-                    android:id="@+id/likes_count_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textColor="@color/titleBlack"
-                    app:layout_constraintEnd_toEndOf="@+id/like_plain_text"
-                    app:layout_constraintStart_toStartOf="@+id/like_plain_text"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="0" />
-
-                <TextView
-                    android:id="@+id/like_plain_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:text="Likes"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/follower_plain_text"
-                    app:layout_constraintTop_toBottomOf="@+id/likes_count_number" />
-
-                <View
-                    android:id="@+id/imageView14"
-                    android:layout_width="0.5dp"
-                    android:layout_height="10dp"
-                    android:background="@color/defaultGrey"
-                    android:src="@drawable/color_cursor"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/followers_count_number"
-                    app:layout_constraintStart_toEndOf="@+id/following_count_number"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/view14"
-                    android:layout_width="0.1dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@color/defaultGrey"
-                    android:src="@drawable/color_cursor"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/like_plain_text"
-                    app:layout_constraintStart_toEndOf="@+id/follower_plain_text"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.511" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/edit_profile_btn"
-                android:layout_width="180dp"
+            <TextView
+                android:id="@+id/followers_count_number"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/button_background_style"
-                android:text="Edit Profile"
-                android:textAllCaps="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_constraint_layout" />
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/dark_black"
+                app:layout_constraintEnd_toEndOf="@+id/follower_plain_text"
+                app:layout_constraintStart_toStartOf="@+id/follower_plain_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="0" />
 
-            <ImageButton
-                android:id="@+id/favourites_icon"
-                android:layout_width="45dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/button_background_style"
-                app:layout_constraintBottom_toBottomOf="@+id/edit_profile_btn"
-                app:layout_constraintStart_toEndOf="@+id/edit_profile_btn"
-                app:layout_constraintTop_toTopOf="@+id/edit_profile_btn"
-                app:srcCompat="@drawable/ic_bookmark_border_black" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/profile_tab_layout"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/follower_plain_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:tabTextColor="@color/textColor"
-                app:tabSelectedTextColor="@color/titleBlack"
-                app:tabBackground="@android:color/white"
-                android:visibility="visible"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/followers"
+                app:layout_constraintEnd_toStartOf="@+id/like_plain_text"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/following_plain_text"
+                app:layout_constraintTop_toBottomOf="@+id/followers_count_number" />
+
+            <TextView
+                android:id="@+id/likes_count_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/dark_black"
+                app:layout_constraintEnd_toEndOf="@+id/like_plain_text"
+                app:layout_constraintStart_toStartOf="@+id/like_plain_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="0" />
+
+            <TextView
+                android:id="@+id/like_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/likes"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_profile_btn">
+                app:layout_constraintStart_toEndOf="@+id/follower_plain_text"
+                app:layout_constraintTop_toBottomOf="@+id/likes_count_number" />
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Videos" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Private Videos" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Liked Videos" />
-            </com.google.android.material.tabs.TabLayout>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewpager"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="#FFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_tab_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    </ScrollView>-->
-</layout>
+        <Button
+            android:id="@+id/edit_profile_btn"
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_26sdp"
+            android:background="@drawable/button_background_style"
+            android:text="@string/edit_profile"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_constraint_layout" />
+
+        <ImageButton
+            android:id="@+id/favourites_icon"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:background="@drawable/button_background_style"
+            android:contentDescription="@string/add_to_favourites"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_profile_btn"
+            app:layout_constraintStart_toEndOf="@+id/edit_profile_btn"
+            app:layout_constraintTop_toTopOf="@+id/edit_profile_btn"
+            app:srcCompat="@drawable/ic_bookmark_border_black" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/profile_tab_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_profile_btn"
+            app:tabBackground="@android:color/white"
+            app:tabSelectedTextColor="@color/dark_black"
+            app:tabTextColor="@color/light_black">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_videos" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_private_videos" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_liked_videos" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_230sdp"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_tab_layout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

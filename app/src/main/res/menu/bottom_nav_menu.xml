@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_home_white"
+        android:icon="@drawable/ic_home"
         android:title="@string/title_home" />
 
     <item
@@ -17,12 +17,12 @@
         android:title="Create Video" />
     <item
         android:id="@id/inbox_fragment"
-        android:icon="@drawable/ic_inbox_white"
+        android:icon="@drawable/ic_inbox"
         android:title="Inbox" />
 
     <item
         android:id="@+id/meFragment"
-        android:icon="@drawable/ic_identity_white"
+        android:icon="@drawable/ic_identity"
         android:title="Me" />
 
 </menu>
