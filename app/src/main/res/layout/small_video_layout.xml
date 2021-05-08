@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_1sdp"
+    android:layout_marginEnd="@dimen/_1sdp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="@dimen/_2sdp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/small_video_thumbnail"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:contentDescription="@string/local_video"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@drawable/ic_launcher_background" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loading_bar"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:indeterminate="true"
+        android:layout_gravity="center"
+        app:indicatorColor="@color/pinkBtnBackground"
+        app:trackColor="@color/light_grey" />
+
+    <TextView
+        android:id="@+id/small_video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_1sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/_14ssp"
+        tools:text="0:18" />
+</com.google.android.material.card.MaterialCardView>

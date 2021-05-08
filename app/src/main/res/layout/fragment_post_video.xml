@@ -5,23 +5,30 @@
 
     <data>
 
+        <import type="com.andre_max.tiktokclone.models.upload.Progress"/>
+        <import type="com.andre_max.tiktokclone.presentation.ui.upload.post_video.PostVideoViewModel" />
+
+        <variable
+            name="viewModel"
+            type="PostVideoViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFF"
-        tools:context=".ui.PostVideoFragment">
+        android:background="@android:color/white"
+        tools:context=".presentation.ui.upload.post_video.PostVideoFragment">
 
         <TextView
             android:id="@+id/sign_up_plain_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_6sdp"
             android:fontFamily="@font/roboto_medium"
-            android:text="Create video"
-            android:textColor="@color/titleBlack"
-            android:textSize="18sp"
+            android:text="@string/create_video"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,69 +37,78 @@
             android:id="@+id/back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:padding="@dimen/_6sdp"
+            android:contentDescription="@string/back_button"
             app:layout_constraintBottom_toBottomOf="@+id/sign_up_plain_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/sign_up_plain_text"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+            app:srcCompat="@drawable/ic_arrow_back" />
 
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/video_thumbnail"
-            android:layout_width="80dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            app:shapeAppearance="@style/roundedImageView"
+            android:contentDescription="@string/video_thumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_plain_text"
-            app:srcCompat="@drawable/ic_launcher_background" />
+            tools:srcCompat="@drawable/ic_launcher_background" />
 
         <EditText
             android:id="@+id/description_text"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:background="@android:color/white"
             android:ems="10"
-            android:hint="Describe your video"
+            android:text="@={viewModel.liveDescription}"
+            android:hint="@string/describe_your_video"
+            android:inputType="text"
             android:maxLength="150"
-            android:textColor="@color/textColor"
-            android:textColorHint="#7A7777"
-            android:textSize="14sp"
+            android:textColor="@color/dark_black"
+            android:textColorHint="@color/medium_grey"
             app:layout_constraintBottom_toTopOf="@+id/hashtag_btn"
             app:layout_constraintEnd_toStartOf="@+id/video_thumbnail"
             app:layout_constraintStart_toStartOf="@+id/back_btn"
             app:layout_constraintTop_toTopOf="@+id/video_thumbnail" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/hashtag_btn"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/button_background_style"
-            android:text="#Hashtags"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/hashtags"
             android:textAllCaps="false"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
             app:layout_constraintStart_toStartOf="@+id/description_text" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/friends_btn"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/button_background_style"
-            android:text="\@Friends"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/friends"
             android:textAllCaps="false"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
             app:layout_constraintStart_toEndOf="@+id/hashtag_btn" />
 
         <View
             android:id="@+id/line"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/defaultGrey"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@color/light_grey"
             app:layout_constraintEnd_toEndOf="@+id/video_thumbnail"
             app:layout_constraintStart_toStartOf="@+id/hashtag_btn"
             app:layout_constraintTop_toBottomOf="@+id/friends_btn" />
@@ -101,12 +117,16 @@
             android:id="@+id/post_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/pinkBtnBackground"
-            android:text="Post"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:clickable="@{viewModel.uploadStatus == Progress.IDLE}"
+            android:text="@string/post"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            app:backgroundTint="@color/pinkBtnBackground"
+            app:changeVisibility="@{viewModel.uploadStatus == Progress.IDLE}"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -116,16 +136,24 @@
             android:id="@+id/drafts_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/pinkBtnBackground"
-            android:text="Drafts"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:clickable="@{viewModel.uploadStatus == Progress.IDLE}"
+            android:text="@string/drafts"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            app:backgroundTint="@color/pinkBtnBackground"
+            app:changeVisibility="@{viewModel.uploadStatus == Progress.IDLE}"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/post_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <include
+            android:id="@+id/loading_layout"
+            tools:visibility="gone"
+            layout="@layout/loading_layout"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

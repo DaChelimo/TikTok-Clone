@@ -3,8 +3,20 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="continue_with_twitter">Continue with Twitter</string>
+    <string name="successfully_signed_up">You have successfully signed up</string>
+    <string name="error_occurred_during_sign_up">Error occurred while signing up. Kindly try again.</string>
+    <string name="error_occurred_during_video_upload">Error occurred while uploading video. Kindly try again.</string>
+
+    <string name="gmail_com">\@gmail.com</string>
+    <string name="hotmail_com">\@hotmail.com</string>
+    <string name="outlook_com">\@outlook.com</string>
+
+    <string name="valid_password">Valid password</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="needs_one_digit">Password must contain at least one digit</string>
+    <string name="needs_one_character">Password must contain at least one character</string>
+    <string name="needs_both_digit_and_character">Password must contain at least one character and one digit</string>
 
     <string name="facebook_app_id">***</string>
     <string name="fb_login_protocol_scheme">***</string>
@@ -14,9 +26,119 @@
     <string name="twitter_consumer_secret" translatable="false">***</string>
     <string name="continue_with_twitter">Continue with Twitter</string>
 
-    <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
 
+    <string name="user_too_young">You are too young to have an account. Thanks for trying.</string>
+    <string name="enter_valid_year">Enter a valid year to proceed.</string>
+
+    <string name="enter_valid_email">Kindly enter a valid email address to proceed</string>
+    <string name="video_description_needed">Kindly add a video description to proceed</string>
+    <string name="all_permissions_granted">All permissions granted.</string>
+    <string name="permissions_denied">Permissions denied. Kindly grant permissions to proceed</string>
+    <string name="record_permissions_title">Camera, Storage &amp; Audio permission</string>
+    <string name="record_permissions_description">Camera, storage and audio permission are needed to create a video.</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="author_username">\@%s</string>
+    <string name="empty_comment_error">You cannot send an empty comment</string>
+
+    <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
     <string name="terms_of_services_email">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
-    <string name="valid_password">Valid password</string>
+
+    <string name="use_phone_or_email">Use phone or email</string>
+    <string name="sign_up_for_tiktok">Sign up for TikTok</string>
+    <string name="close_page">Close page</string>
+    <string name="sign_up_description_text">Create a profile, follow other accounts, make your own videos, and more.</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s privacy policy.</string>
+
+    <string name="name_unavailable">This username isn\'t available. Try a suggested username, or enter a new one.</string>
+    <string name="short_username">Include at least 2 characters in your username</string>
+    <string name="long_username">Username must be less than 25 characters</string>
+    <string name="name_contains_spaces">Username must not contain any spaces</string>
+    <string name="hashtags">#Hashtags</string>
+    <string name="friends">\@Friends</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="send_invite">Send invite</string>
+    <string name="open_menu">Open menu</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="likes">Likes</string>
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="my_videos">My Videos</string>
+    <string name="my_private_videos">My Private Videos</string>
+    <string name="my_liked_videos">My Liked Videos</string>
+    <string name="post">Post</string>
+    <string name="create_video">Create video</string>
+    <string name="back_button">Back Button</string>
+    <string name="video_thumbnail">Video thumbnail</string>
+    <string name="describe_your_video">Describe your video</string>
+    <string name="drafts">Drafts</string>
+    <string name="next">Next</string>
+    <string name="popular_hashtag">Popular Hashtag</string>
+    <string name="sign_up">Sign up</string>
+    <string name="when_is_your_birthday">When\'s your birthday?</string>
+    <string name="your_birthday_won_t_be_shown_publicly">Your birthday won\'t be shown publicly</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="send_code">Send code</string>
+    <string name="email_address">Email address</string>
+    <string name="hash_tag_name">#%s</string>
+    <string name="error_during_account_creation">Error occurred while creating account. Kindly try again.</string>
+    <string name="code_invalid">Code is invalid. Enter valid code</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="create_password">Create password</string>
+    <string name="passord_description">Password must be at least 8 characters.</string>
+    <string name="password">Password</string>
+    <string name="skip">Skip</string>
+    <string name="create_username_description">You can always change this later</string>
+    <string name="create_username">Create username</string>
+    <string name="username">Username</string>
+    <string name="enter_code">Enter code</string>
+    <string name="number_of_comments">%d comments</string>
+    <string name="add_comment_hint">Add comment…</string>
+    <string name="send_comment">Send comment</string>
+    <string name="share_video">Share Video</string>
+    <string name="open_comment_section">Open Comment Section</string>
+    <string name="like_video">Like video</string>
+    <string name="follow_user">Follow user</string>
+    <string name="play_video">Play video</string>
+    <string name="close">Close</string>
+    <string name="local_video">Local Video</string>
+    <string name="local_image">Local image</string>
+    <string name="video_preview">Video preview</string>
+    <string name="search">Search</string>
+    <string name="sign_up_for_an_account">Sign up for an account</string>
+    <string name="sounds">Sounds</string>
+    <string name="upload">Upload</string>
+    <string name="flip">Flip</string>
+    <string name="speed">Speed</string>
+    <string name="filters">Filters</string>
+    <string name="timer">Timer</string>
+    <string name="flash">Flash</string>
+    <string name="beautify">Beautify</string>
+    <string name="start_recording">Start recording</string>
+    <string name="end_recording">End recording</string>
+    <string name="finish_recording">Finish recording</string>
+    <string name="pause_recording">Pause recording</string>
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="images">Images</string>
+    <string name="videos">Videos</string>
+    <string name="you_can_select_either_videos_or_photos">You can select either videos or photos</string>
+    <string name="all">All</string>
+    <string name="request_permission_title">Unable to record. Please try the following:</string>
+    <string name="request_permission_one">1. Video recording permission is not enabled: allow camera and microphone access under app permission settings.</string>
+    <string name="request_permission_two">2. Another app may be using your camera apps or restart your device and try again.</string>
+    <string name="request_permission_three">3. If your device is using Android 6.0 or above, please enable permissions for external storage.</string>
+    <string name="loading">Loading</string>
+    <string name="clear_search_query">Clear search query</string>
+    <string name="discover">Discover</string>
+    <string name="inbox">Inbox</string>
+    <string name="me">Me</string>
+    <string name="little_space_description">Your device has little space left. Delete some apps and files to begin recording.</string>
+    <string name="little_space_available">Little space available</string>
+
 
 </resources>

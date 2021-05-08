@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.lifecycle.MutableLiveData"/>
+        <import type="androidx.lifecycle.LiveData"/>
+        <variable
+            name="liveComment"
+            type="MutableLiveData&lt;String&gt;" />
+
+        <variable
+            name="isFollowingAuthor"
+            type="LiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="isVideoLiked"
+            type="LiveData&lt;Boolean&gt;" />
+        <variable
+            name="remoteVideo"
+            type="com.andre_max.tiktokclone.models.video.RemoteVideo" />
+    </data>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/large_video_motion_scene"
+        android:background="@color/dark_black">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/simpleExoPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:use_controller="false"
+            app:resize_mode="fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/author_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginBottom="@dimen/_6sdp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintBottom_toTopOf="@+id/video_description"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="\@brentrivera" />
+
+        <TextView
+            android:id="@+id/video_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:fontFamily="@font/cabin"
+            android:text="@{remoteVideo.description}"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toStartOf="@+id/share_video_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Tutorial #yzfamily #tutorial #fyp #fudrich" />
+
+        <ImageView
+            android:id="@+id/share_video_btn"
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_36sdp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_share"
+            android:contentDescription="@string/share_video" />
+
+        <ImageView
+            android:id="@+id/open_comment_section_btn"
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_36sdp"
+            app:layout_constraintBottom_toTopOf="@+id/share_video_btn"
+            app:layout_constraintEnd_toEndOf="@+id/share_video_btn"
+            app:srcCompat="@drawable/ic_insert_comment"
+            android:contentDescription="@string/open_comment_section" />
+
+        <ImageView
+            android:id="@+id/like_video_icon"
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_36sdp"
+            app:layout_constraintBottom_toTopOf="@+id/open_comment_section_btn"
+            app:changeVideoLikedIcon="@{isVideoLiked}"
+            app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
+            app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
+            app:srcCompat="@drawable/heart"
+            android:contentDescription="@string/like_video" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/author_icon"
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="@dimen/_36sdp"
+            android:layout_marginBottom="@dimen/_36sdp"
+            app:civ_border_color="@android:color/white"
+            app:civ_border_width="@dimen/_1sdp"
+            app:layout_constraintBottom_toTopOf="@+id/like_video_icon"
+            app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
+            app:layout_constraintStart_toStartOf="@+id/like_video_icon"
+            tools:srcCompat="@drawable/ic_perm_identity" />
+
+        <ImageView
+            android:id="@+id/follow_author"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:padding="@dimen/_4sdp"
+            app:backgroundTint="@android:color/white"
+            app:changeVisibility="@{isFollowingAuthor == true}"
+            app:layout_constraintBottom_toBottomOf="@+id/author_icon"
+            app:layout_constraintEnd_toEndOf="@+id/author_icon"
+            app:layout_constraintStart_toStartOf="@+id/author_icon"
+            app:layout_constraintTop_toBottomOf="@+id/author_icon"
+            app:srcCompat="@drawable/ic_add_circle"
+            android:contentDescription="@string/follow_user" />
+
+        <TextView
+            android:id="@+id/total_video_likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/cabin"
+            app:formatVideoCount="@{(int) remoteVideo.likes}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
+            app:layout_constraintStart_toStartOf="@+id/like_video_icon"
+            app:layout_constraintTop_toBottomOf="@+id/like_video_icon"
+            tools:text="157K" />
+
+        <TextView
+            android:id="@+id/total_comments_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/cabin"
+            app:formatVideoCount="@{(int) remoteVideo.totalCommentsSize}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
+            app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
+            app:layout_constraintTop_toBottomOf="@+id/open_comment_section_btn"
+            tools:text="7073" />
+
+        <ImageView
+            android:id="@+id/play_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_round_play"
+            tools:visibility="visible"
+            android:contentDescription="@string/play_video" />
+
+        <!--    In case you are wondering why we have 50 sdp padding at the bottom,
+           it's to accommodate our bottom navigation bar(not the system one)        -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginBottom="@dimen/_45sdp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/comment_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_65sdp"
+            app:shapeAppearance="@style/topCornered"
+            app:cardBackgroundColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/total_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:fontFamily="@font/cabin_medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="0 comments" />
+
+                <ImageButton
+                    android:id="@+id/exit_comment_section_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:padding="@dimen/_8sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_close"
+                    android:contentDescription="@string/close" />
+
+                <View
+                    android:id="@+id/comment_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginBottom="@dimen/_45sdp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <EditText
+                    android:id="@+id/comment_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:background="@android:color/white"
+                    android:ems="10"
+                    android:fontFamily="@font/cabin"
+                    android:hint="@string/add_comment_hint"
+                    android:inputType="textLongMessage"
+                    android:text="@={liveComment}"
+                    android:textColor="@color/light_black"
+                    android:textColorHint="@color/medium_grey"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/send_comment_btn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/comment_divider"
+                    tools:text="The random person who liked this comment will become a billionare one day" />
+
+                <ImageButton
+                    android:id="@+id/send_comment_btn"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@android:color/white"
+                    android:padding="@dimen/_4sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/comment_divider"
+                    app:srcCompat="@drawable/ic_send"
+                    android:contentDescription="@string/send_comment" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comment_recyclerview"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    app:layout_constraintBottom_toTopOf="@+id/comment_divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/total_comments" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</layout>

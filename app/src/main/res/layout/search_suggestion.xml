@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingTop="@dimen/_4sdp"
+    android:paddingBottom="@dimen/_4sdp"
+    android:background="@android:color/white"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/plain_search_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_6sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_search" />
+
+    <TextView
+        android:id="@+id/search_suggestion_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="andre_max"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:fontFamily="@font/cabin"
+        app:layout_constraintBottom_toBottomOf="@+id/plain_search_icon"
+        app:layout_constraintStart_toEndOf="@+id/plain_search_icon"
+        app:layout_constraintTop_toTopOf="@+id/plain_search_icon" />
+
+    <ImageView
+        android:id="@+id/add_search_suggestion"
+        android:layout_width="@dimen/_28sdp"
+        android:layout_height="0dp"
+        android:padding="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/plain_search_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/plain_search_icon"
+        app:srcCompat="@drawable/ic_call_missed" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/search_suggestion_icon"
+        android:layout_width="@dimen/_26sdp"
+        android:layout_height="@dimen/_26sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/plain_search_icon"
+        app:layout_constraintEnd_toStartOf="@+id/add_search_suggestion"
+        app:layout_constraintTop_toTopOf="@+id/plain_search_icon"
+        tools:src="@tools:sample/avatars"
+        tools:srcCompat="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>

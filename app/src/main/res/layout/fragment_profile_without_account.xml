@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        tools:context=".ui.ProfileWithoutAccountFragment">
+        tools:context=".presentation.ui.profile.without_account.ProfileWithoutAccountFragment">
 
         <!--    <TextView-->
         <!--        android:id="@+id/text_home"-->
@@ -38,21 +38,22 @@
 
         <ImageView
             android:id="@+id/sign_up_dummy_image"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.335"
-            app:srcCompat="@drawable/ic_baseline_perm_identity_24" />
+            app:layout_constraintVertical_bias="0.35"
+            app:srcCompat="@drawable/ic_perm_identity" />
 
         <TextView
             android:id="@+id/sign_up_dummy_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Sign up for an account"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:fontFamily="@font/cabin_medium"
+            android:text="@string/sign_up_for_an_account"
             app:layout_constraintBottom_toTopOf="@+id/sign_up_btn"
             app:layout_constraintEnd_toEndOf="@+id/sign_up_dummy_image"
             app:layout_constraintStart_toStartOf="@+id/sign_up_dummy_image"
@@ -64,7 +65,7 @@
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:background="@color/pinkBtnBackground"
+            app:backgroundTint="@color/pinkBtnBackground"
             android:fontFamily="sans-serif-medium"
             android:text="Sign Up"
             android:textAllCaps="false"
