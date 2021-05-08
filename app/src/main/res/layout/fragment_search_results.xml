@@ -1,8 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/exit_search_page_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_back" />
+
+    <EditText
+        android:id="@+id/search_query"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        tools:text="Name"
+        android:textColor="@color/dark_black"
+        android:drawableStart="@drawable/ic_search"
+        android:paddingStart="@dimen/_6sdp"
+        android:drawablePadding="@dimen/_6sdp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/exit_search_page_btn"
+        app:layout_constraintEnd_toStartOf="@+id/button3"
+        app:layout_constraintStart_toEndOf="@+id/exit_search_page_btn"
+        app:layout_constraintTop_toTopOf="@+id/exit_search_page_btn" />
+
+    <TextView
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="@dimen/_6sdp"
+        android:gravity="center"
+        android:textColor="@color/pinkBtnBackground"
+        android:fontFamily="@font/cabin"
+        android:text="@string/search"
+        app:backgroundTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/search_query"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

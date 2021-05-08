@@ -18,17 +18,23 @@
         <variable
             name="isVideoLiked"
             type="LiveData&lt;Boolean&gt;" />
+        <variable
+            name="remoteVideo"
+            type="com.andre_max.tiktokclone.models.video.RemoteVideo" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layoutDescription="@xml/large_video_motion_scene"
         android:background="@color/dark_black">
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/simpleExoPlayerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:use_controller="false"
+            app:resize_mode="fill"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +62,7 @@
             android:layout_marginEnd="@dimen/_36sdp"
             android:layout_marginBottom="@dimen/_16sdp"
             android:fontFamily="@font/cabin"
+            android:text="@{remoteVideo.description}"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toStartOf="@+id/share_video_btn"
@@ -89,6 +96,7 @@
             android:layout_height="@dimen/_36sdp"
             android:layout_marginBottom="@dimen/_36sdp"
             app:layout_constraintBottom_toTopOf="@+id/open_comment_section_btn"
+            app:changeVideoLikedIcon="@{isVideoLiked}"
             app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
             app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
             app:srcCompat="@drawable/heart"
@@ -111,7 +119,8 @@
             android:layout_width="@dimen/_24sdp"
             android:layout_height="@dimen/_24sdp"
             android:padding="@dimen/_4sdp"
-            app:changeVisibility="@{isFollowingAuthor == false}"
+            app:backgroundTint="@android:color/white"
+            app:changeVisibility="@{isFollowingAuthor == true}"
             app:layout_constraintBottom_toBottomOf="@+id/author_icon"
             app:layout_constraintEnd_toEndOf="@+id/author_icon"
             app:layout_constraintStart_toStartOf="@+id/author_icon"
@@ -124,7 +133,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/cabin"
+            app:formatVideoCount="@{(int) remoteVideo.likes}"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
             app:layout_constraintStart_toStartOf="@+id/like_video_icon"
@@ -136,7 +146,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/cabin"
+            app:formatVideoCount="@{(int) remoteVideo.totalCommentsSize}"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
             app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
@@ -163,8 +174,8 @@
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="@dimen/_1sdp"
-            android:layout_marginBottom="@dimen/_50sdp"
-            android:background="?android:attr/listDivider"
+            android:layout_marginBottom="@dimen/_45sdp"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -175,13 +186,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/_65sdp"
-            android:background="@drawable/comment_layout_background"
-            android:visibility="gone"
+            app:shapeAppearance="@style/topCornered"
+            app:cardBackgroundColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -265,5 +276,5 @@
                     app:layout_constraintTop_toBottomOf="@+id/total_comments" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

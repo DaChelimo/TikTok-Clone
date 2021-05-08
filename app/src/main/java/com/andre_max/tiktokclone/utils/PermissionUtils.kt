@@ -3,7 +3,7 @@ package com.andre_max.tiktokclone.utils
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AlertDialog
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.andre_max.tiktokclone.R
 import com.karumi.dexter.Dexter
@@ -42,34 +42,23 @@ object PermissionUtils {
     }
 
     class DialogMultiplePermissionsListener(
-        val context: Context,
+        val view: View,
         val onPermissionsGranted: () -> Unit,
         val onPermissionsDenied: () -> Unit
     ) : BaseMultiplePermissionsListener() {
+        val context: Context = view.context
 
         override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
             Timber.d("it.areAllPermissionsGranted() is ${report?.areAllPermissionsGranted()} and permissions denied is ${report?.deniedPermissionResponses}")
 
-            report?.let {
-                if (it.areAllPermissionsGranted()) {
-                    ResUtils.showToast(context, R.string.all_permissions_granted)
-                    onPermissionsGranted()
-                } else {
-                    val alertDialog = AlertDialog.Builder(context)
-                        .setTitle(context.getString(R.string.record_permissions_title))
-                        .setMessage(context.getString(R.string.record_permissions_description))
-                        .setPositiveButton(context.getString(R.string.accept)) { _, _ ->
-                            requestPermissions(context, this, recordVideoPermissions)
-                        }
-                        .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
-                            ResUtils.showToast(context, R.string.permissions_denied)
-                            onPermissionsDenied()
-                        }
-                        .create()
-
-                    alertDialog.show()
-                }
+            if (report?.areAllPermissionsGranted() == true) {
+                ResUtils.showSnackBar(view, R.string.all_permissions_granted)
+                onPermissionsGranted()
+            } else {
+                ResUtils.showSnackBar(view, R.string.permissions_denied)
+                onPermissionsDenied()
             }
         }
     }
+
 }

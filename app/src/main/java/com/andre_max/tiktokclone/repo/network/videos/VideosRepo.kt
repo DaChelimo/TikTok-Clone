@@ -4,20 +4,18 @@ import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.repo.network.tag.TagRepo
 import com.andre_max.tiktokclone.repo.network.utils.FirePath
-import com.andre_max.tiktokclone.repo.network.utils.forceValue
 import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import java.util.*
 
 class VideosRepo {
     private val realFire = Firebase.database
-    private val tagRepo = TagRepo(
-
-    )
+    private val tagRepo = TagRepo()
     private val firePath = FirePath()
 
     /**
@@ -25,11 +23,14 @@ class VideosRepo {
      * @return A custom result containing a list of {@link [com.andre_max.tiktokclone.models.video.RemoteVideo]}
      */
     suspend fun fetchRandomVideos() = safeAccess {
-        realFire.getReference("videos")
+        // TODO: Change the keepSynced in order to store the freshest data within a gap of 5 MB.
+        realFire.getReference("videos").also { it.keepSynced(true) }
             .limitToFirst(12)
             .get()
             .await()
-            .forceValue<List<RemoteVideo>>()
+            .getValue<Map<String, RemoteVideo>>()
+            ?.values
+            ?.toList() ?: listOf()
     }
 
     suspend fun fetchVideo(videoId: String) = safeAccess {
@@ -72,6 +73,7 @@ class VideosRepo {
         val videoRef = realFire
             .getReference(firePath.getAllVideosPath())
             .child(videoId)
+            .child("likes")
 
         val authorTotalLikesCountRef = realFire
             .getReference(firePath.getUserInfo(authorId))
@@ -103,18 +105,20 @@ class VideosRepo {
             .getReference(firePath.getUserVideos(uid ?: "", videoType))
             .get()
             .await()
-            .getValue<List<String>>()
+            .getValue<Map<String, String>>()
+            ?.values
+            ?.toList() ?: listOf()
 
         val allVideos = realFire.getReference(firePath.getAllVideosPath())
-        listOfUserVideoId?.map { videoId ->
+        listOfUserVideoId.map { videoId ->
             allVideos.child(videoId).get().await().getValue<RemoteVideo>()
-        } ?: listOf()
+        }
     }
 
     private fun getRemoteVideoFromLocalVideo(
         videoUrl: String,
         descriptionText: String,
-        tags: List<String>,
+        tags: Map<String, String>,
         duration: Long?
     ) =
         RemoteVideo(
@@ -134,19 +138,25 @@ class VideosRepo {
         isPrivate: Boolean,
         videoUrl: String,
         descriptionText: String,
-        tags: List<String>,
-        duration: Long?
-    ) = safeAccess {
-        val videoType = if (isPrivate) VideoType.PRIVATE else VideoType.PUBLIC
-        val remoteVideo = getRemoteVideoFromLocalVideo(videoUrl, descriptionText, tags, duration)
+        tags: Map<String, String>,
+        duration: Long?,
+        onComplete: (Boolean) -> Unit
+    ) {
+        try {
+            val videoType = if (isPrivate) VideoType.PRIVATE else VideoType.PUBLIC
+            val remoteVideo =
+                getRemoteVideoFromLocalVideo(videoUrl, descriptionText, tags, duration)
 
-        if (!isPrivate) {
-            makeVideoPublic(remoteVideo)
+            if (!isPrivate) {
+                makeVideoPublic(remoteVideo)
+            }
+            saveVideoToMyAccount(videoType, remoteVideo)
+            tagRepo.saveTagsInVideo(tags.values, remoteVideo.videoId)
+            onComplete(true)
+        } catch (e: Exception) {
+            Timber.e(e)
+            onComplete(false)
         }
-        saveVideoToMyAccount(videoType, remoteVideo)
-        tagRepo.saveTagsInVideo(tags, remoteVideo.videoId)
-
-        return@safeAccess remoteVideo
     }
 
     // Saves the video to my profile
@@ -164,11 +174,10 @@ class VideosRepo {
     private suspend fun makeVideoPublic(
         remoteVideo: RemoteVideo
     ) {
-            realFire
-                .getReference(firePath.getAllVideosPath())
-                .child(remoteVideo.videoId)
-                .setValue(remoteVideo)
-                .await()
+        realFire
+            .getReference(firePath.getAllVideosPath())
+            .child(remoteVideo.videoId).setValue(remoteVideo)
+            .await()
     }
 
 }

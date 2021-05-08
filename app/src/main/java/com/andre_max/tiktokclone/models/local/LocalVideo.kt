@@ -8,13 +8,13 @@ import kotlinx.parcelize.Parcelize
  * This class is required since some of the parameters in {@link [com.andre_max.tiktokclone.models.video.RemoteVideo]}
  * are either unnecessary or impractical.
  *
- * @param url a url giving the path to the video file
+ * @param filePath a url giving the path to the video file
  * @param duration a string representing the duration of the video
  * @param dateCreated a string representing when the video file was created to facilitate ordering based on data created
  */
 @Parcelize
 data class LocalVideo(
-    var url: String?,
+    var filePath: String?,
     val duration: Long?,
     val dateCreated: String?
 ): Parcelable

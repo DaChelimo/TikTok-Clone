@@ -7,9 +7,11 @@ import androidx.navigation.fragment.findNavController
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.FragmentEnterCodeBinding
 import com.andre_max.tiktokclone.userVerificationId
+import com.andre_max.tiktokclone.utils.KeyboardUtils
 import com.andre_max.tiktokclone.utils.ResUtils
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import timber.log.Timber
 
 class EnterCodeFragment : Fragment(R.layout.fragment_enter_code) {
 
@@ -22,14 +24,18 @@ class EnterCodeFragment : Fragment(R.layout.fragment_enter_code) {
 
         binding.signUpBtn.setOnClickListener {
             if (codeView.code.length != codeView.codeLength) {
-                ResUtils.showToast(requireContext(), R.string.code_invalid)
+                ResUtils.showSnackBar(requireView(), R.string.code_invalid)
                 codeView.clearCode()
-            } else getUserCredential(codeView.code)
+            } else {
+                KeyboardUtils.hide(requireView())
+                getUserCredential(codeView.code)
+            }
         }
 
     }
 
     private fun getUserCredential(code: String) {
+        Timber.d("verificationId is $userVerificationId and code is $code")
         val credential =
             PhoneAuthProvider.getCredential(userVerificationId.toString(), code) as AuthCredential
 

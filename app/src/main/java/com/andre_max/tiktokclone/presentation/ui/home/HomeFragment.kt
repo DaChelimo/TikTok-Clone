@@ -2,59 +2,71 @@ package com.andre_max.tiktokclone.presentation.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.FragmentHomeBinding
-import com.andre_max.tiktokclone.presentation.exoplayer.Player
-import com.andre_max.tiktokclone.presentation.ui.home.each_remote_video_group.LargeVideoGroup
+import com.andre_max.tiktokclone.models.video.RemoteVideo
+import com.andre_max.tiktokclone.presentation.ui.home.large_video_group.LargeVideoGroup
+import com.andre_max.tiktokclone.utils.BottomNavViewUtils
+import com.andre_max.tiktokclone.utils.ViewUtils
+import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
-    private lateinit var recyclerView: RecyclerView
-    private var currentPlayer: Player? = null
+class HomeFragment : BaseFragment(R.layout.fragment_home) {
+    private lateinit var binding: FragmentHomeBinding
 
-    private val viewModel: HomeViewModel by viewModels()
+    override val viewModel by viewModels<HomeViewModel>()
     private val snapHelper = PagerSnapHelper()
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycle.addObserver(HomeLifecycleCallback(requireActivity(), currentPlayer))
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView(FragmentHomeBinding.bind(view))
-        setLiveData()
+        setUpRecyclerView()
     }
 
-    private fun setLiveData() {
+    override fun setUpLayout() {
+        binding = FragmentHomeBinding.bind(requireView())
+    }
+
+    override fun setUpLiveData() {
         viewModel.listOfRemoteVideo.observe(viewLifecycleOwner) { listOfRemoteVideo ->
-            listOfRemoteVideo?.forEach { remoteVideo ->
-                val eachRemoteVideoGroup = LargeVideoGroup(
+            Timber.d("listOfRemoteVideo is List<RemoteVideo> is ${listOfRemoteVideo is List<RemoteVideo>}")
+            val listOfGroup = listOfRemoteVideo?.map { remoteVideo ->
+                val largeVideoGroup = LargeVideoGroup(
+                    scope = lifecycleScope,
+                    lifecycleOwner = viewLifecycleOwner,
                     userRepo = viewModel.userRepo,
+                    commentRepo = viewModel.commentRepo,
+                    videosRepo = viewModel.videosRepo,
                     remoteVideo = remoteVideo,
-                    onClick = { player ->
-                        currentPlayer = player
+                    onPersonIconClicked = { uid ->
+                        findNavController().navigate(
+                            HomeFragmentDirections
+                                .actionHomeFragmentToProfileWithAccountFragment(uid)
+                        )
                     },
                     onVideoEnded = {
                         scrollDownToNextVideo(groupAdapter.getAdapterPosition(it))
                     }
                 )
 
-                groupAdapter.add(eachRemoteVideoGroup)
-            }
+                largeVideoGroup
+            } ?: listOf()
+
+            groupAdapter.addAll(listOfGroup)
+            Timber.d("groupAdapter.size is ${groupAdapter.itemCount}")
         }
     }
 
-    private fun setUpRecyclerView(binding: FragmentHomeBinding) {
-        recyclerView = binding.recyclerView.also {
+    private fun setUpRecyclerView() {
+        binding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(context)
             it.adapter = groupAdapter
             it.addOnScrollListener(homeScrollListener)
@@ -63,7 +75,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun scrollDownToNextVideo(currentPosition: Int) {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager
         layoutManager.scrollToPosition(currentPosition + 1)
     }
 
@@ -83,6 +95,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("Lifecycle Callbacks: onStart() called")
+    }
+    override fun onResume() {
+        super.onResume()
+        BottomNavViewUtils.showBottomNavBar(activity)
+        ViewUtils.changeStatusBarIcons(requireActivity(), isWhite = true)
+        ViewUtils.changeStatusBarColor(requireActivity(), android.R.color.transparent)
+        ViewUtils.changeSystemNavigationBarColor(requireActivity(), android.R.color.transparent)
+        Timber.d("Lifecycle Callbacks: onResume() called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.d("Lifecycle Callbacks: onPause() called")
+    }
+    override fun onStop() {
+        super.onStop()
+        Timber.d("Lifecycle Callbacks: onStop() called")
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("Lifecycle Callbacks: onDestroy() called")
     }
 }

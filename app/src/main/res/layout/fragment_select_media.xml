@@ -10,26 +10,28 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        tools:context=".presentation.ui.upload.select_media.SelectMediaFragment">
 
         <ImageView
             android:id="@+id/close_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/close"
             android:padding="@dimen/_6sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_round_close" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/select_media_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="All"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/cabin_medium"
+            android:text="@string/all"
             android:textColor="@color/dark_black"
-            android:textSize="20sp"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,26 +48,26 @@
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
+                android:layout_marginStart="@dimen/_8sdp"
                 android:fontFamily="sans-serif-condensed"
-                android:text="You can select either videos or photos"
+                android:text="@string/you_can_select_either_videos_or_photos"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/pinkBtnBackground"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_6sdp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Next"
+                android:text="@string/next"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
+                app:backgroundTint="@color/pinkBtnBackground"
+                app:cornerRadius="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -75,7 +77,6 @@
             android:id="@+id/view_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,104 +86,26 @@
             android:id="@+id/tab_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/select_media_title"
             app:tabBackground="@color/tw__solid_white"
-            app:tabTextColor="@color/light_black"
             app:tabSelectedTextColor="@color/dark_black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6">
+            app:tabTextAppearance="@style/TabAppearance"
+            app:tabTextColor="@color/light_black">
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/images_tab"
+                android:id="@+id/local_images_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Images" />
+                android:text="@string/images" />
 
             <com.google.android.material.tabs.TabItem
-                android:id="@+id/videos_tab"
+                android:id="@+id/local_videos_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Videos" />
-
+                android:text="@string/videos" />
         </com.google.android.material.tabs.TabLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/permissions_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="45dp"
-            android:layout_marginEnd="45dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tab_layout"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Unable to record. Please try the following:"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="sans-serif"
-                android:text="1. Video recording permission is not enabled: allow camera and microphone access under app permission settings."
-                app:layout_constraintEnd_toEndOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="2. Another app may be using your camera apps or restart your device and try again."
-                app:layout_constraintEnd_toEndOf="@+id/textView2"
-                app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="3. If your device is using Android 6.0 or above, please enable permissions for external storage."
-                app:layout_constraintEnd_toEndOf="@+id/textView4"
-                app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-            <Button
-                android:id="@+id/grant_permissions_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:background="@android:color/transparent"
-                android:text="Grant permissions"
-                android:textColor="#151111"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!--    <androidx.recyclerview.widget.RecyclerView-->
-        <!--        android:layout_width="0dp"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent" />-->
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

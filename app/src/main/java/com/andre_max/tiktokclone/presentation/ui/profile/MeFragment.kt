@@ -17,7 +17,15 @@ class MeFragment : Fragment(R.layout.fragment_me) {
         requireActivity().supportFragmentManager.beginTransaction()
             .add(
                 R.id.frag_container,
-                if (Firebase.auth.currentUser == null) ProfileWithoutAccountFragment() else ProfileWithAccountFragment()
+                if (Firebase.auth.currentUser == null)
+                    ProfileWithoutAccountFragment()
+                else
+                    //  Since we are retrieving the uid in ProfileWithAccountFragment using by navArgs(), lets include this bundle
+                    ProfileWithAccountFragment().apply {
+                        arguments = Bundle().also {
+                            it.putString("uid", Firebase.auth.uid)
+                        }
+                    }
             )
             .commit()
     }

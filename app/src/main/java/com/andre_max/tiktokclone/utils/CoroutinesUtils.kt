@@ -16,4 +16,3 @@ inline fun <T> T.runAsync(
 suspend inline fun <T, A> T.letAsync(
     crossinline lambda: suspend T.() -> A
 ) = lambda(this@letAsync)
-

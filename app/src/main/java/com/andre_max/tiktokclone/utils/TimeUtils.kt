@@ -5,12 +5,11 @@ import java.util.concurrent.TimeUnit
 
 object TimeUtils {
 
-    fun convertTimeToDisplayTime(timeInMillis: String): String {
-        val longTime = timeInMillis.toLong()
+    fun convertTimeToDisplayTime(timeInMillis: Long): String {
         val time = String.format("%d:%d",
-            TimeUnit.MILLISECONDS.toMinutes(longTime),
-            TimeUnit.MILLISECONDS.toSeconds(longTime) -
-                    TimeUnit.MINUTES.toSeconds((TimeUnit.MILLISECONDS.toMinutes(longTime)))
+            TimeUnit.MILLISECONDS.toMinutes(timeInMillis),
+            TimeUnit.MILLISECONDS.toSeconds(timeInMillis) -
+                    TimeUnit.MINUTES.toSeconds((TimeUnit.MILLISECONDS.toMinutes(timeInMillis)))
         )
         Timber.d("TimeInMillis is $timeInMillis and time is $time")
         return time

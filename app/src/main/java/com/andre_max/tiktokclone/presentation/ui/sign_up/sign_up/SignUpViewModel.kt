@@ -3,7 +3,7 @@ package com.andre_max.tiktokclone.presentation.ui.sign_up.sign_up
 import androidx.lifecycle.LiveData
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.repo.network.auth.AuthRepo
-import com.andre_max.tiktokclone.utils.viewModel.BaseViewModel
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth

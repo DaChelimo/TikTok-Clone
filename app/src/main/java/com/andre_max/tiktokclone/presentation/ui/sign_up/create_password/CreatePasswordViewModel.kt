@@ -4,18 +4,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 
-class CreatePasswordViewModel : ViewModel() {
+class CreatePasswordViewModel : BaseViewModel() {
 
     val passwordInput = MutableLiveData("")
-    val errorText = MutableLiveData("")
+    val livePasswordStatus = MutableLiveData<Int>()
+
+    val isValid = Transformations.map(livePasswordStatus) { status ->
+        status == R.string.valid_password
+    }
 
     private var _navigate = MutableLiveData<Boolean>()
     val navigate: LiveData<Boolean> = _navigate
-
-    private var _snackBarMessage = MutableLiveData<String>()
-    val snackBarMessage: LiveData<String> = _snackBarMessage
 
     val passwordTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -29,16 +33,15 @@ class CreatePasswordViewModel : ViewModel() {
                 else if (it.isDigit()) hasDigit = true
             }
 
-            if (passwordInput.value.toString().length >= 8 && hasCharacter && hasDigit) {
-                errorText.value = "Valid password"
-            } else {
-                errorText.value = if (hasCharacter && !hasDigit) {
-                    "Password must contain at least one digit"
-                } else if (!hasCharacter && hasDigit) {
-                    "Password must contain at least one character"
-                } else {
-                    "Password must contain at least one character and one digit"
-                }
+            livePasswordStatus.value = when  {
+                // Complete password
+                passwordInput.value.toString().length >= 8 && hasCharacter && hasDigit -> R.string.valid_password
+                // Lacks digit
+                hasCharacter && !hasDigit -> R.string.needs_one_digit
+                // Lacks character
+                !hasCharacter && hasDigit -> R.string.needs_one_character
+                // Lacks both
+                else -> R.string.needs_both_digit_and_character
             }
         }
 
@@ -54,18 +57,13 @@ class CreatePasswordViewModel : ViewModel() {
             else if (it.isDigit()) hasDigit = true
         }
 
-        if (passwordInput.value.toString().length < 8 || !hasCharacter || !hasDigit) {
-            _snackBarMessage.value = "Invalid password"
-            return
-        }
+        if (passwordInput.value.toString().length < 8 || !hasCharacter || !hasDigit)
+            showMessage(R.string.invalid_password)
+        else
+            _navigate.value = true
     }
 
     fun resetLiveNavigate() {
         _navigate.value = false
     }
-
-    fun resetLiveSnackBarMessage() {
-        _snackBarMessage.value = ""
-    }
-
 }

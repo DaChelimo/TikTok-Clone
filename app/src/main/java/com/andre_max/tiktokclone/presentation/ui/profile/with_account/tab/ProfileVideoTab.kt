@@ -2,49 +2,62 @@ package com.andre_max.tiktokclone.presentation.ui.profile.with_account.tab
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.databinding.FragmentMyPublicVideosBinding
+import com.andre_max.tiktokclone.databinding.ProfileVideoTabBinding
+import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.presentation.ui.components.video.SmallVideoGroup
+import com.andre_max.tiktokclone.presentation.ui.profile.with_account.ProfileWithAccountFragmentDirections
+import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
-class ProfileVideoTab : Fragment(R.layout.fragment_my_public_videos) {
+class ProfileVideoTab : BaseFragment(R.layout.profile_video_tab) {
 
-    lateinit var binding: FragmentMyPublicVideosBinding
+    lateinit var binding: ProfileVideoTabBinding
     lateinit var profileUid: String
     lateinit var videoType: VideoType
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-    private val viewModel by viewModels<ProfileVideoViewModel>()
+    override val viewModel by viewModels<ProfileVideoViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpLayout()
-        setUpLiveData()
         viewModel.fetchVideos(profileUid, videoType)
     }
 
-    private fun setUpLayout() {
+    override fun setUpLayout() {
+        binding = ProfileVideoTabBinding.bind(requireView())
         binding.publicVideosRecyclerview.apply {
             layoutManager = GridLayoutManager(requireContext(), 3)
             adapter = groupAdapter
         }
     }
 
-
-    private fun setUpLiveData() {
+    override fun setUpLiveData() {
         viewModel.listOfRemoteVideo.observe(viewLifecycleOwner) { listOfRemoteVideo ->
             listOfRemoteVideo?.forEach { remoteVideo ->
-                val smallVideoGroup = SmallVideoGroup(remoteVideo) {
-//                   Navigate: ProfileWithAccount
-                }
+                val smallVideoGroup = SmallVideoGroup(
+                    remoteVideo = remoteVideo,
+                    onClickListener = { navigateToLargeVideo(remoteVideo) }
+                ) { removeGroup(it) }
                 groupAdapter.add(smallVideoGroup)
             }
         }
+    }
+
+    private fun navigateToLargeVideo(remoteVideo: RemoteVideo) {
+        findNavController().navigate(
+            ProfileWithAccountFragmentDirections
+                .actionProfileWithAccountFragmentToLargeVideoFragment(remoteVideo)
+        )
+    }
+
+    private fun removeGroup(smallVideoGroup: SmallVideoGroup) {
+        groupAdapter.remove(smallVideoGroup)
     }
 
     companion object {

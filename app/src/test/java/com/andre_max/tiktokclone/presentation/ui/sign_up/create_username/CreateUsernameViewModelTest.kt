@@ -2,7 +2,7 @@ package com.andre_max.tiktokclone.presentation.ui.sign_up.create_username
 
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.fakes.repo.network.user.FakeNameRepo
-import com.andre_max.tiktokclone.utils.CoroutineTestRule
+import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -36,7 +36,7 @@ class CreateUsernameViewModelTest {
     @Test
     fun checkUsernameIsValid_withSpace_returnsSpaceRes() = runBlockingTest {
         viewModel.liveUsername.value = "Andrew Chelix"
-        assertThat(viewModel.checkUsernameIsValid()).isEqualTo(R.string.contains_spaces)
+        assertThat(viewModel.checkUsernameIsValid()).isEqualTo(R.string.name_contains_spaces)
     }
 
     @Test

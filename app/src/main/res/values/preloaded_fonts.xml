@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/advent_pro_medium</item>
+        <item>@font/advent_pro_semibold</item>
+        <item>@font/arimo</item>
         <item>@font/cabin</item>
         <item>@font/cabin_medium</item>
+        <item>@font/cabin_semibold</item>
         <item>@font/roboto</item>
         <item>@font/roboto_medium</item>
     </array>

@@ -22,6 +22,9 @@ object ResUtils {
     fun showToast(context: Context, @StringRes messageRes: Int, @ToastDuration duration: Int = Toast.LENGTH_SHORT) =
         showToast(context, context.getString(messageRes), duration)
 
+    fun showSnackBar(view: View, @StringRes messageRes: Int, @SnackBarDuration duration: Int = Snackbar.LENGTH_SHORT) =
+        showSnackBar(view, view.resources.getString(messageRes), duration)
+
     fun showSnackBar(view: View, message: String, @SnackBarDuration duration: Int = Snackbar.LENGTH_SHORT) =
         Snackbar.make(view, message, duration)
             .setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE)

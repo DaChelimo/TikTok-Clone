@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.andre_max.tiktokclone.R
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -18,63 +21,97 @@ import timber.log.Timber
 
 class Player(
     private val simpleExoplayerView: PlayerView,
+    private val playBtn: ImageView,
     private val context: Context,
     private val url: String?,
-    private val onVideoEnded: () -> Unit
-) {
-
-    private var currentWindow = 0
+    private val onVideoEnded: (com.andre_max.tiktokclone.presentation.exoplayer.Player) -> Unit
+): LifecycleObserver {
     private var playbackPosition = 0L
-    private var isPlaying = false
     private var simpleExoPlayer: SimpleExoPlayer? = null
 
-    fun startOrResumePlayer() {
-        simpleExoplayerView.setControllerVisibilityListener { visibility ->
-            simpleExoplayerView.hideController()
-            Timber.d("visibility is $visibility")
-            simpleExoplayerView.controllerAutoShow = false
-            simpleExoplayerView.controllerShowTimeoutMs = 1
-            simpleExoplayerView.controllerHideOnTouch = true
+    private var isCreated = false
+    private var isPlaying = false
+
+    fun init() {
+        Timber.d("Player.init has been called")
+        createPlayer()
+
+        simpleExoplayerView.setOnClickListener {
+            Timber.d("isCreated is $isCreated and isPlaying is $isPlaying")
+            if (isCreated) {
+                if (isPlaying) {
+                    pausePlayer()
+                    playBtn.visibility = View.VISIBLE
+                } else {
+                    resumePlayer()
+                    playBtn.visibility = View.GONE
+                }
+            }
         }
 
-        if (simpleExoPlayer == null) {
-            Timber.d("Player is null")
-            Timber.d("current window is $currentWindow and playback position is $playbackPosition")
+        playBtn.setOnClickListener {
+            resumePlayer()
+        }
+    }
+
+    private fun createPlayer() {
+        Timber.d("Creating player")
+        isCreated = true
+
+        simpleExoPlayer = SimpleExoPlayer.Builder(context)
+            .setUseLazyPreparation(true)
+            .build()
+
+        simpleExoPlayer?.addListener(playerListener)
+        simpleExoPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(url)))
+
+        simpleExoplayerView.player = simpleExoPlayer
+        simpleExoplayerView.setShutterBackgroundColor(Color.TRANSPARENT)
+        simpleExoplayerView.requestFocus()
+
+        simpleExoPlayer?.prepare()
+        resumePlayer()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun resumePlayer() {
+        if (isCreated && !isPlaying) {
+            Timber.d("Resuming player")
             isPlaying = true
-            initPlayer()
-        } else {
-            Timber.d("player is not null")
-            isPlaying = true
-            simpleExoPlayer?.seekTo(0, playbackPosition)
-            simpleExoPlayer?.playWhenReady = true
+            playBtn.visibility = View.GONE
+            simpleExoPlayer?.seekTo(playbackPosition)
+            simpleExoPlayer?.play()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun pausePlayer() {
+        if (isCreated && isPlaying) {
+            isPlaying = false
+            playbackPosition = simpleExoPlayer!!.currentPosition
+            simpleExoPlayer?.pause()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun stopPlayer() {
+        if (isCreated) {
+            pausePlayer()
+            simpleExoPlayer?.release()
+            simpleExoPlayer = null
+            isCreated = false
         }
     }
 
     fun restartPlayer() {
-        playbackPosition = 0
-        startOrResumePlayer()
-    }
-
-    fun setUpPlayer(playBtn: ImageView) {
-        startOrResumePlayer()
-
-        simpleExoplayerView.setOnClickListener {
-            doPlayerChange(playBtn)
+        if (isCreated) {
+            playbackPosition = 0
+            isPlaying = true
+            simpleExoPlayer?.seekTo(0, playbackPosition)
+//            simpleExoPlayer?.playWhenReady = true
+            simpleExoPlayer?.play()
         }
     }
-
-    fun doPlayerChange(playBtn: ImageView) {
-        Timber.d("IsPlaying is $isPlaying")
-        if (isPlaying) {
-            pausePlayer()
-            playBtn.visibility = View.VISIBLE
-        } else {
-            startOrResumePlayer()
-            playBtn.visibility = View.GONE
-        }
-        simpleExoplayerView.hideController()
-    }
-
 
     private val playerListener = object : Player.EventListener {
         override fun onPlayerError(error: ExoPlaybackException) {
@@ -92,59 +129,12 @@ class Player(
                 }
                 Player.STATE_ENDED -> {
                     Timber.d("State is ended")
-                    onVideoEnded()
+                    onVideoEnded(this@Player)
                 }
                 Player.STATE_IDLE -> {
                     Timber.d("State is idle")
                 }
-
             }
         }
     }
-
-    private fun initPlayer() {
-        simpleExoPlayer = SimpleExoPlayer.Builder(context)
-            .setUseLazyPreparation(true)
-            .build()
-        val mediaDataSourceFactory = DefaultDataSourceFactory(
-            context,
-            Util.getUserAgent(context, context.resources.getString(R.string.app_name))
-        )
-
-
-        val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory)
-            .createMediaSource( MediaItem.fromUri(Uri.parse(url)))
-
-        simpleExoplayerView.player = simpleExoPlayer
-
-        with(simpleExoPlayer ?: return) {
-            setMediaSource(mediaSource, playbackPosition)
-            playWhenReady = true
-//            repeatMode = SimpleExoPlayer.REPEAT_MODE_ALL
-            addListener(playerListener)
-        }
-
-        simpleExoplayerView.also {
-            it.setShutterBackgroundColor(Color.TRANSPARENT)
-            it.requestFocus()
-            it.player = simpleExoPlayer
-        }
-        Timber.d("After simpleExoplayerView.requestFocus called.")
-    }
-
-    fun pausePlayer() {
-        if (simpleExoPlayer != null) {
-            isPlaying = false
-            playbackPosition = simpleExoPlayer!!.currentPosition
-            currentWindow = simpleExoPlayer!!.currentWindowIndex
-            simpleExoPlayer?.playWhenReady = false
-        }
-    }
-
-    fun stopPlayer() {
-        pausePlayer()
-        simpleExoPlayer?.release()
-        simpleExoPlayer = null
-    }
-
 }

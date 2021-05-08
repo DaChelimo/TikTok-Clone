@@ -3,6 +3,7 @@ package com.andre_max.tiktokclone.repo.network.utils
 import com.andre_max.tiktokclone.models.TheResult.Companion.theError
 import com.andre_max.tiktokclone.models.TheResult.Companion.theSuccess
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ktx.getValue
 import timber.log.Timber
 
 /**
@@ -18,6 +19,15 @@ suspend fun <T> safeAccess(firebaseLambda: suspend () -> T) = try {
     theError(e)
 }
 
+//@Suppress("UNCHECKED_CAST")
+//fun <T> DataSnapshot?.getValue() = this?.value as? T
+inline fun <reified T> DataSnapshot?.forceValue() = this?.getValue<T>()!!
+
 @Suppress("UNCHECKED_CAST")
-fun <T> DataSnapshot?.getValue() = this?.value as? T
-fun <T> DataSnapshot?.forceValue() = getValue<T>()!!
+fun <T> DataSnapshot.getListValue() =
+    getValue<Map<String, T>>()?.values?.toList() ?: listOf()
+
+/*
+
+
+ */

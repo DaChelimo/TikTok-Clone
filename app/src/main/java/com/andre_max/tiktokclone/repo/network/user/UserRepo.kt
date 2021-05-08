@@ -1,28 +1,34 @@
 package com.andre_max.tiktokclone.repo.network.user
 
 import com.andre_max.tiktokclone.models.user.User
-import com.andre_max.tiktokclone.models.video.RemoteVideo
-import com.andre_max.tiktokclone.models.video.VideoType
-import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.andre_max.tiktokclone.repo.network.utils.FirePath
+import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class UserRepo {
     private val firePath = FirePath()
     private val realFire = Firebase.database
 
-    suspend fun getMyUserProfile() = getUserProfile(Firebase.auth.uid)
     suspend fun getUserProfile(uid: String?) = safeAccess {
-        realFire.getReference(firePath.getUserInfo(uid ?: ""))
+        Timber.d("uid is $uid")
+        val userProfile = realFire
+            .getReference(firePath.getUserInfo(uid ?: ""))
             .get()
+            .addOnCompleteListener {
+                val user = it.result.getValue<User>()
+                Timber.d("user is $user")
+            }
             .await()
             .getValue<User>()
+        Timber.d("userProfile is $userProfile")
+        userProfile
     }
 
     suspend fun addUserToDatabase(
@@ -61,7 +67,7 @@ class UserRepo {
         authorUid?.let {
             changeFollowCount(uid = myUid, field = FOLLOWING, shouldIncrease = shouldAddAuthor)
             val myFollowingRef = realFire.getReference(firePath.getMyFollowingPath())
-            myFollowingRef.child(authorUid).setValue(if(shouldAddAuthor) authorUid else null)
+            myFollowingRef.child(authorUid).setValue(if (shouldAddAuthor) authorUid else null)
         }
     }
 
@@ -70,30 +76,31 @@ class UserRepo {
 
         authorUid?.let {
             changeFollowCount(uid = authorUid, field = FOLLOWERS, shouldIncrease = shouldAddMe)
-            val authorFollowerRef = realFire.getReference(firePath.getOtherFollowerPath(authorUid))
-            authorFollowerRef.child(myUid).setValue(if(shouldAddMe) myUid else null)
+            val authorFollowerRef = realFire.getReference(firePath.getUserFollowerPath(authorUid))
+            authorFollowerRef.child(myUid).setValue(if (shouldAddMe) myUid else null)
         }
     }
 
     /**
-     * Increases or decreases either the my following count or the author's follower count
+     * Increases or decreases either the my following count or the author's follower count. This would have been two
+     * different functions but to reduce function count, let's use one.
      *
      * @param uid a uid referencing the account data to change
      * @param field indicates whether to change the followers module or the following module
      */
     private suspend fun changeFollowCount(uid: String, field: String, shouldIncrease: Boolean) {
-        val followingRef = realFire
-            .getReference(firePath.getUserInfo(uid))
+        val databaseReference = realFire
+            .getReference("users/$uid")
             .child(field)
 
-        var count = followingRef.get().await().getValue<Int>() ?: 0
+        var count = databaseReference.get().await().getValue<Int>() ?: 0
         if (shouldIncrease) count++ else count--
 
-        followingRef.setValue(count)
+        databaseReference.setValue(count)
     }
 
     companion object {
-        const val FOLLOWERS = "following"
+        const val FOLLOWERS = "followers"
         const val FOLLOWING = "following"
     }
 }

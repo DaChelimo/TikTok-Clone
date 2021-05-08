@@ -15,7 +15,7 @@ class StorageRepo {
 
     suspend fun uploadVideo(localVideoUri: Uri?) = safeAccess {
         val storageRef =
-            fireStorage.getReference("/videos/${Firebase.auth.uid}/${UUID.randomUUID()}")
+            fireStorage.getReference("videos/${Firebase.auth.uid}/${UUID.randomUUID()}")
 
         // If localVideoUri is null, the safe access will catch and log it
         val uploadTask = storageRef.putFile(localVideoUri!!).await()

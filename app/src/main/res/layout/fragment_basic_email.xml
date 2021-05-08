@@ -5,7 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.email_sign_up.BasicEmailViewModel"/>
+        <variable
+            name="viewModel"
+            type="BasicEmailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,18 +23,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_16sdp"
             android:background="@android:color/transparent"
             android:ems="10"
+            android:paddingTop="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:fontFamily="@font/cabin_medium"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
-            android:fontFamily="@font/cabin"
-            android:textColor="@color/light_black"
+            android:text="@={viewModel.liveEmail}"
+            android:textColor="@color/dark_black"
             android:textColorHint="@color/medium_grey"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="abc@gmail.com" />
 
         <View
             android:id="@+id/line"
@@ -48,63 +56,80 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/advent_pro_medium"
             android:text="@string/terms_of_services_email"
             app:layout_constraintEnd_toEndOf="@+id/email_input"
             app:layout_constraintStart_toStartOf="@+id/email_input"
             app:layout_constraintTop_toBottomOf="@+id/email_input" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/sign_up_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_24sdp"
-            android:background="@color/pinkBtnBackground"
             android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/_8sdp"
             android:text="@string/next"
+            android:onClick="@{() -> viewModel.proceedWithEmail()}"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:clickable="@{viewModel.isValid() == true}"
+            android:textColor="@{viewModel.isValid() == true ? @android:color/white : @color/light_black}"
+            app:cornerRadius="@dimen/_4sdp"
+            tools:backgroundTint="@color/grey_button_background"
             app:layout_constraintEnd_toEndOf="@+id/tos_text"
             app:layout_constraintStart_toStartOf="@+id/tos_text"
             app:layout_constraintTop_toBottomOf="@+id/tos_text" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/add_gmail_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@android:color/white"
-            app:cornerRadius="@dimen/_4sdp"
+            app:backgroundTint="@android:color/white"
             android:text="@string/gmail_com"
             android:textAllCaps="false"
+            android:fontFamily="@font/cabin_medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_12ssp"
+            app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintEnd_toStartOf="@+id/add_hotmail_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/add_hotmail_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@android:color/white"
+            app:backgroundTint="@android:color/white"
             app:cornerRadius="@dimen/_4sdp"
             android:text="@string/hotmail_com"
             android:textAllCaps="false"
+            android:fontFamily="@font/cabin_medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginStart="@dimen/_4sdp"
             app:layout_constraintEnd_toStartOf="@+id/add_outlook_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/add_gmail_btn"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/add_outlook_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@android:color/white"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@android:color/white"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
             app:cornerRadius="@dimen/_4sdp"
             android:text="@string/outlook_com"
             android:textAllCaps="false"
+            android:fontFamily="@font/cabin_medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_12ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/add_hotmail_btn"

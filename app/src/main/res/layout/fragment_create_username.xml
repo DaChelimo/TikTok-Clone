@@ -5,7 +5,8 @@
 
     <data>
 
-        <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.create_username.CreateUsernameViewModel"/>
+        <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.create_username.CreateUsernameViewModel" />
+
         <variable
             name="viewModel"
             type="CreateUsernameViewModel" />
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
-            android:fontFamily="@font/roboto_medium"
+            android:fontFamily="@font/cabin_medium"
             android:text="@string/sign_up"
             android:textColor="@color/dark_black"
             android:textSize="@dimen/_16ssp"
@@ -34,11 +35,11 @@
             android:id="@+id/skip_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:padding="@dimen/_6sdp"
+            android:fontFamily="@font/advent_pro_medium"
+            android:padding="@dimen/_8sdp"
             android:text="@string/skip"
             android:textColor="@color/medium_grey"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintBottom_toBottomOf="@+id/sign_up_plain_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/sign_up_plain_text" />
@@ -65,71 +66,67 @@
             app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
             app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/sign_up_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_24sdp"
-            android:layout_marginEnd="@dimen/_24sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:fontFamily="@font/cabin_medium"
+            android:paddingTop="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
             android:text="@string/sign_up"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/pinkBtnBackground"
+            app:layout_constraintEnd_toEndOf="@+id/username_layout"
             app:layout_constraintStart_toStartOf="@+id/create_username_description"
-            app:layout_constraintTop_toBottomOf="@+id/error_text"
-            style="@style/next_btn_style" />
+            app:layout_constraintTop_toBottomOf="@+id/live_status_text" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username_layout"
             android:layout_width="0dp"
-            app:boxStrokeErrorColor="@color/medium_red"
-            app:boxStrokeColor="@color/light_grey"
-            app:errorEnabled="@{viewModel.errorTextRes != null}"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/light_black"
-            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_12sdp"
+            android:hint="@string/username"
+            android:textColorHint="@color/light_black"
+            app:boxStrokeColor="@color/light_grey"
+            app:boxStrokeErrorColor="@color/medium_red"
+            app:errorEnabled="@{viewModel.errorTextRes != null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_username_description" >
+            app:layout_constraintTop_toBottomOf="@+id/create_username_description">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:text="@={viewModel.liveUsername}"
-            android:fontFamily="@font/roboto"
-            android:hint="@string/username"
-            android:inputType="textPersonName"
-            android:textColor="@color/dark_black"
-            android:textColorHint="@color/medium_grey"
-            android:textSize="@dimen/_14ssp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="@font/roboto"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.liveUsername}"
+                android:textColor="@color/dark_black"
+                android:textColorHint="@color/medium_grey"
+                android:textSize="@dimen/_14ssp"
+                app:backgroundTint="@android:color/white"
+                tools:text="andre_max" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/error_text"
+            android:id="@+id/live_status_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_12sdp"
-            tools:text="Include at least 2 characters in your username"
+            android:fontFamily="@font/advent_pro_medium"
             android:textColor="@color/medium_red"
+            android:textSize="@dimen/_14ssp"
             app:changeVisibility="@{viewModel.errorTextRes != null}"
             app:layout_constraintEnd_toEndOf="@+id/username_layout"
             app:layout_constraintStart_toStartOf="@+id/username_layout"
             app:layout_constraintTop_toBottomOf="@+id/username_layout"
+            tools:text="Include at least 2 characters in your username"
             tools:visibility="visible" />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:background="@color/light_grey"
-            app:layout_constraintEnd_toEndOf="@+id/username_layout"
-            app:layout_constraintStart_toStartOf="@+id/username_layout"
-            app:layout_constraintTop_toBottomOf="@+id/username_layout" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

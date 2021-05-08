@@ -5,42 +5,73 @@ import android.media.MediaPlayer
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.models.local.LocalRecordLocation
 import com.andre_max.tiktokclone.models.local.LocalVideo
 import com.andre_max.tiktokclone.repo.local.record.RecordVideoRepo
+import com.andre_max.tiktokclone.repo.local.utils.LocalSpaceRepo
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.VideoResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.FileDescriptor
 import kotlin.properties.Delegates
 
-class RecordVideoViewModel: ViewModel() {
+class RecordVideoViewModel : BaseViewModel() {
 
+    private val localSpaceRepo = LocalSpaceRepo()
     private val recordVideoRepo = RecordVideoRepo()
     private var timeCreated by Delegates.notNull<Long>()
     private var localRecordLocation: LocalRecordLocation? = null
-    
+
     private val _localVideo = MutableLiveData<LocalVideo>()
     val localVideo: LiveData<LocalVideo> = _localVideo
+
+    private val _showLittleSpace = MutableLiveData(false)
+    val showLittleSpace: LiveData<Boolean> = _showLittleSpace
 
     private val _hasRecordingStarted = MutableLiveData(false)
     val hasRecordingStarted: LiveData<Boolean> = _hasRecordingStarted
 
+    private val _isRecording = MutableLiveData(false)
+    val isRecording: LiveData<Boolean> = _isRecording
+
     /**
      * This function sets hasRecordingStarted to true and retrieves a new uri and its corresponding file descriptor
      */
-    fun takeVideo(context: Context): FileDescriptor? {
+    suspend fun startVideo(context: Context): FileDescriptor? {
+        if (!localSpaceRepo.hasEnoughSpace()) {
+            _showLittleSpace.value = true
+            return null
+        }
         _hasRecordingStarted.value = true
+        _isRecording.value = true
         timeCreated = System.currentTimeMillis()
 
         localRecordLocation = recordVideoRepo.getLocalRecordLocation(context, timeCreated)
         return localRecordLocation?.fileDescriptor
     }
 
+    fun resumeVideo() {
+        _isRecording.value = true
+    }
+
+    fun pauseVideo() {
+        _isRecording.value = false
+    }
+
     fun stopVideo(context: Context) {
-        _hasRecordingStarted.value = false
-        recordVideoRepo.stopVideo(context, localRecordLocation?.fileUri)
+        if (_hasRecordingStarted.value == true) {
+            _isRecording.value = false
+            _hasRecordingStarted.value = false
+
+            viewModelScope.launch {
+                recordVideoRepo.stopVideo(context)
+            }
+        }
     }
 
     fun getCameraListener(context: Context) = object : CameraListener() {
@@ -56,21 +87,30 @@ class RecordVideoViewModel: ViewModel() {
 
         override fun onVideoTaken(result: VideoResult) {
             super.onVideoTaken(result)
-            Timber.d("Video has been taken and result.size is ${result.size}")
+            Timber.d("Video has been taken. Result.contentUri ${localRecordLocation?.contentUri} and result.filePath is ${localRecordLocation?.filePath}")
 
-            val mediaPlayer = MediaPlayer.create(context, result.file.toUri())
-            val duration = mediaPlayer.duration
-            Timber.d("result.duration is $duration")
+            viewModelScope.launch {
+                val duration = getVideoDuration(context)
+                Timber.d("duration is $duration")
 
-            _localVideo.value = LocalVideo(
-                result.file.toUri().toString(),
-                duration.toLong(),
-                timeCreated.toString()
-            )
-
-            mediaPlayer.release()
+                _localVideo.value = LocalVideo(
+                    localRecordLocation?.filePath,
+                    duration?.toLong() ?: 0,
+                    timeCreated.toString()
+                )
+            }
         }
     }
 
+    suspend fun getVideoDuration(context: Context) = withContext(Dispatchers.IO) {
+        val mediaPlayer = MediaPlayer.create(context, localRecordLocation?.filePath?.toUri())
+        val duration = mediaPlayer?.duration
+        mediaPlayer?.release()
 
+        return@withContext duration
+    }
+
+    fun resetShowLittleLayout() {
+        _showLittleSpace.value = false
+    }
 }

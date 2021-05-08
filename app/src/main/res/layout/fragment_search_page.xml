@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.andre_max.tiktokclone.presentation.ui.search.search_page.SearchPageViewModel"/>
+        <variable
+            name="viewModel"
+            type="SearchPageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        tools:context=".presentation.ui.search.search_page.SearchPageFragment">
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:background="@drawable/search_btn_background"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="@dimen/_6sdp"
+            android:ems="10"
+            android:fontFamily="@font/cabin"
+            android:hint="@string/search"
+            android:inputType="textPersonName"
+            android:text="@={viewModel.liveQuery}"
+            android:textColor="@color/dark_black"
+            android:textColorHint="@color/light_black"
+            app:layout_constraintBottom_toBottomOf="@+id/back_btn"
+            app:layout_constraintEnd_toStartOf="@+id/search_btn"
+            app:layout_constraintStart_toEndOf="@+id/back_btn"
+            app:layout_constraintTop_toTopOf="@+id/back_btn"
+            tools:text="Jason" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/suggestions_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_input"
+            tools:listitem="@layout/search_suggestion" />
+
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:padding="@dimen/_6sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back"
+            android:contentDescription="@string/back_button" />
+
+        <TextView
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="@dimen/_6sdp"
+            android:text="@string/search"
+            android:textColor="@color/pinkBtnBackground"
+            app:layout_constraintBottom_toBottomOf="@+id/search_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/search_input" />
+
+        <ImageView
+            android:id="@+id/clear_search_query"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:padding="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/search_input"
+            app:layout_constraintEnd_toEndOf="@+id/search_input"
+            app:layout_constraintTop_toTopOf="@+id/search_input"
+            app:srcCompat="@drawable/ic_round_close"
+            app:tint="@color/light_black"
+            android:contentDescription="@string/clear_search_query" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

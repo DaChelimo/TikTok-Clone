@@ -3,9 +3,11 @@ package com.andre_max.tiktokclone.repo.network.auth
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.andre_max.tiktokclone.CLIENT_ID_TYPE_3
+import com.andre_max.tiktokclone.BuildConfig
 import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -42,7 +44,6 @@ class AuthRepo {
         private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
         fun doFacebookLogin(activity: Activity) {
-            loginManager.logInWithReadPermissions(activity, listOf("email"))
             loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
                     Timber.d("facebook:onSuccess:$loginResult")
@@ -55,10 +56,13 @@ class AuthRepo {
                 override fun onCancel() {
                     Timber.i("facebook:onCancel() called")
                 }
+
                 override fun onError(exception: FacebookException) {
                     Timber.e(exception)
                 }
             })
+
+            loginManager.logInWithReadPermissions(activity, listOf("email"))
         }
 
         fun handleFacebookOnResult(requestCode: Int, resultCode: Int, data: Intent?) =
@@ -68,23 +72,25 @@ class AuthRepo {
     inner class GoogleAuthRepo {
         private lateinit var googleSignInClient: GoogleSignInClient
 
-        fun doGoogleSignUp(context: Context) {
+        fun doGoogleSignUp(context: Context, launcher: ActivityResultLauncher<Intent>) {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(CLIENT_ID_TYPE_3)
+                .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .requestProfile()
                 .requestEmail()
                 .build()
 
             googleSignInClient = GoogleSignIn.getClient(context, gso)
-            context.startActivity(googleSignInClient.signInIntent)
+            launcher.launch(googleSignInClient.signInIntent)
         }
 
         fun handleGoogleOnResult(data: Intent?) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val account = task.getResult(ApiException::class.java)
+            val account = task?.getResult(ApiException::class.java)
             val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
 
-            liveGoogleAccount.value = account
+            Timber.d("middle of handleGoogleOnResult with credential is $credential")
+
+            liveGoogleAccount.value = account ?: return
             _liveCredential.value = credential
         }
     }
@@ -99,7 +105,7 @@ class AuthRepo {
          */
         suspend fun doTwitterSignUp(activity: Activity) {
             val authResult = getTwitterAuthResult(activity).await()
-
+            Timber.d("middle of doTwitterSignUp with authResult is $authResult")
             _liveCredential.value = authResult.credential
         }
 

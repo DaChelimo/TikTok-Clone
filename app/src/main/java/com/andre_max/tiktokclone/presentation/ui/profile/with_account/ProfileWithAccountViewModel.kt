@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.models.user.User
 import com.andre_max.tiktokclone.repo.network.user.UserRepo
-import com.andre_max.tiktokclone.utils.viewModel.BaseViewModel
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import kotlinx.coroutines.launch
 
 class ProfileWithAccountViewModel: BaseViewModel() {
@@ -16,7 +16,7 @@ class ProfileWithAccountViewModel: BaseViewModel() {
 
     fun fetchUser(profileUid: String) {
         viewModelScope.launch {
-            val user = userRepo.getUserProfile(profileUid).getData() ?: return@launch
+            val user = userRepo.getUserProfile(profileUid).tryData() ?: return@launch
             _profileUser.value = user
         }
     }

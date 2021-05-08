@@ -10,16 +10,16 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class RemoteVideo(
-    val url: String,
-    val description: String?,
-    val tags: List<String>,
-    val duration: Long,
-    val videoId: String,
-    val dateCreated: Long,
+    var url: String,
+    var description: String?,
+    var tags: Map<String, String>,
+    var duration: Long,
+    var videoId: String,
+    var dateCreated: Long,
     var likes: Long = 0,
     var views: Long = 0,
-    val authorUid: String,
+    var authorUid: String,
     var totalCommentsSize: Long = 0
 ) : Parcelable {
-    constructor() : this("", null, listOf(), -1, "", -1, -1, -1, "", -1)
+    constructor() : this("", null, mapOf(), -1, "", -1, -1, -1, "", -1)
 }

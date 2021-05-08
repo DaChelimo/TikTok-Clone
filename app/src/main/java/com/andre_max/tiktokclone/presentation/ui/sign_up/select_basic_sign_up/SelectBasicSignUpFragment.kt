@@ -39,7 +39,10 @@ class SelectBasicSignUpFragment : Fragment(R.layout.fragment_select_basic_sign_u
             it.registerOnPageChangeCallback(onPageChangedCallback)
         }
 
-        val tabConfigurationStrategy = TabLayoutMediator.TabConfigurationStrategy { tab, position -> Timber.d("tab is $tab and tab position is $position") }
+        val tabConfigurationStrategy = TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+            Timber.d("tab is $tab and tab position is $position")
+            tab.text = getString(if (position == 0) R.string.phone else R.string.email)
+        }
         TabLayoutMediator(binding.tabLayout, binding.basicViewpager, tabConfigurationStrategy).attach()
     }
 

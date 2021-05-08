@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.FragmentAgeBinding
 import com.andre_max.tiktokclone.models.CustomDate
-import com.google.android.material.snackbar.Snackbar
+import com.andre_max.tiktokclone.utils.ResUtils.showSnackBar
 import java.util.*
 
 class AgeFragment : Fragment() {
@@ -27,6 +28,8 @@ class AgeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.backBtn.setOnClickListener { findNavController().popBackStack() }
+
         binding.datePicker2.init(2018, 1, 23, dateChangedLambda)
         binding.datePicker2.maxDate = System.currentTimeMillis()
 
@@ -36,25 +39,18 @@ class AgeFragment : Fragment() {
         }
 
         binding.signUpBtn.setOnClickListener {
-            if (date.year > year - 9) {
-                Snackbar.make(
-                    it,
-                    "You are too young to have an account. Thanks for trying.",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            } else if (date.year < year - 150) {
-                Snackbar.make(it, "Enter valid year.", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
+            when {
+                date.year > year - 9 -> showSnackBar(requireView(), R.string.user_too_young)
+                date.year < year - 150 -> showSnackBar(requireView(), R.string.enter_valid_year)
+                else -> findNavController()
+                    .navigate(AgeFragmentDirections.actionAgeFragmentToSelectBasicSignUpFragment())
             }
-
-            findNavController().navigate(AgeFragmentDirections.actionAgeFragmentToBasicSignUpFragment())
         }
     }
 
     private val date = CustomDate(23, 1, 2018)
 
-    val dateChangedLambda =
+    private val dateChangedLambda =
         DatePicker.OnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
             date.date = dayOfMonth
             date.month = monthOfYear

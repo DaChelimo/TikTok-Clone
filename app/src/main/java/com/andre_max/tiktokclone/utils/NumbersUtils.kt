@@ -4,7 +4,7 @@ import timber.log.Timber
 
 object NumbersUtils {
 
-    fun formatTagCount(count: Int): String {
+    fun formatCount(count: Int): String {
         val stringCount = count.toString()
         Timber.d("count is $count")
         return when {

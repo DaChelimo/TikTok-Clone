@@ -5,14 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
-import com.andre_max.tiktokclone.repo.network.user.UserRepo
 import com.andre_max.tiktokclone.repo.network.videos.VideosRepo
-import com.andre_max.tiktokclone.utils.viewModel.BaseViewModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class ProfileVideoViewModel: BaseViewModel() {
     private val videosRepo = VideosRepo()
@@ -23,7 +18,7 @@ class ProfileVideoViewModel: BaseViewModel() {
     fun fetchVideos(profileUid: String, videoType: VideoType) {
         viewModelScope.launch {
             val result = videosRepo.getUserVideos(profileUid, videoType)
-            _listOfRemoteVideo.value = result.getData()?.filterNotNull()
+            _listOfRemoteVideo.value = result.tryData()?.filterNotNull()
         }
     }
 

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         tools:context=".presentation.ui.profile.with_account.ProfileWithAccountFragment">
 
 
@@ -43,20 +43,20 @@
             android:id="@+id/user_photo"
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"
+            tools:src="@drawable/white_person_icon"
             android:layout_marginTop="@dimen/_16sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line"
-            app:srcCompat="@drawable/white_person_icon" />
+            app:layout_constraintTop_toBottomOf="@+id/line" />
 
         <TextView
             android:id="@+id/user_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_6sdp"
-            android:fontFamily="@font/roboto_medium"
-            android:textColor="@color/light_grey"
-            android:textSize="16sp"
+            android:fontFamily="@font/cabin_medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="@+id/user_photo"
             app:layout_constraintStart_toStartOf="@+id/user_photo"
             app:layout_constraintTop_toBottomOf="@+id/user_photo"
@@ -174,15 +174,14 @@
             android:id="@+id/profile_tab_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:visibility="visible"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:theme="@style/TabAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_profile_btn"
             app:tabBackground="@android:color/white"
             app:tabSelectedTextColor="@color/dark_black"
-            app:tabTextColor="@color/light_black">
+            app:tabTextColor="@color/medium_grey">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

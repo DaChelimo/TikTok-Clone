@@ -21,13 +21,13 @@ class TimeUtilsTest {
 
     @Test
     fun `test convertTimeToDisplayTime`() {
-        assertThat(convertTimeToDisplayTime(testSeconds45.toString()))
+        assertThat(convertTimeToDisplayTime(testSeconds45.toLong()))
             .isEqualTo(resultSeconds45)
-        assertThat(convertTimeToDisplayTime(testMinutes30.toString()))
+        assertThat(convertTimeToDisplayTime(testMinutes30.toLong()))
             .isEqualTo(resultMinutes30)
-        assertThat(convertTimeToDisplayTime(testMinutes75.toString()))
+        assertThat(convertTimeToDisplayTime(testMinutes75.toLong()))
             .isEqualTo(resultMinutes75)
-        assertThat(convertTimeToDisplayTime(testHours2.toString()))
+        assertThat(convertTimeToDisplayTime(testHours2.toLong()))
             .isEqualTo(resultHours2)
     }
 

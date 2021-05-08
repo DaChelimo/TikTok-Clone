@@ -1,8 +1,9 @@
 package com.andre_max.tiktokclone.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.res.ColorStateList
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.presentation.MainActivity
 
@@ -12,25 +13,34 @@ object BottomNavViewUtils {
     fun hideBottomNavBar(activity: Activity?) = changeVisibility(activity, shouldShow = false)
 
     fun changeVisibility(activity: Activity?, shouldShow: Boolean) {
-        val bottomNavigationView = (activity as? MainActivity)?.navView
+        val bottomNavigationView = (activity as? MainActivity)?.binding?.navView
         bottomNavigationView?.visibility = if (shouldShow) View.VISIBLE else View.GONE
     }
 
-    fun changeBottomNavViewColor(activity: Activity?, colorConstant: Int?, useWhiteIcons: Boolean) {
+    /**
+     * Changes bottom nav color. When useWhiteIcons is true, the background should be transparent,
+     * the icons white and pink(selected). Otherwise, the background should be white,
+     * the icons dark and pink(selected)
+     *
+     * @param useWhiteBar changes navigation icon and background color
+     */
+    @SuppressLint("ResourceType")
+    fun changeNavBarColor(activity: Activity?, useWhiteBar: Boolean) {
         val navView = (activity as MainActivity).binding.navView
-        if (colorConstant == null)
-            navView.visibility = View.GONE
-        else {
-            val tintDrawableId =
-                if (useWhiteIcons) R.drawable.light_bottom_nav_bar
-                else R.drawable.dark_bottom_nav_bar
+        showBottomNavBar(activity)
 
-            val tintColor = ColorStateList.valueOf(tintDrawableId)
+        val backgroundRes =
+            if (useWhiteBar) R.drawable.light_bottom_nav_bar
+            else R.drawable.transparent_bottom_nav_bar
 
-            navView.visibility = View.VISIBLE
-            navView.setBackgroundColor(colorConstant)
-            navView.itemIconTintList = tintColor
-            navView.itemTextColor = tintColor
-        }
+        val iconRes =
+            if (useWhiteBar) R.drawable.dark_nav_icon_tint
+            else R.drawable.white_nav_icon_tint
+
+        val iconTint = ResourcesCompat.getColorStateList(activity.resources, iconRes, null)
+
+        navView.setBackgroundResource(backgroundRes)
+        navView.itemIconTintList = iconTint
+        navView.itemTextColor = iconTint
     }
 }

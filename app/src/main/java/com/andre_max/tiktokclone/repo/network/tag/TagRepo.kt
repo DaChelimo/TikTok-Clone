@@ -4,16 +4,16 @@ import com.andre_max.tiktokclone.models.tag.Tag
 import com.andre_max.tiktokclone.repo.network.utils.FirePath
 import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.andre_max.tiktokclone.utils.runAsync
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class TagRepo {
-    private val realFire = Firebase.database
+class TagRepo(private val realFire: FirebaseDatabase = Firebase.database) {
     private val firePath = FirePath()
 
-    fun saveTagsInVideo(tags: List<String>, videoId: String) {
+    fun saveTagsInVideo(tags: Collection<String>, videoId: String) {
         tags.forEach {
             val tagName = it.replace("#", "", true)
 

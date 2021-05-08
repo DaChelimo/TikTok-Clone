@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-
         <import type="com.andre_max.tiktokclone.presentation.ui.sign_up.phone_sign_up.BasicPhoneViewModel"/>
+
         <variable
             name="viewModel"
             type="BasicPhoneViewModel" />
@@ -22,11 +21,15 @@
         <com.hbb20.CountryCodePicker
             android:id="@+id/country_code_picker"
             android:layout_width="wrap_content"
+            app:ccp_showNameCode="false"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_20sdp"
             app:ccpDialog_backgroundColor="@android:color/white"
             app:ccpDialog_searchEditTextTint="@color/dark_black"
             app:ccp_defaultNameCode="US"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:ccp_textSize="@dimen/_13ssp"
+            app:ccpDialog_textColor="@color/dark_black"
             app:ccp_defaultPhoneCode="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,13 +42,16 @@
             android:layout_marginEnd="@dimen/_12sdp"
             android:background="@android:color/transparent"
             android:ems="10"
+            android:paddingTop="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
             android:text="@={viewModel.livePhoneNumber}"
             android:hint="@string/phone_number"
             android:inputType="phone"
             android:fontFamily="@font/cabin"
-            android:textColor="@color/light_black"
+            android:textColor="@color/dark_black"
+            tools:text="123456789"
             android:textColorHint="@color/medium_grey"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toBottomOf="@+id/country_code_picker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/country_code_picker"
@@ -64,24 +70,27 @@
         <TextView
             android:id="@+id/tos_text"
             android:layout_width="0dp"
+            android:textSize="@dimen/_14ssp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/advent_pro_medium"
             android:text="@string/terms_of_services_phone"
             app:layout_constraintEnd_toEndOf="@+id/phone_number_input"
             app:layout_constraintStart_toStartOf="@+id/country_code_picker"
             app:layout_constraintTop_toBottomOf="@+id/line" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/send_code_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_24sdp"
-            android:background="@color/grey_button_background"
             android:fontFamily="sans-serif-medium"
+            tools:backgroundTint="@color/grey_button_background"
             android:text="@string/send_code"
+            android:padding="@dimen/_8sdp"
             android:textAllCaps="false"
-            android:clickable="@{viewModel.livePhoneNumber.length() == 9}"
-            android:textColor="@color/light_black"
+            android:clickable="@{viewModel.isValid() == true}"
+            android:textColor="@{viewModel.isValid() == true ? @android:color/white : @color/light_black}"
             app:cornerRadius="@dimen/_4sdp"
             app:layout_constraintEnd_toEndOf="@+id/tos_text"
             app:layout_constraintStart_toStartOf="@+id/tos_text"

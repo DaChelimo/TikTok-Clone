@@ -16,11 +16,11 @@ class FirePath {
     fun getUserInfo(uid: String = myUid): String =
         "users/$uid/basic-data"
 
-    fun getMyFollowersPath(): String = "${getUserInfo()}/followers"
-    fun getMyFollowingPath(): String = "${getUserInfo()}/following"
+    fun getMyFollowersPath(): String = getUserFollowerPath(myUid)
+    fun getMyFollowingPath(): String = getUserFollowingPath(myUid)
     
-    fun getUserFollowerPath(otherUid: String): String = "${getUserInfo(otherUid)}/followers"
-    fun getUserFollowingPath(otherUid: String): String = "${getUserInfo(otherUid)}/following"
+    fun getUserFollowerPath(otherUid: String): String = "followers/$otherUid"
+    fun getUserFollowingPath(otherUid: String): String = "following/$otherUid"
 
     fun getAllVideosPath(): String = "videos"
     fun getCommentsPath(videoId: String): String = "comments/$videoId"

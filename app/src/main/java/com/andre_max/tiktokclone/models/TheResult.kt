@@ -10,8 +10,7 @@ sealed class TheResult<out R> {
     data class Error(val exception: Exception) : TheResult<Nothing>()
     object Loading : TheResult<Nothing>()
 
-    @JvmName("tryData")
-    fun getData() = (this as? Success)?.data
+    fun tryData() = (this as? Success)?.data
     fun forceData() = (this as Success).data
 
     override fun toString(): String {

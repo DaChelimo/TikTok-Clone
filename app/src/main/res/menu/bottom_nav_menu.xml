@@ -7,22 +7,22 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/search_fragment"
+        android:id="@+id/discoverFragment"
         android:icon="@drawable/ic_search_white"
-        android:title="Discover" />
+        android:title="@string/discover" />
 
     <item
         android:id="@+id/recordVideoFragment"
         android:icon="@drawable/create_video_icon"
-        android:title="Create Video" />
+        android:title="@string/create_video" />
     <item
         android:id="@id/inbox_fragment"
         android:icon="@drawable/ic_inbox"
-        android:title="Inbox" />
+        android:title="@string/inbox" />
 
     <item
         android:id="@+id/meFragment"
         android:icon="@drawable/ic_identity"
-        android:title="Me" />
+        android:title="@string/me" />
 
 </menu>

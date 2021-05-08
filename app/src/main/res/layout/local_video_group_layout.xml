@@ -6,10 +6,12 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/local_video_thumbnail"
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
+        android:scaleType="centerCrop"
+        app:shapeAppearance="@style/roundedImageView"
         android:contentDescription="@string/local_video"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -3,15 +3,17 @@ package com.andre_max.tiktokclone.presentation.ui.upload.select_media.tab
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.andre_max.tiktokclone.*
+import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.FragmentEachMediaBinding
+import com.andre_max.tiktokclone.presentation.ui.upload.select_media.SelectMediaFragmentDirections
+import com.andre_max.tiktokclone.presentation.ui.upload.select_media.tab.group.LocalImageGroup
+import com.andre_max.tiktokclone.presentation.ui.upload.select_media.tab.group.LocalVideoGroup
 import com.andre_max.tiktokclone.repo.local.media.LocalMediaRepo
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import kotlinx.android.synthetic.main.user_image_layout.view.*
-import kotlinx.android.synthetic.main.user_video_layout.view.*
 import kotlin.properties.Delegates
 
 /**
@@ -36,6 +38,7 @@ class EachMediaTab : Fragment(R.layout.fragment_each_media) {
     }
 
     private fun setUpLayout() {
+        binding = FragmentEachMediaBinding.bind(requireView())
         binding.eachMediaRecyclerview.apply {
             layoutManager = GridLayoutManager(requireContext(), 4)
             adapter = groupAdapter
@@ -57,7 +60,7 @@ class EachMediaTab : Fragment(R.layout.fragment_each_media) {
     private fun awaitLocalVideos() {
         localMediaRepo.listOfLocalVideo.observe(viewLifecycleOwner) { listOfLocalVideo ->
             listOfLocalVideo?.forEach { localVideo ->
-                val localVideoGroup = LocalVideoGroup(localVideo) {
+                val localVideoGroup = LocalVideoGroup(localVideo, lifecycleScope) {
                     findNavController()
                         .navigate(
                             SelectMediaFragmentDirections

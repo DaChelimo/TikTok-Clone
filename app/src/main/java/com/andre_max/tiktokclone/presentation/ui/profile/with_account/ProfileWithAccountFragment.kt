@@ -13,40 +13,38 @@ import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.presentation.ui.profile.with_account.tab.ProfileVideoTab
 import com.andre_max.tiktokclone.utils.BottomNavViewUtils.showBottomNavBar
 import com.andre_max.tiktokclone.utils.ImageUtils.loadGlideImage
+import com.andre_max.tiktokclone.utils.ViewUtils
+import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import timber.log.Timber
 
-class ProfileWithAccountFragment : Fragment(R.layout.fragment_profile_with_account) {
+class ProfileWithAccountFragment : BaseFragment(R.layout.fragment_profile_with_account) {
 
     private lateinit var binding: FragmentProfileWithAccountBinding
-    private lateinit var uid: String
 
     private val args by navArgs<ProfileWithAccountFragmentArgs>()
-    private val viewModel by viewModels<ProfileWithAccountViewModel>()
+    override val viewModel by viewModels<ProfileWithAccountViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uid = args.uid ?: Firebase.auth.uid.toString()
-        setUpViewModel()
-        setUpLayout()
-        setUpLiveData()
-
+        viewModel.fetchUser(args.uid)
 
         val tabConfigurationStrategy =
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                 Timber.d("tab is $tab and tab position is $position")
+                tab.text = getString(
+                    when (position) {
+                        0 -> R.string.my_videos
+                        1 -> R.string.my_private_videos
+                        2 -> R.string.my_liked_videos
+                        else -> throw IndexOutOfBoundsException("position was $position")
+                    }
+                )
             }
         TabLayoutMediator(binding.profileTabLayout, binding.viewpager, tabConfigurationStrategy)
             .attach()
-    }
-
-    private fun setUpLayout() {
-        binding.viewpager.apply {
-            adapter = MyFragmentStateAdapter(this@ProfileWithAccountFragment)
-            registerOnPageChangeCallback(onPageChangedCallback)
-        }
     }
 
     private val onPageChangedCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -56,11 +54,16 @@ class ProfileWithAccountFragment : Fragment(R.layout.fragment_profile_with_accou
         }
     }
 
-    private fun setUpViewModel() {
-        viewModel.fetchUser(uid)
+
+    override fun setUpLayout() {
+        binding = FragmentProfileWithAccountBinding.bind(requireView())
+        binding.viewpager.apply {
+            adapter = MyFragmentStateAdapter(this@ProfileWithAccountFragment)
+            registerOnPageChangeCallback(onPageChangedCallback)
+        }
     }
 
-    private fun setUpLiveData() {
+    override fun setUpLiveData() {
         viewModel.profileUser.observe(viewLifecycleOwner) { profileUser ->
             profileUser?.let {
                 binding.followersCountNumber.text = profileUser.followers.toString()
@@ -76,6 +79,13 @@ class ProfileWithAccountFragment : Fragment(R.layout.fragment_profile_with_accou
                     loadGlideImage(binding.userPhoto, profileUser.profilePictureUrl)
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ViewUtils.changeStatusBarIcons(requireActivity(), isWhite = false)
+        ViewUtils.changeStatusBarColor(requireActivity(), android.R.color.white)
+        ViewUtils.changeSystemNavigationBarColor(requireActivity(), android.R.color.white)
     }
 
     override fun onResume() {
@@ -94,13 +104,13 @@ class ProfileWithAccountFragment : Fragment(R.layout.fragment_profile_with_accou
         Otherwise, show only the public videos
          */
         override fun getItemCount(): Int = when {
-            profileWithAccountFragment.uid == Firebase.auth.uid -> 3
+            profileWithAccountFragment.args.uid == Firebase.auth.uid -> 3
             profileWithAccountFragment.viewModel.profileUser.value?.showLikedVideos == true -> 2
             else -> 1
         }
 
         override fun createFragment(position: Int): Fragment {
-            val uid = profileWithAccountFragment.uid
+            val uid = profileWithAccountFragment.args.uid
             return when (position) {
                 0 -> ProfileVideoTab.getInstance(uid, VideoType.PUBLIC)
                 1 -> ProfileVideoTab.getInstance(uid, VideoType.LIKED)

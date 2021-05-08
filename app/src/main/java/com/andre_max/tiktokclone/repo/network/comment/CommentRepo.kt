@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.andre_max.tiktokclone.models.comment.Comment
 import com.andre_max.tiktokclone.repo.network.utils.FirePath
-import com.andre_max.tiktokclone.repo.network.utils.getValue
 import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.andre_max.tiktokclone.utils.map.SmartMap
 import com.andre_max.tiktokclone.utils.runAsync
@@ -16,6 +15,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber

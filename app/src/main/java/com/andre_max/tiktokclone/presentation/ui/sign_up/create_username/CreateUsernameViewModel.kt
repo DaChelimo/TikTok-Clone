@@ -5,11 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.*
 import com.andre_max.tiktokclone.models.succeeded
+import com.andre_max.tiktokclone.models.upload.Progress
 import com.andre_max.tiktokclone.repo.network.auth.AuthRepo
 import com.andre_max.tiktokclone.repo.network.user.INameRepo
 import com.andre_max.tiktokclone.repo.network.user.NameRepo
 import com.andre_max.tiktokclone.repo.network.user.UserRepo
-import com.andre_max.tiktokclone.utils.viewModel.BaseViewModel
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -27,6 +28,9 @@ class CreateUsernameViewModel(private val nameRepo: INameRepo = NameRepo()) : Ba
     private val _errorTextRes = MutableLiveData<Int?>()
     val errorTextRes: LiveData<Int?> = _errorTextRes
 
+    private val _progress = MutableLiveData(Progress.IDLE)
+    val progress: LiveData<Progress> = _progress
+
 
     fun setUp(navArgs: CreateUsernameFragmentArgs) {
         viewModelScope.launch {
@@ -37,12 +41,18 @@ class CreateUsernameViewModel(private val nameRepo: INameRepo = NameRepo()) : Ba
         }
     }
 
-    suspend fun completeSignIn() {
+    fun completeSignIn() {
+        _progress.value = Progress.ACTIVE
         viewModelScope.launch {
             // Username will not be null since we've already done our check. The safety check is because I dislike the non-null assertion mark
             val username = liveUsername.value ?: ""
             val authResult = getAuthResult() ?: return@launch
-            userRepo.addUserToDatabase(username, authResult, args.googleBody?.profilePicture)
+            val result = userRepo.addUserToDatabase(username, authResult, args.googleBody?.profilePicture)
+
+            if (result.succeeded)
+                _progress.value = Progress.DONE
+            else
+                showMessage(R.string.error_during_account_creation)
         }
     }
 
@@ -57,7 +67,7 @@ class CreateUsernameViewModel(private val nameRepo: INameRepo = NameRepo()) : Ba
             val authResult = authRepo.signInWithCredential(args.credential!!)
             if (!authResult.succeeded)
                 showMessage(R.string.error_during_account_creation)
-            authResult.getData()
+            authResult.tryData()
         }
         args.emailBody != null -> {
             val emailBody = args.emailBody!!
@@ -83,19 +93,20 @@ class CreateUsernameViewModel(private val nameRepo: INameRepo = NameRepo()) : Ba
     }
 
     /**
-     * Generates a random name that is not in the database
-     * @return A random name to display to the user as the initial option
+     * Generates a random name that is not in the database and sets it as the username
      */
-    suspend fun generateRandomName() {
-        var randomUserName = ""
-        val initialNameArray = listOf("user", "account", "person")
+    fun generateRandomName() {
+        viewModelScope.launch {
+            var randomUserName = ""
+            val initialNameArray = listOf("user", "account", "person")
 
-        while (nameRepo.doesNameExist(randomUserName) || randomUserName == "") {
-            val randomNumber = Random.nextInt(100_000_000).toString()
-            randomUserName = initialNameArray.random() + randomNumber
+            while (nameRepo.doesNameExist(randomUserName) || randomUserName == "") {
+                val randomNumber = Random.nextInt(100_000_000).toString()
+                randomUserName = initialNameArray.random() + randomNumber
+            }
+
+            liveUsername.value = randomUserName
         }
-
-        liveUsername.value = randomUserName
     }
 
     /**
@@ -106,8 +117,8 @@ class CreateUsernameViewModel(private val nameRepo: INameRepo = NameRepo()) : Ba
         val username = liveUsername.value ?: ""
         val errorRes = when {
             username.length < 4 -> R.string.short_username
-            username.contains(" ") -> R.string.name_unavailable
-            username.length >= 25 -> R.string.name_unavailable
+            username.contains(" ") -> R.string.name_contains_spaces
+            username.length >= 25 -> R.string.long_username
             nameRepo.doesNameExist(username) -> R.string.name_unavailable
             else -> null
         }

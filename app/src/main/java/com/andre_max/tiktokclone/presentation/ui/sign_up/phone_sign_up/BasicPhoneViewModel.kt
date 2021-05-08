@@ -3,10 +3,10 @@ package com.andre_max.tiktokclone.presentation.ui.sign_up.phone_sign_up
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.andre_max.tiktokclone.presentation.ui.sign_up.select_basic_sign_up.SelectBasicSignUpFragmentDirections
+import androidx.lifecycle.Transformations
 import com.andre_max.tiktokclone.userToken
 import com.andre_max.tiktokclone.userVerificationId
-import com.andre_max.tiktokclone.utils.viewModel.BaseViewModel
+import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.PhoneAuthCredential
@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit
 class BasicPhoneViewModel : BaseViewModel() {
 
     val livePhoneNumber = MutableLiveData("")
+    val isValid = Transformations.map(livePhoneNumber) { phoneNumber ->
+        phoneNumber.length == 9
+    }
 
     private val _liveCredential = MutableLiveData<AuthCredential?>()
     val liveCredential: LiveData<AuthCredential?> = _liveCredential
@@ -53,6 +56,7 @@ class BasicPhoneViewModel : BaseViewModel() {
             ) {
                 userVerificationId = verificationId
                 userToken = token
+                Timber.d("verificationId is $verificationId")
                 onComplete(livePhoneNumber.value)
             }
         }
