@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.andre_max.tiktokclone.presentation.ui.upload.record
 
 import android.os.Bundle
@@ -12,7 +36,10 @@ import com.andre_max.tiktokclone.utils.BottomNavViewUtils.showBottomNavBar
 import com.andre_max.tiktokclone.utils.PermissionUtils
 import com.andre_max.tiktokclone.utils.PermissionUtils.arePermissionsGranted
 import com.andre_max.tiktokclone.utils.PermissionUtils.recordVideoPermissions
-import com.andre_max.tiktokclone.utils.ViewUtils
+import com.andre_max.tiktokclone.utils.SystemBarColors
+import com.andre_max.tiktokclone.utils.ViewUtils.changeSystemBars
+import com.andre_max.tiktokclone.utils.ViewUtils.hideStatusAndNavBar
+import com.andre_max.tiktokclone.utils.ViewUtils.showStatusAndNavBar
 import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.controls.Audio
@@ -35,7 +62,7 @@ class RecordVideoFragment : BaseFragment(R.layout.fragment_record_video) {
         super.onViewCreated(view, savedInstanceState)
         cameraView = binding.cameraView
         initCameraView()
-        checkPermissionsGranted()
+        changeUIBasedOnPermissions()
     }
 
     private fun initCameraView() {
@@ -45,7 +72,6 @@ class RecordVideoFragment : BaseFragment(R.layout.fragment_record_video) {
             mode = Mode.VIDEO
 
             addCameraListener(viewModel.getCameraListener(requireContext()))
-            setLifecycleOwner(viewLifecycleOwner)
 
             mapGesture(Gesture.PINCH, GestureAction.ZOOM) // Pinch to zoom!
             mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS) // Tap to focus!
@@ -72,6 +98,7 @@ class RecordVideoFragment : BaseFragment(R.layout.fragment_record_video) {
                     RecordVideoFragmentDirections
                         .actionRecordVideoFragmentToPreviewVideoFragment(localVideo)
                 )
+                viewModel.resetLocalVideo()
             }
         }
 
@@ -162,32 +189,37 @@ class RecordVideoFragment : BaseFragment(R.layout.fragment_record_video) {
         )
     }
 
-    private fun checkPermissionsGranted() {
-        if (arePermissionsGranted(requireContext(), recordVideoPermissions))
-            turnOnCameraPreview()
-        else
-            binding.permissionsLayout.root.visibility = View.VISIBLE
-    }
-
-    override fun onStart() {
-        super.onStart()
+    private fun changeUIBasedOnPermissions() {
         if (arePermissionsGranted(requireContext(), recordVideoPermissions)) {
+            turnOnCameraPreview()
+            changeSystemBars(requireActivity(), SystemBarColors.DARK)
             hideBottomNavBar(requireActivity())
-            ViewUtils.hideStatusAndNavBar(requireActivity())
+            hideStatusAndNavBar(requireActivity())
             binding.permissionsLayout.root.visibility = View.GONE
-        } else {
+        }
+        else {
             showBottomNavBar(requireActivity())
-            ViewUtils.showStatusAndNavBar(requireActivity())
+            showStatusAndNavBar(requireActivity())
             binding.permissionsLayout.root.visibility = View.VISIBLE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        changeUIBasedOnPermissions()
     }
 
     override fun onStop() {
         super.onStop()
         if (arePermissionsGranted(requireContext(), recordVideoPermissions)) {
-            if (arePermissionsGranted(requireContext(), recordVideoPermissions))
-                ViewUtils.showStatusAndNavBar(requireActivity())
+            showStatusAndNavBar(requireActivity())
+            cameraView.close()
             viewModel.stopVideo(requireContext())
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraView.destroy()
     }
 }

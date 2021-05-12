@@ -1,13 +1,37 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.andre_max.tiktokclone.repo.network.auth
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.andre_max.tiktokclone.BuildConfig
+import com.andre_max.tiktokclone.models.sign_up.EmailBody
 import com.andre_max.tiktokclone.repo.network.utils.safeAccess
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -19,21 +43,30 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
-class AuthRepo {
-    val fireAuth = Firebase.auth
+// TODO: Abstract this to an interface to follow Dependency Inversion (SOLID)
+class AuthRepo(
+    private val fireAuth: FirebaseAuth = Firebase.auth
+) {
+
     val liveGoogleAccount = MutableLiveData<GoogleSignInAccount>()
 
     private val _liveCredential = MutableLiveData<AuthCredential>()
     val liveCredential: LiveData<AuthCredential> = _liveCredential
+
+    suspend fun signUpWithEmailBody(emailBody: EmailBody) = safeAccess {
+        fireAuth.createUserWithEmailAndPassword(emailBody.email, emailBody.password).await()
+    }
+
+    suspend fun logInWithEmailBody(emailBody: EmailBody) = safeAccess {
+        fireAuth.signInWithEmailAndPassword(emailBody.email, emailBody.password).await()
+    }
+
 
     suspend fun signInWithCredential(credential: AuthCredential) = safeAccess {
         fireAuth.signInWithCredential(credential).await()
@@ -48,9 +81,8 @@ class AuthRepo {
                 override fun onSuccess(loginResult: LoginResult) {
                     Timber.d("facebook:onSuccess:$loginResult")
 
-                    val credential =
+                    _liveCredential.value =
                         FacebookAuthProvider.getCredential(loginResult.accessToken.token)
-                    _liveCredential.value = credential
                 }
 
                 override fun onCancel() {
@@ -58,7 +90,7 @@ class AuthRepo {
                 }
 
                 override fun onError(exception: FacebookException) {
-                    Timber.e(exception)
+                    Timber.e(exception, "Facebook")
                 }
             })
 
@@ -72,7 +104,7 @@ class AuthRepo {
     inner class GoogleAuthRepo {
         private lateinit var googleSignInClient: GoogleSignInClient
 
-        fun doGoogleSignUp(context: Context, launcher: ActivityResultLauncher<Intent>) {
+        fun doGoogleAuth(context: Context, launcher: ActivityResultLauncher<Intent>) {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .requestProfile()
@@ -84,14 +116,18 @@ class AuthRepo {
         }
 
         fun handleGoogleOnResult(data: Intent?) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val account = task?.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+            try {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                val account = task?.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
 
-            Timber.d("middle of handleGoogleOnResult with credential is $credential")
+                Timber.d("middle of handleGoogleOnResult with credential is $credential")
 
-            liveGoogleAccount.value = account ?: return
-            _liveCredential.value = credential
+                liveGoogleAccount.value = account ?: return
+                _liveCredential.value = credential
+            } catch (apiException: ApiException) { // Thrown when the user exits the sign up process midway
+                Timber.e(apiException, "Caught exception")
+            }
         }
     }
 

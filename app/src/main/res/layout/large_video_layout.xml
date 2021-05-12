@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2021 Andre-max
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -29,144 +53,161 @@
         app:layoutDescription="@xml/large_video_motion_scene"
         android:background="@color/dark_black">
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/simpleExoPlayerView"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:use_controller="false"
-            app:resize_mode="fill"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            app:shapeAppearanceOverlay="@style/bottomCornered">
 
-        <TextView
-            android:id="@+id/author_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_6sdp"
-            android:layout_marginBottom="@dimen/_6sdp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/_14ssp"
-            app:layout_constraintBottom_toTopOf="@+id/video_description"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="\@brentrivera" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/video_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_6sdp"
-            android:layout_marginEnd="@dimen/_36sdp"
-            android:layout_marginBottom="@dimen/_16sdp"
-            android:fontFamily="@font/cabin"
-            android:text="@{remoteVideo.description}"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toTopOf="@+id/divider"
-            app:layout_constraintEnd_toStartOf="@+id/share_video_btn"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Tutorial #yzfamily #tutorial #fyp #fudrich" />
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/simpleExoPlayerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:resize_mode="fill"
+                    app:use_controller="false"
+                    tools:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/share_video_btn"
-            android:layout_width="@dimen/_36sdp"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
-            app:layout_constraintBottom_toTopOf="@+id/divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_share"
-            android:contentDescription="@string/share_video" />
+                <TextView
+                    android:id="@+id/author_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginBottom="@dimen/_6sdp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintBottom_toTopOf="@+id/video_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="\@brentrivera" />
 
-        <ImageView
-            android:id="@+id/open_comment_section_btn"
-            android:layout_width="@dimen/_36sdp"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
-            app:layout_constraintBottom_toTopOf="@+id/share_video_btn"
-            app:layout_constraintEnd_toEndOf="@+id/share_video_btn"
-            app:srcCompat="@drawable/ic_insert_comment"
-            android:contentDescription="@string/open_comment_section" />
+                <TextView
+                    android:id="@+id/video_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginEnd="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_16sdp"
+                    android:fontFamily="@font/cabin"
+                    android:text="@{remoteVideo.description}"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/share_video_btn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Tutorial #yzfamily #tutorial #fyp #fudrich" />
 
-        <ImageView
-            android:id="@+id/like_video_icon"
-            android:layout_width="@dimen/_36sdp"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
-            app:layout_constraintBottom_toTopOf="@+id/open_comment_section_btn"
-            app:changeVideoLikedIcon="@{isVideoLiked}"
-            app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
-            app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
-            app:srcCompat="@drawable/heart"
-            android:contentDescription="@string/like_video" />
+                <ImageView
+                    android:id="@+id/share_video_btn"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_36sdp"
+                    android:contentDescription="@string/share_video"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_share" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/author_icon"
-            android:layout_width="@dimen/_36sdp"
-            android:layout_height="@dimen/_36sdp"
-            android:layout_marginBottom="@dimen/_36sdp"
-            app:civ_border_color="@android:color/white"
-            app:civ_border_width="@dimen/_1sdp"
-            app:layout_constraintBottom_toTopOf="@+id/like_video_icon"
-            app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
-            app:layout_constraintStart_toStartOf="@+id/like_video_icon"
-            tools:srcCompat="@drawable/ic_perm_identity" />
+                <ImageView
+                    android:id="@+id/open_comment_section_btn"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_36sdp"
+                    android:contentDescription="@string/open_comment_section"
+                    app:layout_constraintBottom_toTopOf="@+id/share_video_btn"
+                    app:layout_constraintEnd_toEndOf="@+id/share_video_btn"
+                    app:srcCompat="@drawable/ic_insert_comment" />
 
-        <ImageView
-            android:id="@+id/follow_author"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
-            android:padding="@dimen/_4sdp"
-            app:backgroundTint="@android:color/white"
-            app:changeVisibility="@{isFollowingAuthor == true}"
-            app:layout_constraintBottom_toBottomOf="@+id/author_icon"
-            app:layout_constraintEnd_toEndOf="@+id/author_icon"
-            app:layout_constraintStart_toStartOf="@+id/author_icon"
-            app:layout_constraintTop_toBottomOf="@+id/author_icon"
-            app:srcCompat="@drawable/ic_add_circle"
-            android:contentDescription="@string/follow_user" />
+                <ImageView
+                    android:id="@+id/like_video_icon"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_36sdp"
+                    android:contentDescription="@string/like_video"
+                    app:changeVideoLikedIcon="@{isVideoLiked}"
+                    app:layout_constraintBottom_toTopOf="@+id/open_comment_section_btn"
+                    app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
+                    app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
+                    app:srcCompat="@drawable/heart" />
 
-        <TextView
-            android:id="@+id/total_video_likes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/cabin"
-            app:formatVideoCount="@{(int) remoteVideo.likes}"
-            android:textColor="@android:color/white"
-            app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
-            app:layout_constraintStart_toStartOf="@+id/like_video_icon"
-            app:layout_constraintTop_toBottomOf="@+id/like_video_icon"
-            tools:text="157K" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/author_icon"
+                    android:layout_width="@dimen/_36sdp"
+                    android:layout_height="@dimen/_36sdp"
+                    android:layout_marginBottom="@dimen/_36sdp"
+                    app:civ_border_color="@android:color/white"
+                    app:civ_border_width="@dimen/_1sdp"
+                    app:layout_constraintBottom_toTopOf="@+id/like_video_icon"
+                    app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
+                    app:layout_constraintStart_toStartOf="@+id/like_video_icon"
+                    tools:srcCompat="@drawable/ic_perm_identity" />
 
-        <TextView
-            android:id="@+id/total_comments_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/cabin"
-            app:formatVideoCount="@{(int) remoteVideo.totalCommentsSize}"
-            android:textColor="@android:color/white"
-            app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
-            app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
-            app:layout_constraintTop_toBottomOf="@+id/open_comment_section_btn"
-            tools:text="7073" />
+                <ImageView
+                    android:id="@+id/follow_author"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:contentDescription="@string/follow_user"
+                    android:padding="@dimen/_4sdp"
+                    app:backgroundTint="@android:color/white"
+                    app:changeVisibility="@{isFollowingAuthor == true}"
+                    app:layout_constraintBottom_toBottomOf="@+id/author_icon"
+                    app:layout_constraintEnd_toEndOf="@+id/author_icon"
+                    app:layout_constraintStart_toStartOf="@+id/author_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/author_icon"
+                    app:srcCompat="@drawable/ic_add_circle" />
 
-        <ImageView
-            android:id="@+id/play_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_10sdp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_round_play"
-            tools:visibility="visible"
-            android:contentDescription="@string/play_video" />
+                <TextView
+                    android:id="@+id/total_video_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:fontFamily="@font/cabin"
+                    android:textColor="@android:color/white"
+                    app:formatVideoCount="@{(int) remoteVideo.likes}"
+                    app:layout_constraintEnd_toEndOf="@+id/like_video_icon"
+                    app:layout_constraintStart_toStartOf="@+id/like_video_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/like_video_icon"
+                    tools:text="157K" />
+
+                <TextView
+                    android:id="@+id/total_comments_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:fontFamily="@font/cabin"
+                    android:textColor="@android:color/white"
+                    app:formatVideoCount="@{(int) remoteVideo.totalCommentsSize}"
+                    app:layout_constraintEnd_toEndOf="@+id/open_comment_section_btn"
+                    app:layout_constraintStart_toStartOf="@+id/open_comment_section_btn"
+                    app:layout_constraintTop_toBottomOf="@+id/open_comment_section_btn"
+                    tools:text="7073" />
+
+                <ImageView
+                    android:id="@+id/play_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/play_video"
+                    android:padding="@dimen/_10sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_round_play"
+                    tools:visibility="visible" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
 
         <!--    In case you are wondering why we have 50 sdp padding at the bottom,
            it's to accommodate our bottom navigation bar(not the system one)        -->
@@ -192,7 +233,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -276,5 +317,24 @@
                     app:layout_constraintTop_toBottomOf="@+id/total_comments" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bottom_add_comment_btn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingEnd="@dimen/_6sdp"
+            android:fontFamily="@font/cabin"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@android:color/transparent"
+            android:text="@string/add_comment"
+            android:gravity="start|center_vertical"
+            android:inputType="textPersonName"
+            android:textColor="@color/light_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>
