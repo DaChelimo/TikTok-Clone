@@ -46,6 +46,15 @@
     <string name="needs_one_character">Password must contain at least one character</string>
     <string name="needs_both_digit_and_character">Password must contain at least one character and one digit</string>
 
+    <string name="facebook_app_id">***</string>
+    <string name="fb_login_protocol_scheme">***</string>
+
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">***</string>
+    <string name="twitter_consumer_secret" translatable="false">***</string>
+    <string name="continue_with_twitter">Continue with Twitter</string>
+
+
     <string name="user_too_young">You are too young to have an account. Thanks for trying.</string>
     <string name="enter_valid_year">Enter a valid year to proceed.</string>
 
