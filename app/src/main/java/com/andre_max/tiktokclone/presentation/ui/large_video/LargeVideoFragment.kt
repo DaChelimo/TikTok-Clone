@@ -1,9 +1,32 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.andre_max.tiktokclone.presentation.ui.large_video
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -11,15 +34,15 @@ import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.LargeVideoLayoutBinding
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.presentation.exoplayer.Player
-import com.andre_max.tiktokclone.presentation.ui.components.comment.MainComment
 import com.andre_max.tiktokclone.presentation.ui.components.video.MainLargeVideo
-import com.andre_max.tiktokclone.repo.network.comment.CommentRepo
-import com.andre_max.tiktokclone.repo.network.user.UserRepo
-import com.andre_max.tiktokclone.repo.network.videos.VideosRepo
+import com.andre_max.tiktokclone.repo.network.user.DefaultUserRepo
+import com.andre_max.tiktokclone.repo.network.videos.DefaultVideosRepo
 import com.andre_max.tiktokclone.utils.BottomNavViewUtils
-import com.andre_max.tiktokclone.utils.ImageUtils
+import com.andre_max.tiktokclone.utils.BottomNavViewUtils.hideBottomNavBar
+import com.andre_max.tiktokclone.utils.BottomNavViewUtils.showBottomNavBar
+import com.andre_max.tiktokclone.utils.SystemBarColors
+import com.andre_max.tiktokclone.utils.ViewUtils
 import com.andre_max.tiktokclone.utils.architecture.BaseFragment
-import timber.log.Timber
 
 /**
  * This is a fragment that displays a fullScreen video. Fragments that navigate to this fragment include
@@ -29,8 +52,6 @@ class LargeVideoFragment : BaseFragment(R.layout.large_video_layout) {
 
     private lateinit var binding: LargeVideoLayoutBinding
     private lateinit var remoteVideo: RemoteVideo
-    private lateinit var player: Player
-
     private val args by navArgs<LargeVideoFragmentArgs>()
 
     private val mainLargeVideo by lazy {
@@ -38,41 +59,51 @@ class LargeVideoFragment : BaseFragment(R.layout.large_video_layout) {
             scope = lifecycleScope,
             lifecycle = viewLifecycleOwner.lifecycle,
             binding = binding,
-            userRepo = UserRepo(),
-            videosRepo = VideosRepo(),
+            userRepo = DefaultUserRepo(),
+            videosRepo = DefaultVideosRepo(),
             onPersonIconClicked = {
                 findNavController().navigate(
                     LargeVideoFragmentDirections
                         .actionLargeVideoFragmentToProfileWithAccountFragment(remoteVideo.authorUid)
                 )
             },
-            onVideoEnded = {}
+            onVideoEnded = { player ->
+                // TODO: Change this to scroll to the next video. Thinking of using a LinkedList(the little DSA I know)
+                player.restartPlayer()
+            },
+            onCommentVisibilityChanged = { isVisible ->
+                if (isVisible) hideBottomNavBar(activity)
+                else showBottomNavBar(activity)
+            }
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        remoteVideo = args.remoteVideo
-        mainLargeVideo.init(remoteVideo)
-    }
-
-    override fun setUpLayout() {
-        binding = LargeVideoLayoutBinding.bind(requireView()).apply {
+        // This is not included in setUpLayout() since mainLargeVideo requires that binding to initialized
+        binding.apply {
             lifecycleOwner = viewLifecycleOwner
             isFollowingAuthor = mainLargeVideo.isFollowingAuthor
             isVideoLiked = mainLargeVideo.isVideoLiked
             liveComment = mainLargeVideo.liveUserComment
         }
+        remoteVideo = args.remoteVideo
+        mainLargeVideo.init(remoteVideo)
     }
 
+    override fun setUpLayout() {
+        binding = LargeVideoLayoutBinding.bind(requireView()).also {
+            it.bottomAddCommentBtn.visibility = View.VISIBLE
+        }
+    }
+
+    // TODO: Confirm this
     override fun onResume() {
         super.onResume()
-        BottomNavViewUtils.changeVisibility(activity, shouldShow = false)
-        player.resumePlayer()
+        hideBottomNavBar(activity)
+        ViewUtils.changeSystemBars(activity, SystemBarColors.DARK)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
-    override fun onStop() {
-        super.onStop()
-        player.stopPlayer()
-}
+    
 }

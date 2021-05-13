@@ -1,16 +1,41 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.andre_max.tiktokclone.presentation.ui.components.video
 
 import android.content.Intent
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.WindowManager
+import androidx.lifecycle.*
 import com.andre_max.tiktokclone.databinding.LargeVideoLayoutBinding
 import com.andre_max.tiktokclone.models.succeeded
 import com.andre_max.tiktokclone.models.user.User
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.presentation.exoplayer.Player
 import com.andre_max.tiktokclone.presentation.ui.components.comment.MainComment
-import com.andre_max.tiktokclone.repo.network.comment.CommentRepo
+import com.andre_max.tiktokclone.repo.network.comment.DefaultCommentRepo
 import com.andre_max.tiktokclone.repo.network.user.UserRepo
 import com.andre_max.tiktokclone.repo.network.videos.VideosRepo
 import com.andre_max.tiktokclone.utils.NumbersUtils
@@ -28,10 +53,13 @@ class MainLargeVideo(
     private val userRepo: UserRepo,
     private val videosRepo: VideosRepo,
     private val onPersonIconClicked: (String) -> Unit,
-    private val onVideoEnded: () -> Unit
+    private val onVideoEnded: (Player) -> Unit,
+    private val onCommentVisibilityChanged: (Boolean) -> Unit
 ) {
     var author: User? = null
     var player: Player? = null
+
+    private var likeCount = 0
 
     private lateinit var mainComment: MainComment
 
@@ -39,8 +67,6 @@ class MainLargeVideo(
      * This is livedata instance holds what the user is currently typing and is passed on to MainComment
      */
     val liveUserComment = MutableLiveData("")
-
-    private var likeCount = 0
 
     private val _isVideoLiked = MutableLiveData(false)
     val isVideoLiked: LiveData<Boolean> = _isVideoLiked
@@ -55,6 +81,7 @@ class MainLargeVideo(
             createMainComment(remoteVideo)
             createVideoInfo(remoteVideo)
             setOnClickListeners(remoteVideo)
+            enableDoubleTap(remoteVideo)
 
             isVideoLiked(remoteVideo)
             isFollowingAuthor(remoteVideo.authorUid)
@@ -67,9 +94,9 @@ class MainLargeVideo(
     }
 
     private fun createMainComment(remoteVideo: RemoteVideo) {
-        val commentRepo = CommentRepo()
+        val commentRepo = DefaultCommentRepo()
         mainComment =
-            MainComment(binding, commentRepo, remoteVideo, userRepo, scope, liveUserComment)
+            MainComment(binding, commentRepo, remoteVideo, userRepo, scope, liveUserComment, onCommentVisibilityChanged)
         mainComment.init()
     }
 
@@ -88,15 +115,18 @@ class MainLargeVideo(
             playBtn = binding.playBtn,
             context = binding.root.context,
             url = remoteVideo.url,
-            onVideoEnded = { onVideoEnded() }
+            onVideoEnded = { player -> onVideoEnded(player) }
         )
         lifecycle.addObserver(player!!)
         player?.init()
     }
 
     private fun setOnClickListeners(remoteVideo: RemoteVideo) {
-        binding.followAuthor.setOnClickListener { followOrUnFollowAuthor() }
-        binding.likeVideoIcon.setOnClickListener { likeOrUnlikeVideo(remoteVideo) }
+        // TODO: Once the button is clicked, let's show a small pop-up layout that tells him/her to sign up or login
+        if (userRepo.doesDeviceHaveAnAccount()) {
+            binding.followAuthor.setOnClickListener { followOrUnFollowAuthor() }
+            binding.likeVideoIcon.setOnClickListener { likeOrUnlikeVideo(remoteVideo) }
+        }
         binding.authorIcon.setOnClickListener { onPersonIconClicked(remoteVideo.authorUid) }
         binding.shareVideoBtn.setOnClickListener {
             // TODO: Create a website that takes in a remote video id and displays them. The website will also check if the
@@ -106,10 +136,30 @@ class MainLargeVideo(
             binding.root.context.startActivity(intent)
         }
 
+        binding.bottomAddCommentBtn.setOnClickListener { mainComment.showCommentSection() }
         binding.openCommentSectionBtn.setOnClickListener { mainComment.showCommentSection() }
         binding.exitCommentSectionBtn.setOnClickListener { mainComment.hideCommentSection() }
     }
 
+    private fun enableDoubleTap(remoteVideo: RemoteVideo) {
+        val gd = GestureDetector(binding.root.context, object: GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                player?.changePlayerState()
+                return true
+            }
+
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                likeOrUnlikeVideo(remoteVideo)
+                return true
+            }
+
+            override fun onDoubleTapEvent(e: MotionEvent?) = true
+        })
+        binding.simpleExoPlayerView.setOnTouchListener { view, event ->
+            view.performClick()
+            return@setOnTouchListener gd.onTouchEvent(event)
+        }
+    }
 
     private fun likeOrUnlikeVideo(remoteVideo: RemoteVideo) {
         scope.launch {
@@ -162,36 +212,14 @@ class MainLargeVideo(
         if (author?.uid != Firebase.auth.uid) { // Author cannot follow or unfollow himself
             scope.launch {
                 if (isFollowingAuthor.value == false) {
-                    followAuthor()
+                    _isFollowingAuthor.value = true
+                    userRepo.followAuthor(author?.uid)
                 } else {
-                    unFollowAuthor()
+                    _isFollowingAuthor.value = false
+                    userRepo.unFollowAuthor(author?.uid)
                 }
             }
         }
-    }
-
-    private suspend fun unFollowAuthor() {
-        _isFollowingAuthor.value = false
-        userRepo.changeAuthorInMyFollowing(
-            authorUid = author?.uid,
-            shouldAddAuthor = false
-        )
-        userRepo.changeMeInAuthorFollowers(
-            authorUid = author?.uid,
-            shouldAddMe = false
-        )
-    }
-
-    private suspend fun followAuthor() {
-        _isFollowingAuthor.value = true
-        userRepo.changeAuthorInMyFollowing(
-            authorUid = author?.uid,
-            shouldAddAuthor = true
-        )
-        userRepo.changeMeInAuthorFollowers(
-            authorUid = author?.uid,
-            shouldAddMe = true
-        )
     }
 
     fun destroy() {

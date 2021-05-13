@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.andre_max.tiktokclone.presentation.ui.upload.post_video
 
 import android.media.MediaMetadataRetriever
@@ -12,10 +36,13 @@ import com.andre_max.tiktokclone.databinding.FragmentPostVideoBinding
 import com.andre_max.tiktokclone.models.local.LocalVideo
 import com.andre_max.tiktokclone.models.upload.Progress
 import com.andre_max.tiktokclone.presentation.MainActivity
+import com.andre_max.tiktokclone.utils.ImageUtils
 import com.andre_max.tiktokclone.utils.ResUtils
+import com.andre_max.tiktokclone.utils.SystemBarColors
 import com.andre_max.tiktokclone.utils.ViewUtils
 import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +61,7 @@ class PostVideoFragment : BaseFragment(R.layout.fragment_post_video) {
         lifecycleScope.launch { loadVideoThumbnail() }
 
         binding.postBtn.setOnClickListener {
-            viewModel.postVideo(localVideo)
+            viewModel.postVideo(requireContext(), localVideo)
         }
     }
 
@@ -47,7 +74,12 @@ class PostVideoFragment : BaseFragment(R.layout.fragment_post_video) {
         mediaMetadataRetriever.release()
 
         withContext(Dispatchers.Main) {
-            Glide.with(requireContext()).load(bitmap).into(binding.videoThumbnail)
+            val requestOptions = RequestOptions()
+            Glide.with(requireContext())
+                .applyDefaultRequestOptions(requestOptions)
+                .addDefaultRequestListener(ImageUtils.getRequestListener(binding.loadingBar) {  })
+                .load(bitmap)
+                .into(binding.videoThumbnail)
         }
     }
 
@@ -71,8 +103,6 @@ class PostVideoFragment : BaseFragment(R.layout.fragment_post_video) {
 
     override fun onResume() {
         super.onResume()
-        ViewUtils.changeStatusBarColor(requireActivity(), android.R.color.white)
-        ViewUtils.changeStatusBarIcons(requireActivity(), isWhite = false)
-        ViewUtils.changeSystemNavigationBarColor(requireActivity(), android.R.color.white)
+        ViewUtils.changeSystemBars(activity, SystemBarColors.WHITE)
     }
 }

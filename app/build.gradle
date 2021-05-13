@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andre-max
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -77,6 +101,12 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = ["-Xallow-result-return-type"]
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -92,12 +122,15 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
     // Video Compressor
-    implementation 'com.github.AbedElazizShe:LightCompressor:0.7.3'
+//    implementation 'com.github.AbedElazizShe:LightCompressor:0.7.3'
+//    implementation 'com.iceteck.silicompressorr:silicompressor:2.2.4'
+//    implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
+    implementation 'com.github.Andre-max:VideoCompressor:0.1.0-alpha'
 
     // Firebase
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
     implementation 'com.google.firebase:firebase-database-ktx:19.7.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
+//    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
     implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:17.4.1'
@@ -134,8 +167,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
 
@@ -190,7 +224,7 @@ dependencies {
 
     // Hilt ViewModel
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0-beta01"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     // For instrumentation tests
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.33-beta'

@@ -1,3 +1,27 @@
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2021 Andre-max
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
 <resources>
     <string name="app_name">TikTok Clone</string>
     <string name="title_home">Home</string>
@@ -6,7 +30,11 @@
     <string name="continue_with_twitter">Continue with Twitter</string>
     <string name="successfully_signed_up">You have successfully signed up</string>
     <string name="error_occurred_during_sign_up">Error occurred while signing up. Kindly try again.</string>
+    <string name="error_occurred_during_log_in">Error occurred while logging in. Kindly try again.</string>
     <string name="error_occurred_during_video_upload">Error occurred while uploading video. Kindly try again.</string>
+    <string name="too_many_requests">Too many attempts. Try again later.</string>
+    <string name="no_network_connection">No network connection. Try again later.</string>
+
 
     <string name="gmail_com">\@gmail.com</string>
     <string name="hotmail_com">\@hotmail.com</string>
@@ -29,6 +57,8 @@
 
     <string name="user_too_young">You are too young to have an account. Thanks for trying.</string>
     <string name="enter_valid_year">Enter a valid year to proceed.</string>
+
+    <string name="account_needed_to_record_video">Kindly sign up or log in to record a video</string>
 
     <string name="enter_valid_email">Kindly enter a valid email address to proceed</string>
     <string name="video_description_needed">Kindly add a video description to proceed</string>
@@ -54,8 +84,9 @@
     <string name="log_in">Log in</string>
     <string name="sign_up_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s privacy policy.</string>
 
+    <string name="comment_size">%s comments</string>
     <string name="name_unavailable">This username isn\'t available. Try a suggested username, or enter a new one.</string>
-    <string name="short_username">Include at least 2 characters in your username</string>
+    <string name="short_username">Include at least 4 characters in your username</string>
     <string name="long_username">Username must be less than 25 characters</string>
     <string name="name_contains_spaces">Username must not contain any spaces</string>
     <string name="hashtags">#Hashtags</string>
@@ -86,11 +117,12 @@
     <string name="email_address">Email address</string>
     <string name="hash_tag_name">#%s</string>
     <string name="error_during_account_creation">Error occurred while creating account. Kindly try again.</string>
-    <string name="code_invalid">Code is invalid. Enter valid code</string>
+    <string name="code_invalid">Code is invalid. Enter the valid code</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>
     <string name="create_password">Create password</string>
-    <string name="passord_description">Password must be at least 8 characters.</string>
+    <string name="enter_password">Enter password</string>
+    <string name="password_description">Password must be at least 8 characters.</string>
     <string name="password">Password</string>
     <string name="skip">Skip</string>
     <string name="create_username_description">You can always change this later</string>
@@ -139,6 +171,10 @@
     <string name="me">Me</string>
     <string name="little_space_description">Your device has little space left. Delete some apps and files to begin recording.</string>
     <string name="little_space_available">Little space available</string>
+    <string name="log_in_for_tiktok">Log in to TikTok</string>
+    <string name="log_in_description_text">Manage your account, check notifications, comment on videos, and more.</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="add_comment">Add comment...</string>
 
 
 </resources>
