@@ -24,6 +24,7 @@
 
 package com.andre_max.tiktokclone.presentation.ui.components.video
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -48,7 +49,7 @@ import timber.log.Timber
 
 class MainLargeVideo(
     private val scope: CoroutineScope,
-    private val lifecycle: Lifecycle,
+    private val lifecycleOwner: LifecycleOwner,
     private val binding: LargeVideoLayoutBinding,
     private val userRepo: UserRepo,
     private val videosRepo: VideosRepo,
@@ -75,6 +76,7 @@ class MainLargeVideo(
     val isFollowingAuthor: LiveData<Boolean> = _isFollowingAuthor
 
     fun init(remoteVideo: RemoteVideo) {
+        setUpBinding()
         scope.launch {
             createProfile(remoteVideo)
             createPlayer(remoteVideo)
@@ -85,6 +87,15 @@ class MainLargeVideo(
 
             isVideoLiked(remoteVideo)
             isFollowingAuthor(remoteVideo.authorUid)
+        }
+    }
+
+    private fun setUpBinding() {
+        binding.also {
+            it.lifecycleOwner = lifecycleOwner
+            it.isFollowingAuthor = isFollowingAuthor
+            it.isVideoLiked = isVideoLiked
+            it.liveComment = liveUserComment
         }
     }
 
@@ -117,7 +128,7 @@ class MainLargeVideo(
             url = remoteVideo.url,
             onVideoEnded = { player -> onVideoEnded(player) }
         )
-        lifecycle.addObserver(player!!)
+        lifecycleOwner.lifecycle.addObserver(player!!)
         player?.init()
     }
 
@@ -127,6 +138,7 @@ class MainLargeVideo(
             binding.followAuthor.setOnClickListener { followOrUnFollowAuthor() }
             binding.likeVideoIcon.setOnClickListener { likeOrUnlikeVideo(remoteVideo) }
         }
+
         binding.authorIcon.setOnClickListener { onPersonIconClicked(remoteVideo.authorUid) }
         binding.shareVideoBtn.setOnClickListener {
             // TODO: Create a website that takes in a remote video id and displays them. The website will also check if the
@@ -141,21 +153,24 @@ class MainLargeVideo(
         binding.exitCommentSectionBtn.setOnClickListener { mainComment.hideCommentSection() }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun enableDoubleTap(remoteVideo: RemoteVideo) {
         val gd = GestureDetector(binding.root.context, object: GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
                 player?.changePlayerState()
+                Timber.d("onSingleTapConfirmed called")
                 return true
             }
 
             override fun onDoubleTap(e: MotionEvent?): Boolean {
                 likeOrUnlikeVideo(remoteVideo)
+                Timber.d("onDoubleTap called")
                 return true
             }
 
             override fun onDoubleTapEvent(e: MotionEvent?) = true
         })
-        binding.simpleExoPlayerView.setOnTouchListener { view, event ->
+        binding.materialCardView.setOnTouchListener { view, event ->
             view.performClick()
             return@setOnTouchListener gd.onTouchEvent(event)
         }
@@ -227,7 +242,7 @@ class MainLargeVideo(
 
         player?.let {
             it.stopPlayer()
-            lifecycle.removeObserver(it)
+            lifecycleOwner.lifecycle.removeObserver(it)
             player = null
         }
     }

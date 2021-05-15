@@ -52,9 +52,11 @@ object BottomNavViewUtils {
     fun changeNavBarColor(activity: Activity?, systemBarColors: SystemBarColors) {
         val navView = (activity as MainActivity).binding.navView
 
-        val backgroundRes =
-            if (systemBarColors == SystemBarColors.WHITE) android.R.color.white
-            else R.color.dark_black
+        val backgroundRes = ResourcesCompat.getColor(
+            activity.resources,
+            if (systemBarColors == SystemBarColors.WHITE) android.R.color.white else R.color.dark_black,
+            null
+        )
 
         val iconRes =
             if (systemBarColors == SystemBarColors.WHITE) R.drawable.dark_nav_icon_tint

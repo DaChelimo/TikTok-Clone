@@ -37,7 +37,6 @@ import timber.log.Timber
  Notes:
 
  */
-// TODO: Fix jank in BasicPhoneFragment
 // TODO: Add forgot password in email authentification
 class App : Application() {
     override fun onCreate() {

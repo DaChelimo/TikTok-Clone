@@ -69,7 +69,7 @@ class LargeVideoGroup(
     override fun bind(binding: LargeVideoLayoutBinding, position: Int) {
         mainLargeVideo = MainLargeVideo(
             scope = scope,
-            lifecycle = lifecycleOwner.lifecycle,
+            lifecycleOwner = lifecycleOwner,
             binding = binding,
             userRepo = userRepo,
             videosRepo = videosRepo,
@@ -77,12 +77,6 @@ class LargeVideoGroup(
             onVideoEnded = { onVideoEnded(this) },
             onCommentVisibilityChanged = onCommentVisibilityChanged
         )
-
-        binding.lifecycleOwner = lifecycleOwner
-        binding.isFollowingAuthor = mainLargeVideo.isFollowingAuthor
-        binding.isVideoLiked = mainLargeVideo.isVideoLiked
-
-        binding.liveComment = mainLargeVideo.liveUserComment
     }
 
     override fun onViewAttachedToWindow(viewHolder: GroupieViewHolder<LargeVideoLayoutBinding>) {

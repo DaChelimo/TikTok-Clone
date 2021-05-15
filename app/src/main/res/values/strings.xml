@@ -27,7 +27,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
     <string name="successfully_signed_up">You have successfully signed up</string>
     <string name="error_occurred_during_sign_up">Error occurred while signing up. Kindly try again.</string>
     <string name="error_occurred_during_log_in">Error occurred while logging in. Kindly try again.</string>
@@ -175,6 +174,7 @@
     <string name="log_in_description_text">Manage your account, check notifications, comment on videos, and more.</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="add_comment">Add comment...</string>
+    <string name="like_comment">Like comment</string>
 
 
 </resources>

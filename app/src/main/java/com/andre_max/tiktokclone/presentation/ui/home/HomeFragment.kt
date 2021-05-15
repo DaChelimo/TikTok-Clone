@@ -143,7 +143,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         changeNavBarColor(activity, SystemBarColors.DARK)
         changeSystemBars(activity, SystemBarColors.DARK)
         hideStatusBar(requireActivity())
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         Timber.d("Lifecycle Callbacks: onResume() called")
     }
 
@@ -153,6 +153,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     }
     override fun onStop() {
         super.onStop()
+        changeSystemBars(activity, SystemBarColors.WHITE)
         Timber.d("Lifecycle Callbacks: onStop() called")
     }
     override fun onDestroy() {

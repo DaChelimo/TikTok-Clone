@@ -57,7 +57,9 @@
             android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/divider"
+            android:layout_marginBottom="@dimen/_45sdp"
+            app:strokeColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -74,6 +76,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:surface_type="texture_view"
                     app:layout_constraintTop_toTopOf="parent"
                     app:resize_mode="fill"
                     app:use_controller="false"
@@ -159,7 +162,7 @@
                     android:contentDescription="@string/follow_user"
                     android:padding="@dimen/_4sdp"
                     app:backgroundTint="@android:color/white"
-                    app:changeVisibility="@{isFollowingAuthor == true}"
+                    app:changeVisibility="@{isFollowingAuthor == false}"
                     app:layout_constraintBottom_toBottomOf="@+id/author_icon"
                     app:layout_constraintEnd_toEndOf="@+id/author_icon"
                     app:layout_constraintStart_toStartOf="@+id/author_icon"
@@ -207,20 +210,6 @@
                     tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-
-
-        <!--    In case you are wondering why we have 50 sdp padding at the bottom,
-           it's to accommodate our bottom navigation bar(not the system one)        -->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_marginBottom="@dimen/_45sdp"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/comment_layout"
@@ -291,7 +280,8 @@
                     app:layout_constraintEnd_toStartOf="@+id/send_comment_btn"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/comment_divider"
-                    tools:text="The random person who liked this comment will become a billionare one day" />
+                    tools:text="The random person who liked this comment will become a billionare one day"
+                    android:importantForAutofill="no" />
 
                 <ImageButton
                     android:id="@+id/send_comment_btn"
@@ -331,10 +321,11 @@
             android:text="@string/add_comment"
             android:gravity="start|center_vertical"
             android:inputType="textPersonName"
+            app:strokeColor="@android:color/transparent"
             android:textColor="@color/light_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

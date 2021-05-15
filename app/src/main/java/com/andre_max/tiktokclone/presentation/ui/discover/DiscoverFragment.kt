@@ -78,8 +78,8 @@ class DiscoverFragment : BaseFragment(R.layout.fragment_discover) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         ViewUtils.changeSystemBars(activity, SystemBarColors.WHITE)
     }
 }

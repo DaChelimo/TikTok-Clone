@@ -126,8 +126,21 @@ class SmartMap<K, V>(private val skipCurrentValueCall: Boolean = false) :
         return resultValue
     }
 
-    operator fun set(key: K, value: V): V? {
-        return put(key, value)
+    operator fun set(key: K, value: V) {
+        if (map.containsKey(key))
+            edit(key, value)
+        else
+            put(key, value)
+    }
+
+    fun edit(key: K, value: V) {
+        map[key] = value
+        signalChanged(
+            action = SmartAction.Edit,
+            actionKey = key,
+            actionValue = value,
+            resultValue = resultValue
+        )
     }
 
     fun putAll(from: Map<out K, V>) {

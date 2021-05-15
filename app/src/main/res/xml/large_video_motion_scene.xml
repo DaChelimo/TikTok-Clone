@@ -34,13 +34,8 @@
     <ConstraintSet android:id="@+id/start">
         <Constraint
             android:id="@+id/comment_layout"
-            android:layout_height="1dp"
-            android:alpha="0" />
-        <Constraint
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_1sdp"
-            android:layout_marginBottom="@dimen/_45sdp"
+            android:layout_height="0dp"
+            android:alpha="0"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent" />

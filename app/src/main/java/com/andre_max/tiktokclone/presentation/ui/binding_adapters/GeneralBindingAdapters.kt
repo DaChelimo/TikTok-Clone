@@ -28,6 +28,6 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 
 @BindingAdapter("changeVisibility")
-fun View.changeVisibility(isVisible: Boolean) {
-    visibility = if (isVisible) View.VISIBLE else View.GONE
+fun View.changeVisibility(makeVisible: Boolean) {
+    visibility = if (makeVisible) View.VISIBLE else View.GONE
 }

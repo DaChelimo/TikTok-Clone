@@ -28,6 +28,7 @@ enum class SmartAction {
     Add, AddAll, AddElement, AddFirst, AddLast,
     Clear,
     DrainTo,
+    Edit,
     Fill,
     InsertElementAt,
     Offer, OfferFirst, OfferLast,

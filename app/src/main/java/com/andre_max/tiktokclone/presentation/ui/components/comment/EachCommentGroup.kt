@@ -36,7 +36,7 @@ class EachCommentGroup(
     private val comment: Comment,
     private var isLiked: Boolean = false,
     private val commentAuthor: User?,
-    private val likeOrUnlikeComment: () -> Unit
+    private val likeOrUnlikeComment: (String) -> Unit
 ) : BindableItem<EachCommentItemBinding>() {
     var likesCount = comment.commentLikes
 
@@ -48,7 +48,7 @@ class EachCommentGroup(
         ImageUtils.loadGlideImage(binding.personImage, commentAuthor?.profilePictureUrl)
 
         binding.likeIconImage.setOnClickListener {
-            likeOrUnlikeComment()
+            likeOrUnlikeComment(comment.commentId)
             isLiked = !isLiked
         }
     }

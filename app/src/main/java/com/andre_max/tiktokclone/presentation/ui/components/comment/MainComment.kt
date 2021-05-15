@@ -33,6 +33,7 @@ import com.andre_max.tiktokclone.models.comment.Comment
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.repo.network.comment.CommentRepo
 import com.andre_max.tiktokclone.repo.network.user.UserRepo
+import com.andre_max.tiktokclone.utils.KeyboardUtils
 import com.andre_max.tiktokclone.utils.NumbersUtils
 import com.andre_max.tiktokclone.utils.ResUtils
 import com.andre_max.tiktokclone.utils.map.SmartAction
@@ -41,6 +42,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MainComment(
     private val binding: LargeVideoLayoutBinding,
@@ -53,8 +55,8 @@ class MainComment(
 ) {
     private val commentsGroupAdapter = GroupAdapter<GroupieViewHolder>()
 
-    val commentsSize by lazy { commentRepo.getTotalCommentsSize(remoteVideo.videoId) }
-    val commentsMap by lazy { commentRepo.fetchComments(remoteVideo.videoId) }
+    private val commentsSize by lazy { commentRepo.getTotalCommentsSize(remoteVideo.videoId) }
+    private val commentsMap by lazy { commentRepo.fetchComments(remoteVideo.videoId) }
 
     init {
         binding.commentRecyclerview.apply {
@@ -83,6 +85,7 @@ class MainComment(
     fun hideCommentSection() {
         (binding.root as MotionLayout).transitionToStart()
         onCommentVisibilityChanged(false)
+        KeyboardUtils.hide(binding.commentText)
     }
 
     private val commentSizeObserver: (Int) -> Unit = { commentSize ->
@@ -91,12 +94,21 @@ class MainComment(
     }
 
     private val commentsMapObserver: (SmartMap<String, Comment>) -> Unit = { smartMap ->
+        Timber.d("commentsMapObserver has been called")
         when (smartMap.action) {
             SmartAction.Add -> {
-                smartMap.actionValue?.let { addGroupToAdapter(it) }
+                smartMap.actionValue?.let {
+                    addGroupToAdapter(it)
+                    Timber.d("In SmartAction.Add, smartMap.actionValue is $it")
+                }
             }
             SmartAction.AddAll -> {
                 smartMap.actionMap?.values?.forEach { addGroupToAdapter(it) }
+            }
+            SmartAction.Edit -> {
+                smartMap.actionValue?.let {
+                    // TODO: Allow user to edit comment in future
+                }
             }
             SmartAction.Remove -> {
                 smartMap.actionKey?.let { removeGroup(smartMap.indexOf(it)) }
@@ -114,12 +126,14 @@ class MainComment(
                 comment = comment,
                 isLiked = commentRepo.isCommentLiked(videoId, commentId),
                 commentAuthor = userRepo.getUserProfile(comment.authorUid).tryData(),
-                likeOrUnlikeComment = {
+                likeOrUnlikeComment = { commentId ->
                     scope.launch {
+                        commentRepo.likeOrUnlikeComment(videoId, commentId)
                     }
                 }
             )
 
+            Timber.d("Adapter is adding comment $comment")
             commentsGroupAdapter.add(eachCommentGroup)
         }
     }
@@ -130,7 +144,8 @@ class MainComment(
 
     fun setUpClickListeners() {
         binding.sendCommentBtn.setOnClickListener {
-            val message = liveUserComment.value ?: ""
+            KeyboardUtils.hide(binding.commentText)
+            val message = liveUserComment.value ?: return@setOnClickListener
 
             if (userRepo.doesDeviceHaveAnAccount()) {
                 sendComment(message)
@@ -143,8 +158,10 @@ class MainComment(
     private fun sendComment(message: String) {
         if (message.isBlank())
             ResUtils.showSnackBar(binding.root, R.string.empty_comment_error)
-        else
+        else {
             commentRepo.sendComment(message, remoteVideo.videoId)
+            binding.commentText.text.clear()
+        }
     }
 
     fun destroy() {

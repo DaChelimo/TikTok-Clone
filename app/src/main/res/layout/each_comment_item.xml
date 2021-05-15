@@ -28,55 +28,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFF"
-    android:paddingBottom="15dp">
+    android:background="@android:color/white"
+    android:paddingBottom="@dimen/_6sdp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/person_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_perm_identity" />
+        app:srcCompat="@drawable/ic_perm_identity"
+        tools:src="@drawable/ic_perm_identity"/>
 
     <TextView
         android:id="@+id/person_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:fontFamily="@font/roboto_medium"
-        android:textSize="12sp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:fontFamily="@font/cabin_medium"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintStart_toEndOf="@+id/person_image"
         app:layout_constraintTop_toTopOf="@+id/person_image"
-        tools:text="thedesilad" />
+        tools:text="tintin" />
 
     <TextView
         android:id="@+id/person_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/roboto"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:fontFamily="@font/cabin"
+        android:textColor="@color/light_black"
         app:layout_constraintStart_toStartOf="@+id/person_username"
         app:layout_constraintTop_toBottomOf="@+id/person_username"
-        tools:text="straight to work" />
+        tools:text="Straight to work" />
 
     <ImageView
         android:id="@+id/like_icon_image"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:padding="@dimen/_4sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/person_username"
-        app:srcCompat="@drawable/heart_grey_outline" />
+        app:srcCompat="@drawable/heart_grey_outline"
+        android:contentDescription="@string/like_comment" />
 
     <TextView
         android:id="@+id/likes_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#6A6767"
-        android:textSize="12sp"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toEndOf="@+id/like_icon_image"
         app:layout_constraintStart_toStartOf="@+id/like_icon_image"
         app:layout_constraintTop_toBottomOf="@+id/like_icon_image"

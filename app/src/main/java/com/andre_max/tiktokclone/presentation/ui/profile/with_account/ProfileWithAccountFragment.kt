@@ -145,8 +145,8 @@ class ProfileWithAccountFragment : BaseFragment(R.layout.fragment_profile_with_a
             val uid = profileWithAccountFragment.args.uid
             return when (position) {
                 0 -> ProfileVideoTab.getInstance(uid, VideoType.PUBLIC)
-                1 -> ProfileVideoTab.getInstance(uid, VideoType.LIKED)
-                2 -> ProfileVideoTab.getInstance(uid, VideoType.PRIVATE)
+                1 -> ProfileVideoTab.getInstance(uid, VideoType.PRIVATE)
+                2 -> ProfileVideoTab.getInstance(uid, VideoType.LIKED)
                 else -> throw ArrayIndexOutOfBoundsException(position)
             }
         }
