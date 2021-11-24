@@ -25,7 +25,7 @@
 object Versions {
 
     //Version codes for all the libraries
-    const val kotlin = "1.4.30"
+    const val kotlin = "1.6.0"
     const val buildToolsVersion = "4.1.1"
     const val appCompat = "1.3.0-rc01"
     const val constraintLayout = "2.1.0-beta02"
