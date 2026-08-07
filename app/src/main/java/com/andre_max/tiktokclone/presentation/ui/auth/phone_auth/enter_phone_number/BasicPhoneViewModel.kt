@@ -27,7 +27,7 @@ package com.andre_max.tiktokclone.presentation.ui.auth.phone_auth.enter_phone_nu
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.andre_max.tiktokclone.userToken
 import com.andre_max.tiktokclone.userVerificationId
 import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
@@ -42,9 +42,7 @@ import java.util.concurrent.TimeUnit
 class BasicPhoneViewModel : BaseViewModel() {
 
     val livePhoneNumber = MutableLiveData("")
-    val isValid = Transformations.map(livePhoneNumber) { phoneNumber ->
-        phoneNumber.length == 9
-    }
+    val isValid = livePhoneNumber.map { phoneNumber -> phoneNumber.length == 9 }
 
     private val _liveCredential = MutableLiveData<AuthCredential?>()
     val liveCredential: LiveData<AuthCredential?> = _liveCredential

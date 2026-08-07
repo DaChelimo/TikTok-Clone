@@ -55,13 +55,14 @@ class EnterCodeFragment : BaseFragment(R.layout.fragment_enter_code) {
         super.setUpClickListeners()
         binding.signUpBtn.setOnClickListener {
             val codeView = binding.inputCode
+            val code = codeView.text.toString()
 
-            if (codeView.code.length != codeView.codeLength) {
+            if (code.length != SMS_CODE_LENGTH) {
                 ResUtils.showSnackBar(requireView(), R.string.code_invalid)
-                codeView.clearCode()
+                codeView.setText("")
             } else {
                 KeyboardUtils.hide(requireView())
-                getUserCredential(codeView.code)
+                getUserCredential(code)
             }
         }
     }
@@ -100,4 +101,8 @@ class EnterCodeFragment : BaseFragment(R.layout.fragment_enter_code) {
             )
     }
 
+    companion object {
+        /** Firebase SMS verification codes are 6 digits. */
+        private const val SMS_CODE_LENGTH = 6
+    }
 }

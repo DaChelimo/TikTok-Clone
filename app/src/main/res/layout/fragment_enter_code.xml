@@ -28,7 +28,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__solid_white"
+    android:background="@android:color/white"
     tools:context=".presentation.ui.auth.phone_auth.enter_code.EnterCodeFragment">
 
 
@@ -74,24 +74,29 @@
         app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
         app:layout_constraintTop_toBottomOf="@+id/input_code" />
 
-    <com.bigbangbutton.editcodeview.EditCodeView
+    <!--
+      TODO: temporary stand-in for the removed com.bigbangbutton.editcodeview.EditCodeView
+      (jcenter-only artifact, no longer resolvable). This plain EditText restores a buildable,
+      usable screen but loses the per-digit underline UI. A proper OTP input is an open
+      decision — see docs/plans/ONBOARDING_MIGRATION.md.
+    -->
+    <EditText
         android:id="@+id/input_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_12sdp"
+        android:autofillHints="smsOTPCode"
         android:background="@android:color/transparent"
-        android:ems="10"
         android:fontFamily="@font/cabin_medium"
+        android:hint="@string/enter_code"
+        android:importantForAutofill="yes"
+        android:inputType="number"
+        android:letterSpacing="0.4"
+        android:maxLength="6"
         android:textColor="@color/dark_black"
         android:textSize="@dimen/_14ssp"
-        app:codeLength="6"
         app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
         app:layout_constraintStart_toStartOf="@+id/create_username_plain_text"
-        app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text"
-        app:textSize="@dimen/_14ssp"
-        app:underlineBaseColor="@color/light_black"
-        app:underlineFilledColor="@color/dark_black"
-        app:underlineSelectedColor="@color/pinkBtnBackground"
-        app:underlineStroke="@dimen/_1sdp" />
+        app:layout_constraintTop_toBottomOf="@+id/create_username_plain_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
