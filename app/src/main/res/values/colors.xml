@@ -43,6 +43,9 @@
 
     <color name="medium_grey">#7A7777</color>
     <color name="medium_red">#ff0033</color>
+    <!-- Error text on the onboarding screens' white surfaces. medium_red (#ff0033) only reaches
+         3.96:1 on white, under the WCAG AA 4.5:1 floor for body-size text; this reaches 6.5:1. -->
+    <color name="dark_red">#B3261E</color>
 
     <color name="dark_blue">#037AF8</color>
     <color name="dark_orange">#F4460F</color>
@@ -50,6 +53,11 @@
 
     <color name="bottom_nav_bar_selected">#737272</color>
     <color name="bottom_nav_bar_unselected">#C1BEBE</color>
+
+    <!-- Screen 3's satisfied-rule tick and strength bar. The design's teal-green (#00C9A7) only
+         reaches 2.3:1 on white — under the 3:1 floor for graphics and well under 4.5:1 for the
+         rule labels it also tints. This is the same hue darkened to 4.1:1. -->
+    <color name="check_green">#00875A</color>
 
     <color name="pinkBtnBackground">#FF0051</color>
     <color name="grey_button_background">#E1DCDC</color>

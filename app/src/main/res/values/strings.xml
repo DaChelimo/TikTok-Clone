@@ -27,7 +27,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
     <string name="successfully_signed_up">You have successfully signed up</string>
     <string name="error_occurred_during_sign_up">Error occurred while signing up. Kindly try again.</string>
     <string name="error_occurred_during_log_in">Error occurred while logging in. Kindly try again.</string>
@@ -48,12 +47,6 @@
 
     <string name="facebook_app_id">***</string>
     <string name="fb_login_protocol_scheme">***</string>
-
-    <!-- Twitter consumer key and secret -->
-    <string name="twitter_consumer_key" translatable="false">***</string>
-    <string name="twitter_consumer_secret" translatable="false">***</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
-
 
     <string name="user_too_young">You are too young to have an account. Thanks for trying.</string>
     <string name="enter_valid_year">Enter a valid year to proceed.</string>
@@ -112,6 +105,12 @@
     <string name="sign_up">Sign up</string>
     <string name="when_is_your_birthday">When\'s your birthday?</string>
     <string name="your_birthday_won_t_be_shown_publicly">Your birthday won\'t be shown publicly</string>
+    <string name="birthday">Birthday</string>
+    <string name="birthday_cannot_be_in_the_future">Your birthday can\'t be in the future.</string>
+    <string name="birthday_picker">Birthday picker</string>
+    <string name="birthday_month">Month</string>
+    <string name="birthday_day">Day</string>
+    <string name="birthday_year">Year</string>
     <string name="phone_number">Phone Number</string>
     <string name="send_code">Send code</string>
     <string name="email_address">Email address</string>
@@ -176,5 +175,31 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="add_comment">Add comment...</string>
 
+    <!-- Screen 2 — basic email (docs/designs/onboarding/02-basic-email.png) -->
+    <string name="email_required">Enter your email address</string>
+    <string name="continue_action">Continue</string>
+    <string name="email_privacy_notice">Your email address may be used to connect you to people you may know, improve ads, and more, depending on your settings.</string>
+    <string name="learn_more">Learn more</string>
+    <string name="yahoo_com">\@yahoo.com</string>
+    <string name="clear_email_address">Clear email address</string>
+
+    <!-- Screen 3 — create password (docs/designs/onboarding/03-enter-password.png) -->
+    <string name="clear_password">Clear password</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="password_requirements_title">Your password must have at least:</string>
+    <string name="password_rule_min_length">8 characters</string>
+    <string name="password_rule_max_length">20 characters at most</string>
+    <string name="password_rule_digit">1 number</string>
+    <string name="password_rule_special_character">1 special character (Example: # ? ! $ &amp; @)</string>
+    <string name="password_rule_uppercase">1 uppercase letter</string>
+    <string name="password_rule_lowercase">1 lowercase letter</string>
+    <string name="password_rule_no_identity">Nothing from your email address or name</string>
+    <string name="password_rule_met">Requirement met</string>
+    <string name="password_rule_unmet">Requirement not met</string>
+    <string name="password_strength_label">Password strength:</string>
+    <string name="password_strength_weak">Weak</string>
+    <string name="password_strength_medium">Medium</string>
+    <string name="password_strength_strong">Strong</string>
 
 </resources>

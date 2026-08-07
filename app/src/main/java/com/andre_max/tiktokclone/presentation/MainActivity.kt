@@ -32,9 +32,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.databinding.ActivityMainBinding
 import com.vincent.videocompressor.VideoCompress
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import kotlin.coroutines.resume
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding

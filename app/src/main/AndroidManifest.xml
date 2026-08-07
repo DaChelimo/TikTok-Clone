@@ -24,8 +24,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.andre_max.tiktokclone">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="com.abedelazizshe.lightcompressorlibrary" />
 
@@ -46,6 +45,7 @@
 
         <activity
             android:name=".presentation.SplashActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
             tools:ignore="LockedOrientationActivity">
