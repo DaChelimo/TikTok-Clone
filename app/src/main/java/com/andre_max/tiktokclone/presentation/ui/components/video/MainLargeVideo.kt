@@ -143,17 +143,17 @@ class MainLargeVideo(
 
     private fun enableDoubleTap(remoteVideo: RemoteVideo) {
         val gd = GestureDetector(binding.root.context, object: GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 player?.changePlayerState()
                 return true
             }
 
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
                 likeOrUnlikeVideo(remoteVideo)
                 return true
             }
 
-            override fun onDoubleTapEvent(e: MotionEvent?) = true
+            override fun onDoubleTapEvent(e: MotionEvent) = true
         })
         binding.simpleExoPlayerView.setOnTouchListener { view, event ->
             view.performClick()

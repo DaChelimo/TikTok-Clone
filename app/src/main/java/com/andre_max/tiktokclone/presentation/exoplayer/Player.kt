@@ -33,8 +33,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.andre_max.tiktokclone.R
-import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -137,12 +137,12 @@ class Player(
         }
     }
 
-    private val playerListener = object : Player.EventListener {
-        override fun onPlayerError(error: ExoPlaybackException) {
+    private val playerListener = object : Player.Listener {
+        override fun onPlayerError(error: PlaybackException) {
             Timber.e(error)
         }
 
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        override fun onPlaybackStateChanged(playbackState: Int) {
             simpleExoplayerView.hideController()
             when (playbackState) {
                 Player.STATE_BUFFERING -> {
