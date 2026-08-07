@@ -131,30 +131,4 @@ class AuthRepo(
         }
     }
 
-    inner class TwitterAuthRepo {
-        private val provider = OAuthProvider.newBuilder("twitter.com").build()
-
-        /**
-         * This carries out sign up using Twitter
-         *
-         * @param activity an activity instance is required to get a twitter auth result
-         */
-        suspend fun doTwitterSignUp(activity: Activity) {
-            val authResult = getTwitterAuthResult(activity).await()
-            Timber.d("middle of doTwitterSignUp with authResult is $authResult")
-            _liveCredential.value = authResult.credential
-        }
-
-        /**
-         * This function gets a twitter auth result by checking if we have an existing auth result
-         * and providing a new sign up flow if not present. The main reason we may have an existing auth result is because
-         * Twitter sign-in creates a new activity and puts ours in the background hence the system may chose
-         * to reclaim it.
-         *
-         * @param activity an activity instance required to get a new twitter auth result
-         */
-        private fun getTwitterAuthResult(activity: Activity) =
-            fireAuth.pendingAuthResult ?: fireAuth
-                .startActivityForSignInWithProvider(activity, provider)
-    }
 }

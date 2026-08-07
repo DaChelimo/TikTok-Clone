@@ -82,8 +82,7 @@
     <fragment
         android:id="@+id/ageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.age_verification.AgeFragment"
-        android:label="Age Fragment"
-        tools:layout="@layout/fragment_age">
+        android:label="Age Fragment">
         <action
             android:id="@+id/action_ageFragment_to_selectBasicSignUpFragment"
             app:destination="@id/selectBasicSignUpFragment" />
@@ -148,9 +147,8 @@
     </fragment>
     <fragment
         android:id="@+id/createPasswordFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.auth.email_auth.enter_password.EnterPasswordFragment"
-        android:label="fragment_create_password"
-        tools:layout="@layout/fragment_create_password">
+        android:name="com.andre_max.tiktokclone.presentation.ui.auth.enter_password.EnterPasswordFragment"
+        android:label="EnterPasswordFragment">
         <action
             android:id="@+id/action_createPasswordFragment_to_createUsernameFragment"
             app:destination="@id/createUsernameFragment" />

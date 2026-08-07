@@ -27,6 +27,7 @@ package com.andre_max.tiktokclone.presentation.ui.auth.select_basic_auth
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -59,6 +60,10 @@ class SelectBasicAuthFragment : Fragment(R.layout.fragment_select_basic_sign_up)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSelectBasicSignUpBinding.bind(view)
+
+        // The host owns the single back affordance for both pages (its arrow sits next to the
+        // "Sign up" title above the tabs); the pages must not draw their own.
+        binding.backBtn.setOnClickListener { findNavController().popBackStack() }
 
         binding.basicViewpager.also {
             it.adapter = BasicFragmentStateAdapter(this)

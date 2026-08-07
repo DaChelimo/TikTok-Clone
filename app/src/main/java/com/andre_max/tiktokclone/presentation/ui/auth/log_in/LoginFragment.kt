@@ -29,7 +29,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.andre_max.tiktokclone.R
@@ -52,8 +51,6 @@ class LoginFragment : BaseFragment(R.layout.fragment_log_in) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         BottomNavViewUtils.hideBottomNavBar(activity)
-
-        binding.logInTwitterBtn.callback = viewModel.twitterCallback
     }
 
     override fun setUpLayout() {
@@ -75,9 +72,6 @@ class LoginFragment : BaseFragment(R.layout.fragment_log_in) {
         binding.logInGoogleBtn.setOnClickListener {
             viewModel.googleAuthRepo.doGoogleAuth(requireContext(), launcher)
         }
-        binding.logInTwitterBtn.setTheClickListener {
-            lifecycleScope.launch { viewModel.twitterAuthRepo.doTwitterSignUp(requireActivity()) }
-        }
     }
 
     override fun setUpLiveData() {
@@ -95,7 +89,6 @@ class LoginFragment : BaseFragment(R.layout.fragment_log_in) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        binding.logInTwitterBtn.onActivityResult(requestCode, resultCode, data)
         viewModel.facebookAuthRepo.handleFacebookOnResult(requestCode, resultCode, data)
     }
 }

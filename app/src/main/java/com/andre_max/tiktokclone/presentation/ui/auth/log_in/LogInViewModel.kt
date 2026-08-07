@@ -33,18 +33,12 @@ import com.andre_max.tiktokclone.models.succeeded
 import com.andre_max.tiktokclone.repo.network.auth.AuthRepo
 import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
 import com.google.firebase.auth.AuthCredential
-import com.twitter.sdk.android.core.Callback
-import com.twitter.sdk.android.core.Result
-import com.twitter.sdk.android.core.TwitterException
-import com.twitter.sdk.android.core.TwitterSession
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class LogInViewModel : BaseViewModel() {
 
     private val authRepo = AuthRepo()
     val googleAuthRepo = authRepo.GoogleAuthRepo()
-    val twitterAuthRepo = authRepo.TwitterAuthRepo()
     val facebookAuthRepo = authRepo.FacebookAuthRepo()
 
     private val _navigateToMyProfile = MutableLiveData(false)
@@ -59,18 +53,6 @@ class LogInViewModel : BaseViewModel() {
 
                 _navigateToMyProfile.value = result.succeeded
             }
-        }
-    }
-
-    val twitterCallback = object : Callback<TwitterSession>() {
-        override fun success(result: Result<TwitterSession>?) {
-            Timber.d("Twitter sign in successful")
-            showMessage(R.string.successfully_signed_up)
-        }
-
-        override fun failure(exception: TwitterException?) {
-            Timber.e(exception)
-            showMessage(R.string.error_occurred_during_sign_up)
         }
     }
 

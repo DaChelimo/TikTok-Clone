@@ -97,7 +97,6 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         app:backgroundTint="#4267B2"
-        app:icon="@drawable/com_facebook_button_login_logo"
         app:iconPadding="@dimen/_12sdp"
         app:iconSize="@dimen/_16sdp"
         app:iconTint="@android:color/white"
@@ -120,31 +119,11 @@
         app:icon="@drawable/googleg_standard_color_18"
         app:iconSize="@dimen/_14sdp"
         app:iconTint="@null"
-        app:layout_constraintBottom_toTopOf="@+id/sign_up_twitter_btn"
+        android:layout_marginBottom="@dimen/_30sdp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_up_tos_text"
         app:layout_constraintEnd_toEndOf="@+id/sign_up_facebook_btn"
         app:layout_constraintStart_toStartOf="@+id/sign_up_facebook_btn"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_facebook_btn" />
-
-    <com.andre_max.tiktokclone.presentation.ui.custom_views.CustomTwitterLoginButton
-        android:id="@+id/sign_up_twitter_btn"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_45sdp"
-        android:layout_marginBottom="@dimen/_30sdp"
-        android:paddingStart="@dimen/_6sdp"
-        android:paddingEnd="@dimen/_6sdp"
-        android:text="@string/continue_with_twitter"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@color/tw__blue_default"
-        app:cornerRadius="@dimen/_4sdp"
-        app:icon="@drawable/tw__ic_logo_default"
-        app:iconPadding="0dp"
-        app:iconSize="@dimen/_24sdp"
-        app:iconTint="@null"
-        app:layout_constraintBottom_toTopOf="@+id/sign_up_tos_text"
-        app:layout_constraintEnd_toEndOf="@+id/sign_up_google_btn"
-        app:layout_constraintStart_toStartOf="@+id/sign_up_google_btn"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_google_btn" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

@@ -29,7 +29,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.andre_max.tiktokclone.*
 import com.andre_max.tiktokclone.R
@@ -38,8 +37,6 @@ import com.andre_max.tiktokclone.models.sign_up.GoogleBody
 import com.andre_max.tiktokclone.utils.BottomNavViewUtils
 import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.google.firebase.auth.*
-import com.twitter.sdk.android.core.*
-import kotlinx.coroutines.launch
 
 class SignUpFragment : BaseFragment(R.layout.sign_up_page) {
 
@@ -56,8 +53,6 @@ class SignUpFragment : BaseFragment(R.layout.sign_up_page) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         BottomNavViewUtils.hideBottomNavBar(activity)
-
-        binding.signUpTwitterBtn.callback = viewModel.twitterCallback
     }
 
     override fun setUpLayout() {
@@ -76,9 +71,6 @@ class SignUpFragment : BaseFragment(R.layout.sign_up_page) {
         }
         binding.signUpGoogleBtn.setOnClickListener {
             viewModel.googleAuthRepo.doGoogleAuth(requireContext(), launcher)
-        }
-        binding.signUpTwitterBtn.setTheClickListener {
-            lifecycleScope.launch { viewModel.twitterAuthRepo.doTwitterSignUp(requireActivity()) }
         }
     }
 
@@ -104,7 +96,6 @@ class SignUpFragment : BaseFragment(R.layout.sign_up_page) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        binding.signUpTwitterBtn.onActivityResult(requestCode, resultCode, data)
         viewModel.facebookAuthRepo.handleFacebookOnResult(requestCode, resultCode, data)
     }
 }
