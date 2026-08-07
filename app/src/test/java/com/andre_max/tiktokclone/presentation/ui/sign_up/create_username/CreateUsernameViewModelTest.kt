@@ -31,7 +31,7 @@ import com.andre_max.tiktokclone.repo.network.name.DefaultNameRepo
 import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.database.FirebaseDatabase
-import com.nhaarman.mockitokotlin2.*
+import org.mockito.kotlin.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
