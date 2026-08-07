@@ -32,9 +32,9 @@ import com.andre_max.tiktokclone.test_utils.filterUserList
 import com.andre_max.tiktokclone.test_utils.testQueryWithNoActualUser
 import com.andre_max.tiktokclone.test_utils.testUserList
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.whenever
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before

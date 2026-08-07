@@ -26,8 +26,8 @@ package com.andre_max.tiktokclone.presentation.ui.home
 
 import com.andre_max.tiktokclone.repo.network.videos.VideosRepo
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
