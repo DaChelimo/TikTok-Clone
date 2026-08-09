@@ -18,4 +18,13 @@ interface UsernameRepo {
     suspend fun isUsernameAvailable(username: String): Result<Boolean, DataError.Network>
 
     suspend fun claimUsername(username: String): EmptyResult<DataError.Network>
+
+    /**
+     * Gives a claimed username back.
+     *
+     * Exists for sign-up rollback, not as a rename feature: `CompleteSignUpUseCase` claims the
+     * name before writing the profile, so a failed profile write has to return it or the name is
+     * reserved to an account that was itself rolled back.
+     */
+    suspend fun releaseUsername(username: String): EmptyResult<DataError.Network>
 }

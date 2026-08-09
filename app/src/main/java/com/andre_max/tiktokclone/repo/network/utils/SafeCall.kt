@@ -8,7 +8,12 @@ package com.andre_max.tiktokclone.repo.network.utils
 import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.Result
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import timber.log.Timber
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -42,4 +47,39 @@ internal fun Throwable.toNetworkError(): DataError.Network = when (this) {
     is FirebaseNetworkException -> DataError.Network.NO_INTERNET
     is FirebaseAuthException -> DataError.Network.UNAUTHORIZED
     else -> DataError.Network.UNKNOWN
+}
+
+/**
+ * [safeCall] for identity-provider calls, translating to [DataError.Auth] instead of
+ * [DataError.Network].
+ *
+ * A separate entry point rather than a parameter on [safeCall] because the two differ only in
+ * their error mapping and a boolean-ish switch would be the wrong abstraction (AGENTS.md §5).
+ */
+suspend fun <T> safeAuthCall(block: suspend () -> T): Result<T, DataError.Auth> =
+    try {
+        Result.Success(block())
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Throwable) {
+        Timber.e(e)
+        Result.Error(e.toAuthError())
+    }
+
+/**
+ * Collapses `ERROR_USER_NOT_FOUND` into [DataError.Auth.INVALID_CREDENTIALS] alongside a wrong
+ * password, so that no caller can distinguish "no such account" from "wrong password" and
+ * accidentally build an account-enumeration oracle out of the difference.
+ */
+private fun Throwable.toAuthError(): DataError.Auth = when (this) {
+    is FirebaseNetworkException -> DataError.Auth.NO_INTERNET
+    is FirebaseTooManyRequestsException -> DataError.Auth.TOO_MANY_REQUESTS
+    is FirebaseAuthWeakPasswordException -> DataError.Auth.WEAK_PASSWORD
+    is FirebaseAuthUserCollisionException -> DataError.Auth.EMAIL_ALREADY_IN_USE
+    is FirebaseAuthInvalidCredentialsException -> DataError.Auth.INVALID_CREDENTIALS
+    is FirebaseAuthInvalidUserException -> when (errorCode) {
+        "ERROR_USER_DISABLED" -> DataError.Auth.ACCOUNT_DISABLED
+        else -> DataError.Auth.INVALID_CREDENTIALS
+    }
+    else -> DataError.Auth.UNKNOWN
 }

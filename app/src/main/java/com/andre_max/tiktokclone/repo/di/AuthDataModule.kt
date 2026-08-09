@@ -5,10 +5,14 @@
 
 package com.andre_max.tiktokclone.repo.di
 
+import com.andre_max.tiktokclone.domain.auth.AuthRepo
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthRepo
+import com.andre_max.tiktokclone.domain.auth.UserProfileRepo
 import com.andre_max.tiktokclone.domain.auth.UsernameRepo
+import com.andre_max.tiktokclone.repo.network.auth.DefaultAuthRepo
 import com.andre_max.tiktokclone.repo.network.phone.ActivityProvider
 import com.andre_max.tiktokclone.repo.network.phone.DefaultPhoneAuthRepo
+import com.andre_max.tiktokclone.repo.network.user.DefaultUserProfileRepo
 import com.andre_max.tiktokclone.repo.network.username.DefaultUsernameRepo
 import dagger.Module
 import dagger.Provides
@@ -31,6 +35,14 @@ object AuthDataModule {
     @Provides
     @Singleton
     fun provideUsernameRepo(): UsernameRepo = DefaultUsernameRepo()
+
+    @Provides
+    @Singleton
+    fun provideAuthRepo(): AuthRepo = DefaultAuthRepo()
+
+    @Provides
+    @Singleton
+    fun provideUserProfileRepo(): UserProfileRepo = DefaultUserProfileRepo()
 
     /**
      * Firebase's `PhoneAuthOptions.setActivity` needs the resumed `Activity`. Tracking it

@@ -36,6 +36,9 @@ class FakeUsernameRepo : UsernameRepo {
     /** Every username passed to [claimUsername], in call order. */
     val claimedUsernames = mutableListOf<String>()
 
+    /** Every username passed to [releaseUsername], in call order — lets rollback be asserted. */
+    val releasedUsernames = mutableListOf<String>()
+
     val availabilityCallCount: Int get() = availabilityQueries.size
 
     override suspend fun isUsernameAvailable(
@@ -51,6 +54,12 @@ class FakeUsernameRepo : UsernameRepo {
         claimedUsernames += username
         claimError?.let { return Result.Error(it) }
         takenUsernames += username
+        return Result.Success(Unit)
+    }
+
+    override suspend fun releaseUsername(username: String): EmptyResult<DataError.Network> {
+        releasedUsernames += username
+        takenUsernames -= username
         return Result.Success(Unit)
     }
 }

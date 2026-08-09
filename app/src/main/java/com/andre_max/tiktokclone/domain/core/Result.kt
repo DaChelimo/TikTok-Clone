@@ -51,6 +51,27 @@ sealed interface DataError : AppError {
         PERMISSION_DENIED,
         UNKNOWN
     }
+
+    /**
+     * Failures of the identity provider itself, kept separate from [Network] so that "the request
+     * never landed" and "the request landed and the credentials were rejected" cannot be confused
+     * — they need different UI and only one of them is worth a retry.
+     *
+     * There is deliberately no `USER_NOT_FOUND`: a sign-in attempt against an unknown account and
+     * one against a wrong password both collapse into [INVALID_CREDENTIALS] at the data boundary,
+     * so no layer above can leak which accounts exist even by accident. Making that structural
+     * rather than a UI convention is the point — a future screen cannot reintroduce the
+     * enumeration vector by picking a more specific message.
+     */
+    enum class Auth : DataError {
+        EMAIL_ALREADY_IN_USE,
+        WEAK_PASSWORD,
+        INVALID_CREDENTIALS,
+        ACCOUNT_DISABLED,
+        TOO_MANY_REQUESTS,
+        NO_INTERNET,
+        UNKNOWN
+    }
 }
 
 // endregion

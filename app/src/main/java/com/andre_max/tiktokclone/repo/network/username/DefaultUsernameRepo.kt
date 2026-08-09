@@ -40,4 +40,9 @@ class DefaultUsernameRepo(
         safeCall {
             realFire.getReference(firePath.getTakenUsernames(username)).setValue(username).await()
         }.map { }
+
+    override suspend fun releaseUsername(username: String): EmptyResult<DataError.Network> =
+        safeCall {
+            realFire.getReference(firePath.getTakenUsernames(username)).removeValue().await()
+        }.map { }
 }
