@@ -1,6 +1,6 @@
 # Auth Completion Plan — from "screens built" to "authentication works"
 
-**Status:** draft for human review, 2026-08-08. Nothing below has been executed.
+**Status:** approved 2026-08-08; §4 decisions frozen. Execution in progress.
 **Scope:** authentication only. No feed/profile/upload work.
 
 Read with [ONBOARDING_FEATURE_SPEC.md](ONBOARDING_FEATURE_SPEC.md) (the frozen contract) and
@@ -221,39 +221,21 @@ all seven unattended.
 
 ---
 
-## 4. Clarifying questions
+## 4. Decisions (user-approved 2026-08-08)
 
-**Q1 — Credential hand-off between screens.** Nav args (`SafeArgs`), or a nav-graph-scoped
-`SignUpSession` holder? I recommend the holder: a password in a `Bundle` survives into
-saved-instance-state and back-stack dumps. Nav args are what the legacy flow used, so this is a
-deliberate departure worth your sign-off.
+These were the open questions; all are now closed. Do not re-litigate them.
 
-**Q2 — OTP input** (open since 2026-07-25, blocks Step 3). Options: (a) hand-rolled Compose
-6-box input — no dependency, ~100 lines, full control; (b) a maintained third-party Compose OTP
-library; (c) a plain `TextField` for now, polish later. I lean (a) — it's small enough that a
-dependency isn't worth it, and Compose makes it far less painful than the XML `editcodeview` that
-was ripped out.
+| # | Question | Decision |
+| --- | --- | --- |
+| **D-A1** | Credential hand-off between screens | **Nav-graph-scoped `SignUpSession` holder**, not `SafeArgs`. A password in a `Bundle` survives into saved-instance-state and back-stack dumps. |
+| **D-A2** | OTP input | **Build it, hand-rolled in Compose** (no new dependency) — but **as its own feature slice**, with its own commits, not folded into the rest of the auth work. |
+| **D-A3** | `AuthCredential` in domain | **Keep Firebase types out of `domain` entirely.** `signInWithGoogle(idToken: String)`, not `signInWithCredential(AuthCredential)`. Clean separation wherever it can be had. |
+| **D-A4** | Provider config | **Google: go ahead** — register the debug SHA-1 via the Firebase CLI and refresh `google-services.json`. **Facebook: disabled for now**, with the button in a disabled state, a TODO, and the reason recorded in `docs/SPEC.md`. |
+| **D-A5** | Log-in | **In scope.** Step 5 stands. |
+| **D-A6** | The 13 legacy test failures | **Fix them**, grouped by root cause. |
 
-**Q3 — `AuthCredential` in the domain interface.** `signInWithCredential(credential: AuthCredential)`
-puts a Firebase type in `domain`, which breaks non-negotiable #6 and the dependency-direction grep.
-The clean alternative is `signInWithGoogle(idToken: String)` / `signInWithFacebook(accessToken: String)`,
-keeping Firebase entirely in `repo`. Slightly more surface, architecturally correct — I'd take it
-unless you object.
-
-**Q4 — How far should I go on the provider config?** This is the one where I need you:
-
-- **Google:** I can set the active Firebase project, register your debug keystore SHA-1 via the
-  Firebase MCP, and re-download `google-services.json`. Do you want me to? I'd want you to confirm
-  the project ID and that adding a SHA-1 to that project is fine. **Release** SHA-1 stays yours —
-  I won't touch signing keys.
-- **Facebook:** needs a client token from the Meta console, which I can't reach. Either you paste
-  it into `gradle.properties` (it's not a secret in the API-key sense, but it is yours to add), or
-  Facebook gets disabled.
-- Or: **disable both**, ship email + phone complete, file TODOs. Perfectly reasonable.
-
-**Q5 — Is log-in in scope?** Step 5 assumes yes, since "authentication is complete" implies
-returning users can get back in. The frozen spec never included it. Confirm and I'll keep it; say
-no and Step 5 drops.
-
-**Q6 — The 13 failing legacy tests.** Out of auth scope (home, search, tags, time utils). Leave
-them red, or do you want them fixed while I'm in here?
+**D-A7 — Commit hygiene (applies to every step below).** One commit resolves one specific thing,
+and only the changes belonging to that thing are staged into it. Never batch unrelated fixes
+together — the legacy test repairs in particular get their own commits, split by cause rather
+than by file. The user reviews this branch commit-by-commit, so a mixed commit is the single
+most expensive thing to hand them.
