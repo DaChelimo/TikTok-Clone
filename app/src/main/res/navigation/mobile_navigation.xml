@@ -128,8 +128,7 @@
     <fragment
         android:id="@+id/selectBasicSignUpFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.select_basic_auth.SelectBasicAuthFragment"
-        android:label="SelectBasicSignUpFragment"
-        tools:layout="@layout/fragment_select_basic_sign_up">
+        android:label="SelectBasicSignUpFragment">
         <action
             android:id="@+id/action_selectBasicSignUpFragment_to_createPasswordFragment"
             app:destination="@id/createPasswordFragment" />
@@ -164,8 +163,13 @@
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.phone_auth.enter_code.EnterCodeFragment"
         android:label="EnterCodeFragment"
         tools:layout="@layout/fragment_enter_code">
+        <!--
+            Renamed from `phoneNumber`, which no caller read: the legacy fragment picks the id up
+            from a global instead. Firebase needs the verification id, not the number, to build
+            the credential.
+        -->
         <argument
-            android:name="phoneNumber"
+            android:name="verificationId"
             app:argType="string" />
         <action
             android:id="@+id/action_enterCodeFragment_to_createUsernameFragment"
