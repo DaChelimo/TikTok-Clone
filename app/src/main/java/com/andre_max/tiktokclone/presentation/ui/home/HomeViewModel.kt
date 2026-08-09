@@ -20,6 +20,9 @@ import com.andre_max.tiktokclone.models.comment.Comment
 import com.andre_max.tiktokclone.models.user.User
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.presentation.core.UiText
+import com.andre_max.tiktokclone.presentation.ui.components.video.CommentSheetUiState
+import com.andre_max.tiktokclone.presentation.ui.components.video.CommentUi
+import com.andre_max.tiktokclone.presentation.ui.components.video.VideoItemUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -97,7 +100,7 @@ class HomeViewModel @Inject constructor(
                 is Result.Success -> {
                     _uiState.update { state ->
                         val newItems = result.data.map { video ->
-                            FeedItemUi(video = video, likeCount = video.likes)
+                            VideoItemUi(video = video, likeCount = video.likes)
                         }
                         state.copy(feed = (state.feed + newItems).toImmutableList(), isLoading = false)
                     }
@@ -176,7 +179,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun updateFeedItem(videoId: String, transform: (FeedItemUi) -> FeedItemUi) {
+    private fun updateFeedItem(videoId: String, transform: (VideoItemUi) -> VideoItemUi) {
         _uiState.update { state ->
             state.copy(
                 feed = state.feed.map {
