@@ -179,8 +179,7 @@
     <fragment
         android:id="@+id/largeVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.large_video.LargeVideoFragment"
-        android:label="LargeVideoFragment"
-        tools:layout="@layout/large_video_layout">
+        android:label="LargeVideoFragment">
         <argument
             android:name="remoteVideo"
             app:argType="com.andre_max.tiktokclone.models.video.RemoteVideo" />
