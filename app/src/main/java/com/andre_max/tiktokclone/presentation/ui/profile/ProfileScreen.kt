@@ -25,6 +25,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +37,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -101,14 +107,35 @@ private fun ProfileHeader(
     ) {
         if (state.isOwnProfile) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                IconButton(
-                    onClick = { onAction(ProfileAction.SignOutClicked) },
-                    modifier = Modifier.testTag(ProfileScreenTags.MENU),
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_more_vert),
-                        contentDescription = stringResource(R.string.open_menu),
-                    )
+                Box {
+                    var menuOpen by remember { mutableStateOf(false) }
+                    IconButton(
+                        onClick = { menuOpen = true },
+                        modifier = Modifier.testTag(ProfileScreenTags.MENU),
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_more_vert),
+                            contentDescription = stringResource(R.string.open_menu),
+                        )
+                    }
+                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.settings)) },
+                            onClick = {
+                                menuOpen = false
+                                onAction(ProfileAction.SettingsClicked)
+                            },
+                            modifier = Modifier.testTag(ProfileScreenTags.MENU_SETTINGS),
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.sign_out)) },
+                            onClick = {
+                                menuOpen = false
+                                onAction(ProfileAction.SignOutClicked)
+                            },
+                            modifier = Modifier.testTag(ProfileScreenTags.MENU_SIGN_OUT),
+                        )
+                    }
                 }
             }
         } else {

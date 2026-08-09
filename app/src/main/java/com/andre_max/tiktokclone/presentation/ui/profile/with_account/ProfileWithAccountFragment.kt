@@ -42,6 +42,8 @@ class ProfileWithAccountFragment : Fragment() {
                                 .actionProfileWithAccountFragmentToLargeVideoFragment(video),
                         )
                     },
+                    // Unreachable here: the menu only renders on the own profile (Me tab).
+                    onNavigateToSettings = {},
                     onSignedOut = { findNavController().popBackStack() },
                 )
             }

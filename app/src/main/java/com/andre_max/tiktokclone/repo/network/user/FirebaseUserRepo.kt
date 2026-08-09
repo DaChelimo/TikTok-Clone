@@ -121,6 +121,16 @@ class FirebaseUserRepo(
         }
     }
 
+    override suspend fun updateShowLikedVideos(show: Boolean): EmptyResult<DataError.Network> {
+        val myUid = fireAuth.uid ?: return Result.Error(DataError.Network.UNAUTHORIZED)
+        return safeCall {
+            realFire.getReference(firePath.getUserInfo(myUid))
+                .child("showLikedVideos")
+                .setValue(show)
+                .await()
+        }
+    }
+
     private suspend fun adjustCount(ref: DatabaseReference, increase: Boolean) {
         val count = ref.get().await().getValue<Long>() ?: 0
         ref.setValue(if (increase) count + 1 else count - 1).await()

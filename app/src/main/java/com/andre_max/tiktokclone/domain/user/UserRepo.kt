@@ -47,4 +47,7 @@ interface UserRepo {
         uid: String,
         videoType: VideoType,
     ): Result<List<RemoteVideo>, DataError.Network>
+
+    /** Flips the current user's liked-tab visibility (see GetVisibleVideoTypesUseCase). */
+    suspend fun updateShowLikedVideos(show: Boolean): EmptyResult<DataError.Network>
 }

@@ -1,32 +1,71 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.settings
 
 import androidx.lifecycle.ViewModel
-import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
+import androidx.lifecycle.viewModelScope
+import com.andre_max.tiktokclone.domain.core.fold
+import com.andre_max.tiktokclone.domain.core.onError
+import com.andre_max.tiktokclone.domain.user.UserRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class SettingsViewModel : BaseViewModel() {
+data class SettingsUiState(
+    val showLikedVideos: Boolean = false,
+    val isLoading: Boolean = true,
+)
 
+sealed interface SettingsAction {
+    data object ShowLikedVideosToggled : SettingsAction
+}
+
+/**
+ * App settings. One real setting today: the liked-tab visibility flag the `User` model always
+ * carried with a "no settings UI yet" TODO — this screen is that UI.
+ */
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val userRepo: UserRepo,
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    init {
+        val myUid = userRepo.currentUid()
+        if (myUid == null) {
+            _uiState.update { it.copy(isLoading = false) }
+        } else {
+            viewModelScope.launch {
+                val showLiked = userRepo.getUserProfile(myUid)
+                    .fold({ it.showLikedVideos }, { false })
+                _uiState.update { it.copy(showLikedVideos = showLiked, isLoading = false) }
+            }
+        }
+    }
+
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            SettingsAction.ShowLikedVideosToggled -> onToggleShowLikedVideos()
+        }
+    }
+
+    private fun onToggleShowLikedVideos() {
+        val newValue = !_uiState.value.showLikedVideos
+        _uiState.update { it.copy(showLikedVideos = newValue) }
+
+        viewModelScope.launch {
+            userRepo.updateShowLikedVideos(newValue).onError {
+                _uiState.update { it.copy(showLikedVideos = !newValue) }
+            }
+        }
+    }
 }

@@ -46,7 +46,7 @@ These are the shapes actually persisted/transferred today (`models/`); the equiv
 
 | Entity | Key fields | Notes |
 | --- | --- | --- |
-| `User` | `uid`, `username`, `followers`, `following`, `totalLikes`, `profilePictureUrl?`, `showLikedVideos` | `showLikedVideos` visibility toggle has no settings UI yet (`TODO` in source). |
+| `User` | `uid`, `username`, `followers`, `following`, `totalLikes`, `profilePictureUrl?`, `showLikedVideos` | `showLikedVideos` is toggled from the settings screen (2026-08-09) and gates the liked tab's visibility to other users. |
 | `RemoteVideo` | `videoId`, `url`, `description?`, `tags: Map<String,String>`, `duration`, `dateCreated`, `likes`, `views`, `authorUid`, `totalCommentsSize` | Parcelable. Tags are a map, not a list — key/value shape isn't documented in code; confirm with the user before relying on it. |
 | `VideoType` | enum `LIKED` / `PRIVATE` / `PUBLIC` | Selects which of a user's video collections is being read (also used as a Firebase path segment via `toString()`). |
 | `Comment` | `commentId`, `authorUid`, `commentText`, `commentLikes`, `dateCreated`, `replies: List<Reply>` | Replies are nested under a comment, not a separate top-level collection. |
@@ -97,8 +97,8 @@ Where behavior isn't fully determinable from code alone, that's called out rathe
 | Profile | `presentation/ui/profile` | **Migrated to Clean Architecture + Compose (2026-08-09).** Own vs. other-user profile behind one `ProfileViewModel` (uid nav arg, falling back to the signed-in user on the Me tab). Visibility rule (decided 2026-08-09, enforced by `GetVisibleVideoTypesUseCase`): private videos are owner-only; the liked tab shows to others only when the owner's `showLikedVideos` flag is on; public always. Tab order Public → Liked → Private with matching labels (the legacy screen labelled the Liked tab "private" and vice versa). Sign-out confirm lives on the own-profile menu; the menu/edit controls no longer render inertly on other users' profiles. Signed-out Me tab shows the sign-up prompt. |
 | Discover / tags | `presentation/ui/discover`, `presentation/ui/selected_tag`, `repo/network/tag` | **Migrated to Clean Architecture + Compose (2026-08-09).** Tag rows (name, count, horizontal video previews) → tag page (grid of the tag's videos) → video detail. Note: the legacy code never wired this navigation — the tag page was an empty unreachable fragment; the migration implemented what this row always described. Popular-tags ranking fixed to actually order by count descending. |
 | Search | `presentation/ui/search`, `repo/network/suggestions` | **Migrated to Clean Architecture + Compose (2026-08-09).** Debounced (1250ms) username prefix search over `users/*/basic-data/username`; the arrow icon copies a suggestion into the box, tapping the row opens that user's profile. The never-implemented "search results" screen was removed — search resolves to profiles only until a results surface is actually specified. |
-| Inbox | `presentation/ui/inbox` | Notifications surface — no domain/repo layer exists for it yet in the tree; still fully legacy. |
-| Settings | `presentation/ui/settings` | Account/app settings. |
+| Inbox | `presentation/ui/inbox` | **Compose (2026-08-09), still a placeholder by design.** The legacy screen was only ever the static "notifications will be displayed here" message; no notification model exists anywhere in the backend. A real inbox needs product decisions (what generates a notification, where it's stored) before there is anything to build. |
+| Settings | `presentation/ui/settings` | **Migrated to Clean Architecture + Compose (2026-08-09) and made reachable** (own-profile menu → Settings; the legacy fragment was an unreachable "TextView" stub outside the nav graph). Holds the one specified setting: the `showLikedVideos` toggle (closing the `User` model's "no settings UI yet" TODO), optimistic write with revert-on-error. |
 
 ## 6. Cross-cutting behavior rules
 

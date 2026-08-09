@@ -26,6 +26,7 @@ data class ProfileTabUi(
 
 sealed interface ProfileAction {
     data class VideoClicked(val video: RemoteVideo) : ProfileAction
+    data object SettingsClicked : ProfileAction
     data object SignOutClicked : ProfileAction
     data object SignOutConfirmed : ProfileAction
     data object SignOutDismissed : ProfileAction
@@ -33,12 +34,15 @@ sealed interface ProfileAction {
 
 sealed interface ProfileEvent {
     data class NavigateToVideo(val video: RemoteVideo) : ProfileEvent
+    data object NavigateToSettings : ProfileEvent
     data object SignedOut : ProfileEvent
 }
 
 /** Test/preview tags for the nodes this screen must expose. */
 object ProfileScreenTags {
     const val MENU = "profile_menu"
+    const val MENU_SETTINGS = "profile_menu_settings"
+    const val MENU_SIGN_OUT = "profile_menu_sign_out"
     const val EDIT_PROFILE = "profile_edit"
     const val TAB_ROW = "profile_tab_row"
     const val VIDEO_GRID = "profile_video_grid"

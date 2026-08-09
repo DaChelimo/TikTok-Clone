@@ -54,6 +54,9 @@ class ProfileViewModel @Inject constructor(
             is ProfileAction.VideoClicked ->
                 _events.trySend(ProfileEvent.NavigateToVideo(action.video))
 
+            ProfileAction.SettingsClicked ->
+                _events.trySend(ProfileEvent.NavigateToSettings)
+
             ProfileAction.SignOutClicked ->
                 _uiState.update { it.copy(showSignOutDialog = true) }
 

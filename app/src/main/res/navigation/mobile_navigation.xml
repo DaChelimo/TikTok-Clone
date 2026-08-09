@@ -32,8 +32,7 @@
     <fragment
         android:id="@+id/inbox_fragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.inbox.InboxFragment"
-        android:label="Inbox"
-        tools:layout="@layout/fragment_inbox" />
+        android:label="Inbox" />
 
     <fragment
         android:id="@+id/discoverFragment"
@@ -166,7 +165,14 @@
         <action
             android:id="@+id/action_meFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_meFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.andre_max.tiktokclone.presentation.ui.settings.SettingsFragment"
+        android:label="Settings" />
     <fragment
         android:id="@+id/largeVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.large_video.LargeVideoFragment"

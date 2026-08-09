@@ -63,6 +63,10 @@ class MeFragment : Fragment() {
                                 MeFragmentDirections.actionMeFragmentToLargeVideoFragment(video),
                             )
                         },
+                        onNavigateToSettings = {
+                            findNavController()
+                                .navigate(R.id.action_meFragment_to_settingsFragment)
+                        },
                         onSignedOut = { currentUid = null },
                         viewModel = hiltViewModel(key = "profile-$uid"),
                     )

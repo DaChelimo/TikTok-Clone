@@ -16,6 +16,7 @@ import com.andre_max.tiktokclone.models.video.RemoteVideo
 @Composable
 fun ProfileRoute(
     onNavigateToVideo: (RemoteVideo) -> Unit,
+    onNavigateToSettings: () -> Unit,
     onSignedOut: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
@@ -25,6 +26,7 @@ fun ProfileRoute(
         viewModel.events.collect { event ->
             when (event) {
                 is ProfileEvent.NavigateToVideo -> onNavigateToVideo(event.video)
+                ProfileEvent.NavigateToSettings -> onNavigateToSettings()
                 ProfileEvent.SignedOut -> onSignedOut()
             }
         }

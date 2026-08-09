@@ -59,4 +59,16 @@ class FakeUserRepo : UserRepo {
         userVideosError?.let { return Result.Error(it) }
         return Result.Success(userVideos[uid to videoType] ?: emptyList())
     }
+
+    val showLikedVideosUpdates = mutableListOf<Boolean>()
+    var updateShowLikedVideosError: DataError.Network? = null
+
+    override suspend fun updateShowLikedVideos(show: Boolean): EmptyResult<DataError.Network> {
+        updateShowLikedVideosError?.let { return Result.Error(it) }
+        showLikedVideosUpdates += show
+        uid?.let { myUid ->
+            profiles[myUid]?.let { profiles[myUid] = it.copy(showLikedVideos = show) }
+        }
+        return Result.Success(Unit)
+    }
 }
