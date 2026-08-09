@@ -1,59 +1,44 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.home
 
+import com.andre_max.tiktokclone.models.TheResult
 import com.andre_max.tiktokclone.repo.network.videos.VideosRepo
-import com.google.common.truth.Truth.assertThat
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
-@RunWith(MockitoJUnitRunner::class)
 class HomeViewModelTest {
 
-    private lateinit var viewModel: HomeViewModel
+    /**
+     * `init` launches into `viewModelScope`, i.e. `Dispatchers.Main`. Without this rule the
+     * constructor throws before any assertion runs — which is what the previous version of this
+     * suite was actually failing on, not on the repo interaction it meant to check.
+     */
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
-    @Mock
-    lateinit var videosRepo: VideosRepo
+    private val videosRepo = mock<VideosRepo>()
 
     @Test
     fun whenViewModel_isInitialized_fetchVideosIsCalled() = runBlockingTest {
-        // GIVEN a fresh ViewModel
-        viewModel = HomeViewModel(mock(), mock(), videosRepo)
+        whenever(videosRepo.fetchRandomVideos()).thenReturn(TheResult.Success(emptyList()))
 
-        // WHEN viewModel.init is called
+        HomeViewModel(mock(), mock(), videosRepo)
 
-        // THEN videosRepo.fetchRandomVideos
-        verify(videosRepo.fetchRandomVideos())
+        // verify() takes the mock, not the result of calling it. The previous
+        // `verify(videosRepo.fetchRandomVideos())` invoked the method for real and handed its
+        // return value to Mockito, which is why this failed with IllegalStateException rather
+        // than with a useful message.
+        verify(videosRepo).fetchRandomVideos()
     }
-
 }
