@@ -241,6 +241,8 @@ dependencies {
 
     // Async images in Compose (avatars); Glide stays for the remaining legacy View screens
     implementation "io.coil-kt:coil-compose:2.6.0"
+    // First-frame video thumbnails in the profile grids (what Glide.load(videoUrl) did)
+    implementation "io.coil-kt:coil-video:2.6.0"
 
     // Turbine (StateFlow/Flow assertions) and MockK (Firebase boundary mocking)
     testImplementation "app.cash.turbine:turbine:1.1.0"

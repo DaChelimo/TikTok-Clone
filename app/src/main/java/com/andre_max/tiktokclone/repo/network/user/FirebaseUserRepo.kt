@@ -9,6 +9,8 @@ import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.models.user.User
+import com.andre_max.tiktokclone.models.video.RemoteVideo
+import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.repo.network.utils.FirePath
 import com.andre_max.tiktokclone.repo.network.utils.safeCall
 import com.google.firebase.auth.FirebaseAuth
@@ -93,6 +95,29 @@ class FirebaseUserRepo(
                 realFire.getReference("users/$otherUid").child(FOLLOWERS),
                 increase = shouldFollow,
             )
+        }
+    }
+
+    /**
+     * The collection stores video ids; each resolves against the global `videos/` path. A
+     * dangling id (video deleted, entry not cleaned up) is skipped rather than failing the
+     * whole grid — same net behavior as the legacy `filterNotNull()` in the tab ViewModel.
+     */
+    override suspend fun getUserVideos(
+        uid: String,
+        videoType: VideoType,
+    ): Result<List<RemoteVideo>, DataError.Network> = safeCall {
+        val videoIds = realFire
+            .getReference(firePath.getUserVideos(uid, videoType))
+            .get()
+            .await()
+            .getValue<Map<String, String>>()
+            ?.values
+            ?.toList() ?: listOf()
+
+        val allVideos = realFire.getReference(firePath.getAllVideosPath())
+        videoIds.mapNotNull { videoId ->
+            allVideos.child(videoId).get().await().getValue<RemoteVideo>()
         }
     }
 

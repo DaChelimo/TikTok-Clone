@@ -9,6 +9,8 @@ import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.models.user.User
+import com.andre_max.tiktokclone.models.video.RemoteVideo
+import com.andre_max.tiktokclone.models.video.VideoType
 
 /**
  * Reads other users' profiles and manages the follow relationship.
@@ -36,4 +38,13 @@ interface UserRepo {
     suspend fun follow(otherUid: String): EmptyResult<DataError.Network>
 
     suspend fun unfollow(otherUid: String): EmptyResult<DataError.Network>
+
+    /**
+     * One of a user's three video collections. Visibility of non-public collections is the
+     * caller's concern (see usecase.GetVisibleVideoTypesUseCase) — the repo just reads.
+     */
+    suspend fun getUserVideos(
+        uid: String,
+        videoType: VideoType,
+    ): Result<List<RemoteVideo>, DataError.Network>
 }

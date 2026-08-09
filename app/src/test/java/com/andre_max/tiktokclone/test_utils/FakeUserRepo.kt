@@ -10,6 +10,8 @@ import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.domain.user.UserRepo
 import com.andre_max.tiktokclone.models.user.User
+import com.andre_max.tiktokclone.models.video.RemoteVideo
+import com.andre_max.tiktokclone.models.video.VideoType
 
 /** Hand-written [UserRepo] double — deterministic, no mocking framework. */
 class FakeUserRepo : UserRepo {
@@ -45,5 +47,16 @@ class FakeUserRepo : UserRepo {
         followError?.let { return Result.Error(it) }
         followingIds -= otherUid
         return Result.Success(Unit)
+    }
+
+    val userVideos = mutableMapOf<Pair<String, VideoType>, List<RemoteVideo>>()
+    var userVideosError: DataError.Network? = null
+
+    override suspend fun getUserVideos(
+        uid: String,
+        videoType: VideoType,
+    ): Result<List<RemoteVideo>, DataError.Network> {
+        userVideosError?.let { return Result.Error(it) }
+        return Result.Success(userVideos[uid to videoType] ?: emptyList())
     }
 }
