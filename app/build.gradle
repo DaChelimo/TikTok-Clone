@@ -86,7 +86,8 @@ android {
     }
 
     buildFeatures {
-        dataBinding true
+        // dataBinding retired with the last data-binding layout (slice 8, 2026-08-09).
+        // viewBinding stays: MainActivity still binds activity_main (bottom nav host).
         viewBinding true
         compose true
         buildConfig true
@@ -155,21 +156,6 @@ dependencies {
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    // CircleImageView
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-    // Groupie (com.xwray artifacts were jcenter-only; jitpack mirror keeps the same com.xwray.groupie package)
-    implementation 'com.github.lisawray.groupie:groupie:2.10.1'
-    implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.10.1'
-
-    // Edit CodeView
-    // editcodeview 1.0.6 removed: jcenter-only artifact, no longer resolvable.
-    // Source still references it (EnterCodeFragment.kt, EnterCodeViewModel.kt, fragment_enter_code.xml) — fix/replace manually.
-//    implementation 'com.bigbangbutton:editcodeview:1.0.6'
-
-    // Dexter
-    implementation 'com.karumi:dexter:6.2.3'
-
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
@@ -179,11 +165,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
-
-    // Glide
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
-    kapt 'com.github.bumptech.glide:compiler:4.13.0'
-
     // CameraView
     implementation 'com.otaliastudios:cameraview:2.7.2'
 

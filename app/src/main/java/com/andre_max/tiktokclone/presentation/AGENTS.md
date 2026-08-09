@@ -1,15 +1,13 @@
 # `presentation/` — Agent Briefing
 
-This tree is **mid-migration**: legacy Fragment/LiveData/Groupie screens and new
-Compose/UiState/StateFlow screens coexist deliberately (strangler-fig). Check which pattern
-the screen you're touching already uses before assuming — see
-[docs/CLEAN_ARCHITECTURE_MIGRATION.md](../../../../../../../../docs/CLEAN_ARCHITECTURE_MIGRATION.md)
-for which slice is done vs. not started. **The whole of `presentation/ui/auth/**` is Compose**
-as of 2026-08-09 — copy its conventions rather than the older screens'. Feed, profile, upload,
-discover, search, comments, inbox and settings are all still Fragment/ViewModel/LiveData.
+This tree is **fully Compose/UiState/StateFlow** (migration completed 2026-08-09 — the route
+is logged in
+[docs/CLEAN_ARCHITECTURE_MIGRATION.md](../../../../../../../../docs/CLEAN_ARCHITECTURE_MIGRATION.md)).
 
-Auth's Fragments are `ComposeView` shells with navigation callbacks and nothing else; if you
-find yourself adding logic to one, it belongs in the ViewModel.
+Every Fragment is a `ComposeView` shell with navigation callbacks and system-bar chrome and
+nothing else; if you find yourself adding logic to one, it belongs in the ViewModel. Shared
+video building blocks (`VideoPage`, `CommentSheet`, `VideoPlayer`, `VideoThumbnail`) live in
+`ui/components/video/` — features must not reach into each other's packages for UI.
 
 ## Conventions for new/migrated Compose screens
 
@@ -35,14 +33,6 @@ find yourself adding logic to one, it belongs in the ViewModel.
   share `Intent`) goes directly in the click lambda — no `LaunchedEffect` wrapper needed.
   `LaunchedEffect`/`DisposableEffect` are for effects bound to composition lifecycle, not for
   click handlers.
-
-## Legacy Fragment/LiveData/Groupie screens
-
-Leave `BaseFragment`/`BaseViewModel`/`TheResult`/`safeAccess` alone unless you're doing the
-migration slice that replaces them. They're intentionally still alive per the strangler-fig
-plan — do not "clean them up" as a side effect of an unrelated change, and do not add new
-screens on top of them (new screens are Compose, per the migration order in
-[docs/CLEAN_ARCHITECTURE_MIGRATION.md](../../../../../../../../docs/CLEAN_ARCHITECTURE_MIGRATION.md)).
 
 ## Dependency direction
 

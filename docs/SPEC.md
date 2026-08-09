@@ -23,10 +23,11 @@ search, inbox (notifications), and settings.
 - **Backend**: Firebase — Realtime Database (`repo/network/*`), Storage (video/image
   upload), Auth (email, Google, Facebook; Twitter integration is dead — see §7), Crashlytics,
   Analytics, Cloud Messaging.
-- **UI**: mid-migration from Fragment + ViewBinding/DataBinding + LiveData + Groupie (list
-  adapters) to Jetpack Compose + `StateFlow` + `UiState`. See
-  [presentation/AGENTS.md](../app/src/main/java/com/andre_max/tiktokclone/presentation/AGENTS.md)
-  for which pattern a given screen currently uses.
+- **UI**: Jetpack Compose + `StateFlow` + `UiState` on every screen (migration completed
+  2026-08-09). Fragments remain only as thin `ComposeView` shells inside the XML nav graph;
+  Groupie/DataBinding/Dexter/Glide are gone (Coil handles images, including video-frame
+  thumbnails). See
+  [presentation/AGENTS.md](../app/src/main/java/com/andre_max/tiktokclone/presentation/AGENTS.md).
 - **Media**: ExoPlayer for playback, CameraView for capture, a custom `VideoCompressor` for
   upload compression.
 - **Local persistence**: Room is planned for the offline/cache model in §6 but not yet wired
@@ -59,9 +60,8 @@ These are the shapes actually persisted/transferred today (`models/`); the equiv
 
 ```
 presentation  →  domain  ←  repo
-  (Compose/UiState,           (Firebase, Room,
-   Fragment/LiveData            device media)
-   — mid-migration)
+  (Compose/UiState)           (Firebase, Room,
+                               device media)
 ```
 
 - **`domain`**: pure Kotlin, zero Android/Firebase imports. Use cases + `Result`/`DataError` +
@@ -77,11 +77,11 @@ presentation  →  domain  ←  repo
 Dependencies point inward (`presentation`/`repo` → `domain`, never the reverse). This is
 enforced by hand today — no lint rule exists yet — via the grep in `domain/AGENTS.md`.
 
-**Strangler-fig migration**: old (`BaseFragment`/`BaseViewModel`/`TheResult`/`safeAccess`)
-and new (`Result`/`safeCall`/`UiState`) systems coexist on purpose during the migration. Both
-stay alive until nothing references the old ones; only then are they deleted. Never break the
-app to "finish" the migration faster — see migration principles in
-[CLEAN_ARCHITECTURE_MIGRATION.md](CLEAN_ARCHITECTURE_MIGRATION.md).
+**Strangler-fig migration — completed 2026-08-09**: the legacy system
+(`BaseFragment`/`BaseViewModel`/`TheResult`/`safeAccess`, Groupie, DataBinding) coexisted with
+the new one (`Result`/`safeCall`/`UiState`) until each vertical migrated, then was deleted in
+dedicated commits once unreferenced. Only the new system exists now; the route it took is
+recorded in [CLEAN_ARCHITECTURE_MIGRATION.md](CLEAN_ARCHITECTURE_MIGRATION.md).
 
 ## 5. Feature surfaces
 

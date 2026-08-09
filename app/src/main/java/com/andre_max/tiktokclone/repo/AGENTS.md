@@ -15,8 +15,8 @@ It:
 - Maps platform/SDK exceptions to `DataError` (`domain/core/Result.kt`) at this boundary only.
   Nothing above this layer should ever see a `FirebaseException`, an `IOException`, etc.
 
-`safeAccess` (older, in the legacy `TheResult`-based repos) is being replaced by `safeCall`
-repo-by-repo as part of the migration — don't mix the two inside one function.
+(`safeAccess`, the legacy predecessor that swallowed cancellation, was deleted with the last
+`TheResult`-based repo on 2026-08-09 — every repo goes through `safeCall`/`safeAuthCall` now.)
 
 ## Mappers
 

@@ -4,8 +4,8 @@ Read at the start of every session. **This file is a router, not an encyclopedia
 only what applies to every session; everything narrower lives one level down and loads on
 demand.
 
-A TikTok-style short-form video Android app (Kotlin, Firebase backend, mid-migration from
-Fragment/LiveData/Groupie MVVM to Clean Architecture + Jetpack Compose).
+A TikTok-style short-form video Android app (Kotlin, Firebase backend, Clean Architecture +
+Jetpack Compose — the Fragment/LiveData/Groupie → Compose migration completed 2026-08-09).
 
 ## 1. Where knowledge lives
 
