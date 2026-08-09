@@ -227,23 +227,10 @@
     <fragment
         android:id="@+id/searchPageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.search.search_page.SearchPageFragment"
-        android:label="SearchPageFragment"
-        tools:layout="@layout/fragment_search_page">
+        android:label="SearchPageFragment">
         <action
             android:id="@+id/action_searchPageFragment_to_profileWithAccountFragment"
             app:destination="@id/profileWithAccountFragment" />
-        <action
-            android:id="@+id/action_searchPageFragment_to_searchResultsFragment"
-            app:destination="@id/searchResultsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchResultsFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.search.search_results.SearchResultsFragment"
-        android:label="SearchResultsFragment"
-        tools:layout="@layout/fragment_search_results">
-        <action
-            android:id="@+id/action_searchResultsFragment_to_largeVideoFragment"
-            app:destination="@id/largeVideoFragment" />
     </fragment>
     <fragment
         android:id="@+id/hashtagPageFragment"

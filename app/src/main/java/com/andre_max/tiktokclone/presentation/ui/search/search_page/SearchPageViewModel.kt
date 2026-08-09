@@ -1,73 +1,72 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.search.search_page
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.andre_max.tiktokclone.models.user.User
-import com.andre_max.tiktokclone.repo.network.suggestions.DefaultSuggestionsRepo
-import com.andre_max.tiktokclone.repo.network.suggestions.SuggestionsRepo
-import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
-import kotlinx.coroutines.*
-import java.util.*
+import com.andre_max.tiktokclone.domain.core.fold
+import com.andre_max.tiktokclone.domain.search.SuggestionsRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Locale
+import javax.inject.Inject
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class SearchPageViewModel(
-    private val suggestionsRepo: SuggestionsRepo = DefaultSuggestionsRepo()
-) : BaseViewModel() {
-    private var job: Job = Job()
+/**
+ * Debounced username search. Same contract as the legacy screen: 1250ms after the last
+ * keystroke, lowercased query, a blank query fetches nothing (and keeps the last results).
+ */
+@HiltViewModel
+class SearchPageViewModel @Inject constructor(
+    private val suggestionsRepo: SuggestionsRepo,
+) : ViewModel() {
 
-    val liveQuery = MutableLiveData("")
+    private val _uiState = MutableStateFlow(SearchPageUiState())
+    val uiState: StateFlow<SearchPageUiState> = _uiState.asStateFlow()
 
-    private val _liveSuggestions = MutableLiveData<List<User>>()
-    val liveSuggestions: LiveData<List<User>> = _liveSuggestions
+    private val _events = Channel<SearchPageEvent>(Channel.BUFFERED)
+    val events: Flow<SearchPageEvent> = _events.receiveAsFlow()
 
-    private val onQueryChanged: (String?) -> Unit = {
-        fetchSuggestions()
-    }
+    private var searchJob: Job? = null
 
-    init {
-        liveQuery.observeForever(onQueryChanged)
-    }
-
-    private fun fetchSuggestions() {
-        val query = liveQuery.value?.toLowerCase(Locale.ENGLISH)
-        if (query.isNullOrBlank()) return
-
-        job.cancel()
-        job = viewModelScope.launch {
-            println("Before delay: Doing job")
-            delay(1250)
-            println("After delay: Doing job")
-            _liveSuggestions.value = suggestionsRepo.fetchSuggestions(query).tryData() ?: listOf()
+    fun onAction(action: SearchPageAction) {
+        when (action) {
+            is SearchPageAction.QueryChanged -> onQueryChanged(action.query)
+            is SearchPageAction.InsertSuggestion -> onQueryChanged(action.username)
+            is SearchPageAction.SuggestionClicked ->
+                _events.trySend(SearchPageEvent.NavigateToProfile(action.uid))
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-        liveQuery.removeObserver(onQueryChanged)
+    private fun onQueryChanged(query: String) {
+        _uiState.update { it.copy(query = query) }
+
+        val normalized = query.lowercase(Locale.ENGLISH)
+        if (normalized.isBlank()) return
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(DEBOUNCE_MILLIS)
+            val suggestions = suggestionsRepo.fetchSuggestions(normalized)
+                .fold({ it }, { emptyList() })
+            _uiState.update { it.copy(suggestions = suggestions.toImmutableList()) }
+        }
+    }
+
+    companion object {
+        /** The legacy screen's debounce, kept as-is. */
+        const val DEBOUNCE_MILLIS = 1250L
     }
 }

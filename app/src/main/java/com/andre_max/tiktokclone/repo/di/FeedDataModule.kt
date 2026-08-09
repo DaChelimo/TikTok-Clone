@@ -6,10 +6,12 @@
 package com.andre_max.tiktokclone.repo.di
 
 import com.andre_max.tiktokclone.domain.comments.CommentsRepo
+import com.andre_max.tiktokclone.domain.search.SuggestionsRepo
 import com.andre_max.tiktokclone.domain.tags.TagsRepo
 import com.andre_max.tiktokclone.domain.user.UserRepo
 import com.andre_max.tiktokclone.domain.videos.VideosRepo
 import com.andre_max.tiktokclone.repo.network.comment.FirebaseCommentsRepo
+import com.andre_max.tiktokclone.repo.network.suggestions.FirebaseSuggestionsRepo
 import com.andre_max.tiktokclone.repo.network.tag.FirebaseTagsRepo
 import com.andre_max.tiktokclone.repo.network.user.FirebaseUserRepo
 import com.andre_max.tiktokclone.repo.network.videos.FirebaseVideosRepo
@@ -43,4 +45,8 @@ object FeedDataModule {
     @Provides
     @Singleton
     fun provideTagsRepo(): TagsRepo = FirebaseTagsRepo()
+
+    @Provides
+    @Singleton
+    fun provideSuggestionsRepo(): SuggestionsRepo = FirebaseSuggestionsRepo()
 }
