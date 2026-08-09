@@ -29,9 +29,12 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class TimeUtilsTest {
-    private val minute = 60 * 60
+    // convertTimeToDisplayTime takes milliseconds. These constants used to be built from
+    // 60 * 60, i.e. an hour in seconds, so every "30 minutes" input was really 108 seconds and
+    // the expectations below could not have held whatever the formatter did.
+    private val minute = 60 * 1000
 
-    private val testSeconds45 = 45 * 60
+    private val testSeconds45 = 45 * 1000
     private val resultSeconds45 = "00:45"
 
     private val testMinutes30 = 30 * minute

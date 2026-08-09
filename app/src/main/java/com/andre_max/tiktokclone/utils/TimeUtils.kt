@@ -25,18 +25,36 @@
 package com.andre_max.tiktokclone.utils
 
 import timber.log.Timber
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object TimeUtils {
 
+    /**
+     * Formats a duration as `mm:ss`, or `h:mm:ss` once it reaches an hour.
+     *
+     * Both components are zero-padded: without it `String.format("%d:%d", ...)` renders 45
+     * seconds as "0:45" and 1 minute 5 seconds as "1:5", which reads as one minute and fifty
+     * seconds. The hour component is dropped below an hour rather than shown as "00:", matching
+     * how every video player labels a short clip.
+     */
     fun convertTimeToDisplayTime(timeInMillis: Long): String {
-        val time = String.format("%d:%d",
-            TimeUnit.MILLISECONDS.toMinutes(timeInMillis),
-            TimeUnit.MILLISECONDS.toSeconds(timeInMillis) -
-                    TimeUnit.MINUTES.toSeconds((TimeUnit.MILLISECONDS.toMinutes(timeInMillis)))
-        )
+        val totalSeconds = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
+        val hours = totalSeconds / SECONDS_PER_HOUR
+        val minutes = (totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE
+        val seconds = totalSeconds % SECONDS_PER_MINUTE
+
+        val time = if (hours > 0) {
+            String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            String.format(Locale.US, "%02d:%02d", minutes, seconds)
+        }
+
         Timber.d("TimeInMillis is $timeInMillis and time is $time")
         return time
     }
+
+    private const val SECONDS_PER_MINUTE = 60
+    private const val SECONDS_PER_HOUR = 60 * 60
 
 }
