@@ -8,13 +8,15 @@ package com.andre_max.tiktokclone.presentation.ui.auth.username
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.domain.auth.UsernameRepo
 import com.andre_max.tiktokclone.domain.auth.usecase.CheckUsernameAvailabilityUseCase
+import com.andre_max.tiktokclone.domain.auth.usecase.CompleteSignUpUseCase
 import com.andre_max.tiktokclone.domain.auth.usecase.UsernameError
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidateUsernameUseCase
+import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +49,8 @@ import kotlinx.coroutines.launch
 class CreateUsernameViewModel @Inject constructor(
     private val validateUsername: ValidateUsernameUseCase,
     private val checkAvailability: CheckUsernameAvailabilityUseCase,
-    private val usernameRepo: UsernameRepo,
+    private val completeSignUp: CompleteSignUpUseCase,
+    private val signUpSession: SignUpSession,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateUsernameUiState())
@@ -131,18 +134,47 @@ class CreateUsernameViewModel @Inject constructor(
         }
     }
 
+    /**
+     * The account is created here, not on the screen that collected the credentials — see
+     * [CompleteSignUpUseCase] for why. This screen is therefore the only one in the flow that
+     * can fail for a reason the user cannot fix by editing the field in front of them, which is
+     * why its failures surface as a message rather than as field-level state.
+     */
     private fun onContinueClicked() {
         val state = _uiState.value
-        if (!state.isContinueEnabled) return
+        if (!state.isContinueEnabled || state.isLoading) return
+
+        val credentials = signUpSession.credentials
+        if (credentials == null) {
+            // Entered without the earlier screens having run (deep link, restored back stack).
+            _events.trySend(AuthEvent.ShowError(UiText.Resource(R.string.error_during_account_creation)))
+            return
+        }
+
+        _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            when (val result = usernameRepo.claimUsername(state.username)) {
-                is Result.Success -> _events.trySend(AuthEvent.NavigateToHome)
-                is Result.Error -> _events.trySend(
-                    AuthEvent.ShowError(UiText.Resource(R.string.username_check_failed)),
-                )
+            val result = completeSignUp(credentials, state.username)
+
+            _uiState.update { it.copy(isLoading = false) }
+
+            when (result) {
+                is Result.Success -> {
+                    signUpSession.clear()
+                    _events.trySend(AuthEvent.NavigateToHome)
+                }
+
+                is Result.Error -> _events.trySend(AuthEvent.ShowError(signUpErrorText(result.error)))
             }
         }
+    }
+
+    private fun signUpErrorText(error: DataError): UiText = when (error) {
+        DataError.Auth.EMAIL_ALREADY_IN_USE -> UiText.Resource(R.string.email_already_in_use)
+        DataError.Auth.NO_INTERNET, DataError.Network.NO_INTERNET ->
+            UiText.Resource(R.string.no_network_connection)
+        DataError.Auth.TOO_MANY_REQUESTS -> UiText.Resource(R.string.too_many_requests)
+        else -> UiText.Resource(R.string.error_during_account_creation)
     }
 
     private fun errorText(error: UsernameError): UiText? = when (error) {

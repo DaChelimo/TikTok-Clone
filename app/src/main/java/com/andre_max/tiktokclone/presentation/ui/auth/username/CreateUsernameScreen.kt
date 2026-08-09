@@ -22,10 +22,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,72 +53,83 @@ import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
 fun CreateUsernameScreen(
     state: CreateUsernameUiState,
     onAction: (CreateUsernameAction) -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-    ) {
-        IconButton(onClick = { onAction(CreateUsernameAction.BackClicked) }) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_back),
-                contentDescription = stringResource(R.string.back_button),
-                modifier = Modifier.testTag(CreateUsernameScreenTags.BACK),
-                tint = colorResource(R.color.dark_black),
-            )
-        }
-
-        Text(
-            text = stringResource(R.string.create_username),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-        )
-
-        UsernameField(
-            username = state.username,
-            isCheckingAvailability = state.isCheckingAvailability,
-            isAvailable = state.isAvailable,
-            onUsernameChange = { onAction(CreateUsernameAction.UsernameChanged(it)) },
-        )
-
-        if (state.error != null) {
-            Text(
-                text = state.error.asString(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .testTag(CreateUsernameScreenTags.ERROR),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorResource(R.color.dark_red),
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = { onAction(CreateUsernameAction.ContinueClicked) },
-            enabled = state.isContinueEnabled && !state.isLoading,
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .height(52.dp)
-                .testTag(CreateUsernameScreenTags.CONTINUE),
-            shape = RoundedCornerShape(4.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.pinkBtnBackground),
-                contentColor = Color.White,
-                disabledContainerColor = colorResource(R.color.pinkBtnBackground).copy(alpha = 0.4f),
-                disabledContentColor = Color.White,
-            ),
+                .fillMaxSize()
+                .background(Color.White),
         ) {
+            IconButton(onClick = { onAction(CreateUsernameAction.BackClicked) }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = stringResource(R.string.back_button),
+                    modifier = Modifier.testTag(CreateUsernameScreenTags.BACK),
+                    tint = colorResource(R.color.dark_black),
+                )
+            }
+
             Text(
-                text = stringResource(R.string.continue_action),
-                modifier = Modifier.alpha(if (state.isLoading) 0f else 1f),
-                style = MaterialTheme.typography.titleMedium,
+                text = stringResource(R.string.create_username),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
+
+            UsernameField(
+                username = state.username,
+                isCheckingAvailability = state.isCheckingAvailability,
+                isAvailable = state.isAvailable,
+                onUsernameChange = { onAction(CreateUsernameAction.UsernameChanged(it)) },
+            )
+
+            if (state.error != null) {
+                Text(
+                    text = state.error.asString(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .testTag(CreateUsernameScreenTags.ERROR),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorResource(R.color.dark_red),
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = { onAction(CreateUsernameAction.ContinueClicked) },
+                enabled = state.isContinueEnabled && !state.isLoading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .height(52.dp)
+                    .testTag(CreateUsernameScreenTags.CONTINUE),
+                shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.pinkBtnBackground),
+                    contentColor = Color.White,
+                    disabledContainerColor = colorResource(R.color.pinkBtnBackground).copy(alpha = 0.4f),
+                    disabledContentColor = Color.White,
+                ),
+            ) {
+                Text(
+                    text = stringResource(R.string.continue_action),
+                    modifier = Modifier.alpha(if (state.isLoading) 0f else 1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
+
+        // Account creation happens on this screen, so it is the only one in the flow with a
+        // failure the user cannot fix by editing the field — hence a snackbar rather than the
+        // inline error above, which is reserved for what the field itself got wrong.
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
 }
 

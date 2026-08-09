@@ -31,6 +31,7 @@ import com.andre_max.tiktokclone.domain.auth.usecase.ValidateEmailUseCase
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -50,7 +51,10 @@ import kotlinx.coroutines.flow.update
  * [BasicEmailUiState] and [BasicEmailAction] live in `BasicEmailContract.kt`.
  */
 @HiltViewModel
-class BasicEmailViewModel @Inject constructor(private val validateEmail: ValidateEmailUseCase) : ViewModel() {
+class BasicEmailViewModel @Inject constructor(
+    private val validateEmail: ValidateEmailUseCase,
+    private val signUpSession: SignUpSession,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BasicEmailUiState())
     val uiState: StateFlow<BasicEmailUiState> = _uiState.asStateFlow()
@@ -112,6 +116,7 @@ class BasicEmailViewModel @Inject constructor(private val validateEmail: Validat
         when (val result = validateEmail(email)) {
             is Result.Success -> {
                 isNavigating = true
+                signUpSession.setEmail(email)
                 _events.trySend(AuthEvent.NavigateToPassword(email))
             }
 

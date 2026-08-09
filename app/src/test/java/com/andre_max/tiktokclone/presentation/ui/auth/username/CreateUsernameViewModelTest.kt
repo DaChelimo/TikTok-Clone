@@ -7,10 +7,15 @@ package com.andre_max.tiktokclone.presentation.ui.auth.username
 
 import app.cash.turbine.test
 import com.andre_max.tiktokclone.domain.auth.usecase.CheckUsernameAvailabilityUseCase
+import com.andre_max.tiktokclone.domain.auth.usecase.CompleteSignUpUseCase
+import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidateUsernameUseCase
 import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
+import com.andre_max.tiktokclone.test_utils.FakeAuthRepo
+import com.andre_max.tiktokclone.test_utils.FakeUserProfileRepo
 import com.andre_max.tiktokclone.test_utils.FakeUsernameRepo
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -36,13 +41,25 @@ import org.junit.Test
 class CreateUsernameViewModelTest {
 
     private val repo = FakeUsernameRepo()
+    private val authRepo = FakeAuthRepo()
+    private val userProfileRepo = FakeUserProfileRepo()
+
+    /**
+     * Seeded with credentials by default because this screen is only ever reached after an
+     * earlier screen collected them — an empty session is the exceptional case, covered by its
+     * own test below.
+     */
+    private val signUpSession = SignUpSession().apply {
+        setCredentials(SignUpCredentials.Email("andrew@example.com", "Passw0rd!"))
+    }
 
     private fun viewModel(): CreateUsernameViewModel {
         val validate = ValidateUsernameUseCase()
         return CreateUsernameViewModel(
             validateUsername = validate,
             checkAvailability = CheckUsernameAvailabilityUseCase(validate, repo),
-            usernameRepo = repo,
+            completeSignUp = CompleteSignUpUseCase(authRepo, repo, userProfileRepo),
+            signUpSession = signUpSession,
         )
     }
 
@@ -188,7 +205,7 @@ class CreateUsernameViewModelTest {
     }
 
     @Test
-    fun `ContinueClicked claims the username and emits NavigateToHome`() = runTest {
+    fun `ContinueClicked creates the account, claims the username and emits NavigateToHome`() = runTest {
         Dispatchers.setMain(StandardTestDispatcher(testScheduler))
         val viewModel = viewModel()
         viewModel.onAction(CreateUsernameAction.UsernameChanged("andrew"))
@@ -201,6 +218,56 @@ class CreateUsernameViewModelTest {
             assertThat(awaitItem()).isEqualTo(AuthEvent.NavigateToHome)
         }
         assertThat(repo.claimedUsernames).containsExactly("andrew")
+        assertThat(authRepo.calls)
+            .contains(FakeAuthRepo.Call.SignUpWithEmail("andrew@example.com", "Passw0rd!"))
+        assertThat(userProfileRepo.createdProfiles).hasSize(1)
+    }
+
+    @Test
+    fun `a successful sign-up clears the credentials from the session`() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        val viewModel = viewModel()
+        viewModel.onAction(CreateUsernameAction.UsernameChanged("andrew"))
+        advanceUntilIdle()
+
+        viewModel.onAction(CreateUsernameAction.ContinueClicked)
+        advanceUntilIdle()
+
+        // A password must not outlive the flow that needed it.
+        assertThat(signUpSession.credentials).isNull()
+    }
+
+    @Test
+    fun `ContinueClicked without credentials shows an error rather than creating an account`() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        signUpSession.clear()
+        val viewModel = viewModel()
+        viewModel.onAction(CreateUsernameAction.UsernameChanged("andrew"))
+        advanceUntilIdle()
+
+        viewModel.events.test {
+            viewModel.onAction(CreateUsernameAction.ContinueClicked)
+            advanceUntilIdle()
+
+            assertThat(awaitItem()).isInstanceOf(AuthEvent.ShowError::class.java)
+        }
+        assertThat(authRepo.calls).isEmpty()
+    }
+
+    @Test
+    fun `a failed account creation emits ShowError and does not navigate`() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        authRepo.signUpError = DataError.Auth.EMAIL_ALREADY_IN_USE
+        val viewModel = viewModel()
+        viewModel.onAction(CreateUsernameAction.UsernameChanged("andrew"))
+        advanceUntilIdle()
+
+        viewModel.events.test {
+            viewModel.onAction(CreateUsernameAction.ContinueClicked)
+            advanceUntilIdle()
+
+            assertThat(awaitItem()).isInstanceOf(AuthEvent.ShowError::class.java)
+        }
     }
 
     @Test

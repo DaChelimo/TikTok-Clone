@@ -7,8 +7,10 @@ package com.andre_max.tiktokclone.presentation.ui.auth.enter_password
 
 import app.cash.turbine.test
 import com.andre_max.tiktokclone.domain.auth.usecase.PasswordError
+import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidatePasswordUseCase
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,8 +25,16 @@ class EnterPasswordViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private fun viewModel(identity: String? = null) =
-        EnterPasswordViewModel(ValidatePasswordUseCase()).also { it.identity = identity }
+    /**
+     * [identity] is the email local-part, which the ViewModel now reads out of
+     * [SignUpSession] rather than taking as a property — so the test seeds the session with
+     * an address whose local-part is the identity under test.
+     */
+    private fun viewModel(identity: String? = null): EnterPasswordViewModel {
+        val session = SignUpSession()
+        identity?.let { session.setEmail("$it@example.com") }
+        return EnterPasswordViewModel(ValidatePasswordUseCase(), session)
+    }
 
     @Test
     fun `initial state is empty, unedited, hidden and cannot continue`() = runTest {
@@ -111,13 +121,39 @@ class EnterPasswordViewModelTest {
 
     @Test
     fun `ContinueClicked with a valid password emits NavigateToUsername`() = runTest {
-        val viewModel = viewModel()
+        val viewModel = viewModel(identity = "andrew")
         viewModel.onAction(EnterPasswordAction.PasswordChanged("Passw0rd!"))
 
         viewModel.events.test {
             viewModel.onAction(EnterPasswordAction.ContinueClicked)
 
             assertThat(awaitItem()).isEqualTo(AuthEvent.NavigateToUsername)
+        }
+    }
+
+    @Test
+    fun `ContinueClicked hands the credentials to the session for the username screen`() = runTest {
+        val session = SignUpSession().apply { setEmail("andrew@example.com") }
+        val viewModel = EnterPasswordViewModel(ValidatePasswordUseCase(), session)
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("Passw0rd!"))
+
+        viewModel.onAction(EnterPasswordAction.ContinueClicked)
+
+        assertThat(session.credentials)
+            .isEqualTo(SignUpCredentials.Email("andrew@example.com", "Passw0rd!"))
+    }
+
+    @Test
+    fun `ContinueClicked without an email from the previous screen goes back instead`() = runTest {
+        // Reachable via a deep link or a restored back stack. Carrying a password forward with
+        // no email would hand CompleteSignUpUseCase a credential it cannot act on.
+        val viewModel = viewModel()
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("Passw0rd!"))
+
+        viewModel.events.test {
+            viewModel.onAction(EnterPasswordAction.ContinueClicked)
+
+            assertThat(awaitItem()).isEqualTo(AuthEvent.NavigateBack)
         }
     }
 
@@ -157,7 +193,7 @@ class EnterPasswordViewModelTest {
     @Test
     fun `a navigation event is emitted exactly once and not replayed to a new collector`() =
         runTest {
-            val viewModel = viewModel()
+            val viewModel = viewModel(identity = "andrew")
             viewModel.onAction(EnterPasswordAction.PasswordChanged("Passw0rd!"))
 
             viewModel.events.test {

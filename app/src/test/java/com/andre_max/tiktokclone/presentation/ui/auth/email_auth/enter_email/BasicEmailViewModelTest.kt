@@ -7,6 +7,7 @@ package com.andre_max.tiktokclone.presentation.ui.auth.email_auth.enter_email
 
 import app.cash.turbine.test
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidateEmailUseCase
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
 import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
@@ -29,7 +30,9 @@ class BasicEmailViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    private fun viewModel() = BasicEmailViewModel(ValidateEmailUseCase())
+    private val signUpSession = SignUpSession()
+
+    private fun viewModel() = BasicEmailViewModel(ValidateEmailUseCase(), signUpSession)
 
     private suspend fun stateAfterTyping(email: String): BasicEmailUiState {
         val viewModel = viewModel()

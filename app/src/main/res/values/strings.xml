@@ -33,6 +33,7 @@
     <string name="error_occurred_during_video_upload">Error occurred while uploading video. Kindly try again.</string>
     <string name="too_many_requests">Too many attempts. Try again later.</string>
     <string name="no_network_connection">No network connection. Try again later.</string>
+    <string name="email_already_in_use">That email already has an account. Try logging in instead.</string>
 
 
     <string name="gmail_com">\@gmail.com</string>

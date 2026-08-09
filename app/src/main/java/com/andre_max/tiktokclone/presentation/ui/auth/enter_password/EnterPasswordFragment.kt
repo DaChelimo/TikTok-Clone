@@ -36,7 +36,6 @@ class EnterPasswordFragment : Fragment() {
         setContent {
             TikTokTheme {
                 EnterPasswordRoute(
-                    identity = args.email.substringBefore("@"),
                     onNavigateToUsername = ::navigateToCreateUsername,
                     onNavigateBack = { findNavController().popBackStack() },
                 )
@@ -44,10 +43,16 @@ class EnterPasswordFragment : Fragment() {
         }
     }
 
-    private fun navigateToCreateUsername(password: String) {
+    /**
+     * Navigates with all three credential arguments null: the password now travels in
+     * `SignUpSession` instead of in this `Bundle`, which is the whole point of the session.
+     * The arguments themselves stay on the destination until the Google and phone paths that
+     * still pass them are migrated.
+     */
+    private fun navigateToCreateUsername() {
         findNavController().navigate(
             EnterPasswordFragmentDirections.actionCreatePasswordFragmentToCreateUsernameFragment(
-                null, null, EmailBody(args.email, password),
+                null, null, null,
             )
         )
     }
