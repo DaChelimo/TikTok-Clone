@@ -30,12 +30,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/profileWithoutAccountFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.profile.without_account.ProfileWithoutAccountFragment"
-        android:label="Sign up"
-        tools:layout="@layout/fragment_profile_without_account" />
-
-    <fragment
         android:id="@+id/inbox_fragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.inbox.InboxFragment"
         android:label="Inbox"
@@ -167,8 +161,7 @@
     <fragment
         android:id="@+id/meFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.profile.MeFragment"
-        android:label="MeFragment"
-        tools:layout="@layout/fragment_me">
+        android:label="MeFragment">
         <action
             android:id="@+id/action_meFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />
@@ -215,8 +208,7 @@
     <fragment
         android:id="@+id/profileWithAccountFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.profile.with_account.ProfileWithAccountFragment"
-        android:label="ProfileWithAccountFragment"
-        tools:layout="@layout/fragment_profile_with_account">
+        android:label="ProfileWithAccountFragment">
 
         <argument
             android:name="uid"
