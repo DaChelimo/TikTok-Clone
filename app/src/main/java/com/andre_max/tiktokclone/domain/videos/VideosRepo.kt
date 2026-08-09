@@ -1,85 +1,44 @@
 /*
  * MIT License
- *
  * Copyright (c) 2021 Andrew Chelimo
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
  */
 
 package com.andre_max.tiktokclone.domain.videos
 
 import com.andre_max.tiktokclone.domain.core.DataError
+import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
-import com.andre_max.tiktokclone.models.TheResult
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 
-
+/**
+ * Read/like access to the global video collection.
+ *
+ * Narrower than the legacy `repo.network.videos.VideosRepo` on purpose: saving an uploaded
+ * video belongs to the upload slice and will be added here when that slice migrates, with a
+ * `Result` return instead of the legacy `onComplete` callback.
+ */
 interface VideosRepo {
-    /**
-     * Fetches videos from Firebase database but limits it to 12 to avoid use of too much network resources
-     * @return A custom result containing a list of {@link [com.andre_max.tiktokclone.models.video.RemoteVideo]}
-     */
-    suspend fun fetchRandomVideos(): Result<List<RemoteVideo>, DataError>
 
     /**
-     * Fetches a specific video based on the video id.
-     *
-     * @param videoId a reference to the video
+     * Fetches a batch of up to 12 videos. The cap bounds network use per fetch; the "random"
+     * in the name is aspirational — the backing query has no ranking, which is exactly the
+     * gap the future recommendation model fills (via [usecase.GetFeedBatchUseCase], not here).
      */
-    suspend fun fetchVideo(videoId: String): Result<RemoteVideo, Nothing>
+    suspend fun fetchRandomVideos(): Result<List<RemoteVideo>, DataError.Network>
+
+    suspend fun fetchVideo(videoId: String): Result<RemoteVideo, DataError.Network>
+
+    /** Whether the current user has the video in their liked collection. */
+    suspend fun isVideoLiked(videoId: String): Result<Boolean, DataError.Network>
 
     /**
-     * This function checks if the user likes the video. One might suggest that we use a
-     * ValueEventListener and return a liveData but that would be really intensive
-     * in a scenario where we have 15 videos. However, that's my opinion, what do you think(Drop a PR).
-     *
-     * @param videoId a reference to the video
+     * Likes or unlikes in three writes: my liked-videos entry, the video's like count, the
+     * author's total-likes count. Not atomic — a partial failure mid-call is a known,
+     * accepted risk (docs/SPEC.md §5) until this becomes a server-side transaction.
      */
-    suspend fun isVideoLiked(videoId: String): TheResult<Boolean>
-
-    /**
-     * This function does 3 things (Uncle Bob is about to get mad since I'm breaking the Clean Code Conduct).
-     * First, it adds or removes the video to my liked videos.
-     * Second, it changes the video's like count
-     * Third, it changes the author's total likes count
-     *
-     * @param videoId A reference to the video
-     * @param authorId A reference to the video's author
-     * @return Whether the video has been liked by the user
-     */
-    suspend fun likeOrUnlikeVideo(videoId: String, authorId: String, shouldLike: Boolean)
-
-    /**
-     * This function saves the video to the database. It uploads the actual video to the
-     * main videos/ path then it uploads the video uid to the users/$userUid/videos path for
-     * two way storage
-     *
-     * @param isPrivate whether to make the video private or not
-     * @param videoUrl the url pointing to the video location in Firebase Storage
-     * @param descriptionText the video description
-     */
-    suspend fun saveVideoToFireDB(
-        isPrivate: Boolean,
-        videoUrl: String,
-        descriptionText: String,
-        tags: Map<String, String>,
-        duration: Long?,
-        onComplete: (Boolean) -> Unit
-    )
+    suspend fun likeOrUnlikeVideo(
+        videoId: String,
+        authorId: String,
+        shouldLike: Boolean,
+    ): EmptyResult<DataError.Network>
 }

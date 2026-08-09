@@ -54,7 +54,5 @@ Full story in [docs/CLEAN_ARCHITECTURE_MIGRATION.md](../../../../../../../../doc
 
 ## Known drift
 
-`domain/videos/VideosRepo.kt` mixes `Result<D, DataError>` with legacy `Result<D, Nothing>`
-and `TheResult` return types mid-migration. Don't fix it opportunistically — it's scoped for
-the videos/feed migration slice. Match the surrounding style in whichever method you touch
-rather than "fixing" the file's consistency as a drive-by.
+(None currently. `domain/videos/VideosRepo.kt`'s mixed return types were fixed in the
+videos/feed slice, 2026-08-09.)

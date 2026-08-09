@@ -36,8 +36,8 @@ working in that tree) and to [docs/SPEC.md](SPEC.md) (product-level contracts):
 | 3 | Auth use cases (sign up/in, combining validation + repo) | ✅ Done (2026-08-09) | use cases that combine repo + logic |
 | 4 | One auth screen → Compose + UiState + StateFlow | ✅ Done (age verification) | full UI chain, collectAsStateWithLifecycle |
 | 5 | Remaining auth screens | ✅ **Done (2026-08-09)** — all of `presentation/ui/auth/**` is Compose: landing, age, phone\|email tabs, password, SMS code, username, log-in. Legacy `AuthRepo`/`NameRepo`/`GoogleBody`/`EmailBody` deleted. | repetition, user-driven |
-| 6 | Videos/feed slice | Not started | LazyColumn, recomposition, FeedAction, pagination |
-| 7 | Comments, profile, upload, discover, search | Not started | pattern repetition |
+| 6 | Videos/feed slice | ✅ **Done (2026-08-09)** — `HomeFragment` is a Compose shell over a `VerticalPager` feed; comment *data* layer (`domain/comments`, `FirebaseCommentsRepo`) landed here too because the feed screen embeds the comment sheet. `GetFeedBatchUseCase` is the seam the future recommendation model plugs into. | VerticalPager, recomposition, HomeAction, pagination, callbackFlow |
+| 7 | Comments (large_video detail), profile, upload, discover, search | Not started | pattern repetition |
 | 8 | Delete `TheResult`, `safeAccess`, `BaseViewModel`, `BaseFragment` | Not started | cleanup once unreferenced |
 
 > **Slice 3 was previously marked done in error.** Until 2026-08-09 `domain/auth/usecase/` held
@@ -62,9 +62,18 @@ source tree is the source of truth: `domain/auth/`, `presentation/ui/auth/`,
 
 ## Known issues / TODOs surfaced during migration
 
-- `domain/videos/VideosRepo.kt` has inconsistent return types mid-migration
-  (`Result<RemoteVideo, Nothing>` should be `Result<RemoteVideo, DataError>`, `isVideoLiked` still
-  returns old `TheResult`). Fix when we do the videos/feed slice (#6), not before.
+- ~~`domain/videos/VideosRepo.kt` has inconsistent return types mid-migration~~ Fixed in
+  slice #6 (2026-08-09): the domain interface is fully typed (`Result`/`DataError.Network`),
+  implemented by `FirebaseVideosRepo`. The legacy `repo/network/videos/VideosRepo` +
+  `DefaultVideosRepo` pair stays alive for legacy callers (upload, profile) until those
+  slices migrate.
+- Feed dedupe (slice #6, deliberate deviation): the backing `limitToFirst(12)` query returns
+  an overlapping window on every "load more"; the legacy feed appended those duplicates
+  verbatim, which a keyed Compose pager would crash on. `GetFeedBatchUseCase` filters
+  already-shown ids instead. Two smaller wired-up gaps: tapping a comment's heart now
+  actually likes it (the legacy click lambda was accidentally empty), and the share intent
+  got a mime type + chooser (the legacy bare `ACTION_SEND` could throw
+  `ActivityNotFoundException`).
 - Sandbox note: local dev environment can't run `./gradlew test` — missing `google-services.json`
   (Firebase config with credentials, correctly not present in this environment). Run tests in
   Android Studio locally instead.

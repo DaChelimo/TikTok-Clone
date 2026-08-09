@@ -64,6 +64,10 @@
     <string name="cancel">Cancel</string>
     <string name="author_username">\@%s</string>
     <string name="empty_comment_error">You cannot send an empty comment</string>
+    <string name="no_description">#NoDescription</string>
+    <string name="creator_profile">Creator profile</string>
+    <string name="share">Share</string>
+    <string name="error_something_went_wrong">Something went wrong. Try again later.</string>
 
     <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
     <string name="terms_of_services_email">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
