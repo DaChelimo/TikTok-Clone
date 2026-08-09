@@ -1,6 +1,6 @@
 # Auth Completion Plan — from "screens built" to "authentication works"
 
-**Status:** approved 2026-08-08; §4 decisions frozen. Execution in progress.
+**Status:** executed 2026-08-09. Every step in §3 landed except the provider-config items in §5, which cannot be done from this repository.
 **Scope:** authentication only. No feed/profile/upload work.
 
 Read with [ONBOARDING_FEATURE_SPEC.md](ONBOARDING_FEATURE_SPEC.md) (the frozen contract) and
@@ -218,6 +218,38 @@ Steps 1–6 each run as a red-tests → implement → review cycle. I'd drive th
 isn't (1, 6, 7). Every step ends with `assembleDebug` + `testDebugUnitTest` and, for UI steps, a
 screenshot via `android-cli`. I'll check in with you at the end of each step rather than running
 all seven unattended.
+
+---
+
+## 5. What is left, and why it is not code
+
+Everything in §3 landed. Two things remain, both outside this repository.
+
+**Google sign-in.** The code path is complete — `GoogleSignInContract` +
+`rememberLauncherForActivityResult` on both landings, `idToken` through
+`AuthRepo.signInWithGoogle`. The debug **SHA-1 and SHA-256 are now registered** on Firebase app
+`1:585896630733:android:24704276fb85173579cc84` (project `tiktok-clone-for-fun`). Two
+console-only steps remain:
+
+1. **Enable Google as a sign-in provider** (Firebase console → Authentication → Sign-in method →
+   Google). Until then `google-services.json` keeps `"oauth_client": []` — registering a SHA does
+   not create the OAuth clients on its own, which re-pulling the config after registration
+   confirmed.
+2. **Replace `GOOGLE_WEB_CLIENT_ID` in `gradle.properties`.** The value there is
+   `1031105970956-…`, which belongs to a *different* Google Cloud project than this app's
+   `585896630733`. A token minted by a foreign project's client is rejected at
+   `signInWithCredential`. Copy the `client_type: 3` entry out of the refreshed
+   `google-services.json` once step 1 is done.
+
+`SocialAuthModule.provideGoogleWebClientId` compares the id's project-number prefix against the
+Firebase sender id and returns null when they disagree, so the button stays disabled and says so
+rather than failing at the chooser. It enables itself once both steps land — no code change.
+
+**Facebook sign-in.** Disabled by decision D-A4. SDK 12+ requires a
+`com.facebook.sdk.ClientToken` manifest entry that only the Meta developer console can issue;
+the manifest declares `ApplicationId` and the login protocol scheme but no client token. Flip
+`SocialAuthModule.provideIsFacebookEnabled` once the token is in `gradle.properties` and declared
+in the manifest — the button and its wiring already exist.
 
 ---
 

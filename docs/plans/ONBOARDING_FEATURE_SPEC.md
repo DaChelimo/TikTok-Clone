@@ -462,21 +462,31 @@ Tick as each completes. This is the phase's progress tracker.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Age verification | ✅ | n/a | ✅ | ✅ | ✅ | ☐ |
 | 2 | Basic email (retrofit) | ✅ exists | n/a | ✅ | ✅ | ✅ | ☐ |
-| 3 | Enter password | ☐ rewrite (D6) | n/a | ☐ | ☐ | ☐ | ☐ |
-| 4 | Create username | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
-| 5 | Basic phone | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
-| 6 | Select basic auth | n/a | n/a | ☐ | ☐ | ☐ | ☐ |
+| 3 | Enter password | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+| 4 | Create username | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+| 5 | Basic phone | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+| 6 | Select basic auth | n/a | n/a | n/a | ✅ | ✅ | ☐ |
+| 7 | Sign-up landing | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+| 8 | Enter code (SMS) | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+| 9 | Log-in landing | ✅ | ✅ | ✅ | ✅ | ✅ | ☐ |
+
+Screens 8 and 9 were outside D2's scope. Enter-code was pulled in because phone sign-up cannot
+reach an account without it, and log-in because "authentication is complete" implies returning
+users can get back in. Both were user-approved on 2026-08-09; see
+[AUTH_COMPLETION_PLAN.md](AUTH_COMPLETION_PLAN.md) §4.
 
 ### Phase close-out
-- [ ] `docs/SPEC.md` §5 auth row updated with D5 + D6 behavior changes
-- [ ] `CLEAN_ARCHITECTURE_MIGRATION.md` slice table updated (slices 1–5)
-- [ ] `presentation/AGENTS.md` "only BasicEmailScreen is Compose" line updated
-- [ ] Legacy auth Fragments/XML confirmed deleted; `git grep` clean
+- [x] `docs/SPEC.md` §5 auth row updated with D5 + D6 behavior changes
+- [x] `CLEAN_ARCHITECTURE_MIGRATION.md` slice table updated (slices 1–5)
+- [x] `presentation/AGENTS.md` "only BasicEmailScreen is Compose" line updated
+- [x] Legacy auth Fragments/XML confirmed deleted; `git grep` clean
 - [ ] Human review
 
 ### Explicitly deferred (not this phase)
-- Enter-code screen — blocked on an OTP input decision
-- Sign-up landing / Google + Facebook social auth
+- ~~Enter-code screen — blocked on an OTP input decision~~ **Built 2026-08-09** (hand-rolled
+  Compose 6-box input over a single field; decision D-A2 in `AUTH_COMPLETION_PLAN.md`).
+- ~~Sign-up landing~~ **Built 2026-08-09.** Google + Facebook are implemented but render
+  disabled until their provider config exists — neither can be finished from this repository.
 - Twitter auth — removed 2026-07-25; restore via Firebase `OAuthProvider` if ever wanted
 - Deleting `TheResult` / `safeAccess` / `BaseViewModel` / `BaseFragment` — one dedicated step,
   only once nothing references them (non-negotiable #2)

@@ -4,9 +4,12 @@ This tree is **mid-migration**: legacy Fragment/LiveData/Groupie screens and new
 Compose/UiState/StateFlow screens coexist deliberately (strangler-fig). Check which pattern
 the screen you're touching already uses before assuming — see
 [docs/CLEAN_ARCHITECTURE_MIGRATION.md](../../../../../../../../docs/CLEAN_ARCHITECTURE_MIGRATION.md)
-for which slice is done vs. not started. Only `presentation/ui/auth/email_auth/enter_email`
-has a Compose screen today (`BasicEmailScreen.kt`); everything else is still
-Fragment/ViewModel/LiveData.
+for which slice is done vs. not started. **The whole of `presentation/ui/auth/**` is Compose**
+as of 2026-08-09 — copy its conventions rather than the older screens'. Feed, profile, upload,
+discover, search, comments, inbox and settings are all still Fragment/ViewModel/LiveData.
+
+Auth's Fragments are `ComposeView` shells with navigation callbacks and nothing else; if you
+find yourself adding logic to one, it belongs in the ViewModel.
 
 ## Conventions for new/migrated Compose screens
 

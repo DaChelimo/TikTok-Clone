@@ -32,24 +32,25 @@ working in that tree) and to [docs/SPEC.md](SPEC.md) (product-level contracts):
 |---|---|---|---|
 | 0 | `Result` foundation (`Result`, `ResultExt`, `DataError`, `safeCall`) | ✅ Done | typed errors, variance, safeCall |
 | 1 | Validation use cases (`ValidatePasswordUseCase`, `ValidateEmailUseCase`) | ✅ Done | use case with no repo, TDD loop |
-| 2 | Auth repo → interface + move Android SDK types out of data layer | ✅ Done (phone/username repos; email/password need no repo) | dependency inversion for OAuth flows |
-| 3 | Auth use cases (sign up/in with email, combining validation + repo) | ✅ Done | use cases that combine repo + logic |
-| 4 | One auth screen → Compose + UiState + StateFlow (first Fragment→Compose swap) | ✅ Done (age verification) | full UI chain, collectAsStateWithLifecycle |
-| 5 | Remaining auth screens | 🔵 In progress — basic email, enter password done (real bodies). Create username, basic phone, select-basic-auth exist only as Pass-1 stubs (`TODO("Pass 2")` throughout use cases/repos/ViewModels/Screens) — Pass 2 not started. Sign-up landing (screen 7) not started, blocked on Pass 2 for the others. Enter-code still blocked on OTP dep. | repetition, user-driven |
-
-> Slices 3–5 are planned screen-by-screen in
-> [plans/ONBOARDING_MIGRATION.md](plans/ONBOARDING_MIGRATION.md), with the frozen execution
-> contract in [plans/ONBOARDING_FEATURE_SPEC.md](plans/ONBOARDING_FEATURE_SPEC.md) (see that
-> file's D2 for current scope — amended 2026-08-07 to add sign-up landing).
->
-> **Correction (2026-08-07):** an earlier pass through this file marked create-username,
-> basic-phone, and select-basic-auth "✅ Done" based on their files existing. They don't have
-> real bodies — verify with `grep -rln 'TODO("Pass 2")' app/src/main/java` before trusting a
-> "done" status in this doc again; file presence means Pass 1 (stubs + red tests) ran, not that
-> Pass 2 (implementation) did.
+| 2 | Auth repo → interface + move Android SDK types out of data layer | ✅ Done | dependency inversion for OAuth flows |
+| 3 | Auth use cases (sign up/in, combining validation + repo) | ✅ Done (2026-08-09) | use cases that combine repo + logic |
+| 4 | One auth screen → Compose + UiState + StateFlow | ✅ Done (age verification) | full UI chain, collectAsStateWithLifecycle |
+| 5 | Remaining auth screens | ✅ **Done (2026-08-09)** — all of `presentation/ui/auth/**` is Compose: landing, age, phone\|email tabs, password, SMS code, username, log-in. Legacy `AuthRepo`/`NameRepo`/`GoogleBody`/`EmailBody` deleted. | repetition, user-driven |
 | 6 | Videos/feed slice | Not started | LazyColumn, recomposition, FeedAction, pagination |
 | 7 | Comments, profile, upload, discover, search | Not started | pattern repetition |
 | 8 | Delete `TheResult`, `safeAccess`, `BaseViewModel`, `BaseFragment` | Not started | cleanup once unreferenced |
+
+> **Slice 3 was previously marked done in error.** Until 2026-08-09 `domain/auth/usecase/` held
+> only validators and `CheckUsernameAvailabilityUseCase` — there was no sign-up or sign-in use
+> case, and the migrated flow reached Home without ever creating a Firebase account. The account
+> creation still lived in the legacy `create_username` ViewModel that nothing navigated to.
+> `CompleteSignUpUseCase` closed it. This is the second time a row here was ticked from file
+> presence rather than behaviour; check what a class *does* before ticking.
+>
+> Auth's remaining gaps are configuration, not code: Google and Facebook sign-in are implemented
+> but render disabled until their provider config exists — see
+> [plans/AUTH_COMPLETION_PLAN.md](plans/AUTH_COMPLETION_PLAN.md) §5.
+
 
 ## Files created so far
 
