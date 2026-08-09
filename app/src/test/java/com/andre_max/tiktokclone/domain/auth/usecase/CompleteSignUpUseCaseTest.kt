@@ -8,6 +8,7 @@ package com.andre_max.tiktokclone.domain.auth.usecase
 import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.test_utils.FakeAuthRepo
+import com.andre_max.tiktokclone.test_utils.FakePhoneAuthRepo
 import com.andre_max.tiktokclone.test_utils.FakeUserProfileRepo
 import com.andre_max.tiktokclone.test_utils.FakeUsernameRepo
 import com.google.common.truth.Truth.assertThat
@@ -25,10 +26,13 @@ class CompleteSignUpUseCaseTest {
     private val usernameRepo = FakeUsernameRepo()
     private val userProfileRepo = FakeUserProfileRepo()
 
+    private val phoneAuthRepo = FakePhoneAuthRepo()
+
     private val completeSignUp = CompleteSignUpUseCase(
         authRepo = authRepo,
         usernameRepo = usernameRepo,
         userProfileRepo = userProfileRepo,
+        phoneAuthRepo = phoneAuthRepo,
     )
 
     private val emailCredentials = SignUpCredentials.Email("andrew@example.com", "Passw0rd!")
@@ -124,5 +128,32 @@ class CompleteSignUpUseCaseTest {
         // the rollback, and the reason releaseUsername exists on the repo at all.
         assertThat(usernameRepo.isUsernameAvailable("andrew_max"))
             .isEqualTo(Result.Success(true))
+    }
+
+    @Test
+    fun `phone sign-up redeems the code rather than the email or google paths`() = runTest {
+        val result = completeSignUp(SignUpCredentials.Phone("vid", "123456"), "andrew_max")
+
+        assertThat(result).isEqualTo(Result.Success(Unit))
+        assertThat(phoneAuthRepo.submittedCodes).containsExactly("vid" to "123456")
+        assertThat(authRepo.calls).isEmpty()
+    }
+
+    @Test
+    fun `auto-verified phone sign-up redeems the credential held in the data layer`() = runTest {
+        completeSignUp(SignUpCredentials.AutoVerifiedPhone, "andrew_max")
+
+        assertThat(phoneAuthRepo.autoVerifiedRedemptions).isEqualTo(1)
+        assertThat(usernameRepo.claimedUsernames).containsExactly("andrew_max")
+    }
+
+    @Test
+    fun `a rejected sms code leaves no username claimed`() = runTest {
+        phoneAuthRepo.signInError = DataError.Auth.INVALID_CREDENTIALS
+
+        val result = completeSignUp(SignUpCredentials.Phone("vid", "000000"), "andrew_max")
+
+        assertThat(result).isEqualTo(Result.Error(DataError.Auth.INVALID_CREDENTIALS))
+        assertThat(usernameRepo.claimedUsernames).isEmpty()
     }
 }

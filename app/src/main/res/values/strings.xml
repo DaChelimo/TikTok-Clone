@@ -122,6 +122,7 @@
     <string name="email_address">Email address</string>
     <string name="hash_tag_name">#%s</string>
     <string name="error_during_account_creation">Error occurred while creating account. Kindly try again.</string>
+    <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="code_invalid">Code is invalid. Enter the valid code</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>

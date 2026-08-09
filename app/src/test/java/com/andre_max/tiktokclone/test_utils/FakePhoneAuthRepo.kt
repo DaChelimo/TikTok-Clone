@@ -7,6 +7,8 @@ package com.andre_max.tiktokclone.test_utils
 
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthRepo
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthStatus
+import com.andre_max.tiktokclone.domain.core.DataError
+import com.andre_max.tiktokclone.domain.core.Result
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,6 +27,17 @@ class FakePhoneAuthRepo : PhoneAuthRepo {
     /** Numbers passed to [requestVerificationCode], in call order. */
     val requestedNumbers = mutableListOf<String>()
 
+    /** Every (verificationId, code) pair passed to [signInWithCode], in call order. */
+    val submittedCodes = mutableListOf<Pair<String, String>>()
+
+    /** How many times [signInWithAutoVerified] was redeemed. */
+    var autoVerifiedRedemptions: Int = 0
+        private set
+
+    var signInError: DataError.Auth? = null
+
+    var uid: String = "uid-1"
+
     /** True once the returned flow's `awaitClose` has run. */
     var wasClosed: Boolean = false
         private set
@@ -35,4 +48,19 @@ class FakePhoneAuthRepo : PhoneAuthRepo {
             statuses.forEach { trySend(it) }
             awaitClose { wasClosed = true }
         }
+
+    override suspend fun signInWithCode(
+        verificationId: String,
+        code: String,
+    ): Result<String, DataError.Auth> {
+        submittedCodes += verificationId to code
+        signInError?.let { return Result.Error(it) }
+        return Result.Success(uid)
+    }
+
+    override suspend fun signInWithAutoVerified(): Result<String, DataError.Auth> {
+        autoVerifiedRedemptions++
+        signInError?.let { return Result.Error(it) }
+        return Result.Success(uid)
+    }
 }

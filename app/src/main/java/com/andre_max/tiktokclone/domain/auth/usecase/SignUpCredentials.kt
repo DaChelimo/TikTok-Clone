@@ -25,4 +25,12 @@ sealed interface SignUpCredentials {
         val idToken: String,
         val profilePictureUrl: String? = null,
     ) : SignUpCredentials
+
+    data class Phone(val verificationId: String, val code: String) : SignUpCredentials
+
+    /**
+     * Firebase auto-retrieved the SMS code, so there is nothing to carry: the credential is
+     * held in the data layer and redeemed through `PhoneAuthRepo.signInWithAutoVerified`.
+     */
+    data object AutoVerifiedPhone : SignUpCredentials
 }

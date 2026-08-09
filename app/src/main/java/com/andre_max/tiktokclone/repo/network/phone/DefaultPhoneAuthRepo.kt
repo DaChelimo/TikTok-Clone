@@ -8,6 +8,10 @@ package com.andre_max.tiktokclone.repo.network.phone
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthRepo
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthStatus
 import com.andre_max.tiktokclone.domain.core.DataError
+import kotlinx.coroutines.tasks.await
+import com.andre_max.tiktokclone.repo.network.utils.safeAuthCall
+import com.andre_max.tiktokclone.domain.core.map
+import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.repo.network.utils.toNetworkError
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +39,12 @@ class DefaultPhoneAuthRepo(
     private val firebaseAuth: FirebaseAuth = Firebase.auth,
 ) : PhoneAuthRepo {
 
+    /**
+     * Set when Firebase auto-retrieves the SMS code, cleared once redeemed. Held here so the
+     * Firebase credential type never crosses into `domain`.
+     */
+    private var autoVerifiedCredential: PhoneAuthCredential? = null
+
     override fun requestVerificationCode(e164PhoneNumber: String): Flow<PhoneAuthStatus> =
         callbackFlow {
             val activity = activityProvider.current()
@@ -46,6 +56,9 @@ class DefaultPhoneAuthRepo(
 
             val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Parked rather than emitted: PhoneAuthCredential is a Firebase type and
+                    // PhoneAuthStatus lives in domain. signInWithAutoVerified redeems it.
+                    autoVerifiedCredential = credential
                     trySend(PhoneAuthStatus.AutoVerified)
                 }
 
@@ -72,4 +85,23 @@ class DefaultPhoneAuthRepo(
 
             awaitClose { }
         }
+
+    override suspend fun signInWithCode(
+        verificationId: String,
+        code: String,
+    ): Result<String, DataError.Auth> = safeAuthCall {
+        val credential = PhoneAuthProvider.getCredential(verificationId, code)
+        firebaseAuth.signInWithCredential(credential).await()
+    }.map { it.user?.uid.orEmpty() }
+
+    override suspend fun signInWithAutoVerified(): Result<String, DataError.Auth> {
+        val credential = autoVerifiedCredential
+            ?: return Result.Error(DataError.Auth.INVALID_CREDENTIALS)
+
+        return safeAuthCall { firebaseAuth.signInWithCredential(credential).await() }
+            .map { it.user?.uid.orEmpty() }
+            // Single-use: a credential that has been redeemed must not silently authenticate a
+            // later, unrelated attempt.
+            .also { autoVerifiedCredential = null }
+    }
 }

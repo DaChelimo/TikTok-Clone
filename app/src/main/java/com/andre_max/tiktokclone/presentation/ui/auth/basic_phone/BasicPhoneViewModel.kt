@@ -14,7 +14,9 @@ import com.andre_max.tiktokclone.domain.auth.usecase.PhoneNumberError
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidatePhoneNumberUseCase
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.presentation.core.UiText
+import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 class BasicPhoneViewModel @Inject constructor(
     private val validatePhoneNumber: ValidatePhoneNumberUseCase,
     private val phoneAuthRepo: PhoneAuthRepo,
+    private val signUpSession: SignUpSession,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BasicPhoneUiState())
@@ -90,7 +93,13 @@ class BasicPhoneViewModel @Inject constructor(
                     is PhoneAuthStatus.CodeSent ->
                         _events.trySend(AuthEvent.NavigateToVerificationCode(status.verificationId))
 
-                    PhoneAuthStatus.AutoVerified -> _events.trySend(AuthEvent.NavigateToUsername)
+                    PhoneAuthStatus.AutoVerified -> {
+                        // Skips the code screen, but must still leave credentials behind:
+                        // create-username is where the account is made, and it has nothing to
+                        // work with otherwise.
+                        signUpSession.setCredentials(SignUpCredentials.AutoVerifiedPhone)
+                        _events.trySend(AuthEvent.NavigateToUsername)
+                    }
 
                     is PhoneAuthStatus.Failed -> _events.trySend(
                         AuthEvent.ShowError(UiText.Resource(R.string.error_occurred_during_sign_up)),

@@ -6,6 +6,7 @@
 package com.andre_max.tiktokclone.domain.auth
 
 import com.andre_max.tiktokclone.domain.core.DataError
+import com.andre_max.tiktokclone.domain.core.Result
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -18,6 +19,22 @@ import kotlinx.coroutines.flow.Flow
  */
 interface PhoneAuthRepo {
     fun requestVerificationCode(e164PhoneNumber: String): Flow<PhoneAuthStatus>
+
+    suspend fun signInWithCode(
+        verificationId: String,
+        code: String,
+    ): Result<String, DataError.Auth>
+
+    /**
+     * Completes a sign-in Firebase already verified without the user typing anything.
+     *
+     * The provider credential from auto-retrieval never leaves the data layer — it is held
+     * there and redeemed here — which is what lets [PhoneAuthStatus.AutoVerified] stay an empty
+     * marker instead of carrying a Firebase type up into `domain`.
+     *
+     * @return an error if no auto-verified credential is pending.
+     */
+    suspend fun signInWithAutoVerified(): Result<String, DataError.Auth>
 }
 
 sealed interface PhoneAuthStatus {

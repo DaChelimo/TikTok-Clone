@@ -15,6 +15,7 @@ import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
 import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import com.andre_max.tiktokclone.test_utils.FakeAuthRepo
+import com.andre_max.tiktokclone.test_utils.FakePhoneAuthRepo
 import com.andre_max.tiktokclone.test_utils.FakeUserProfileRepo
 import com.andre_max.tiktokclone.test_utils.FakeUsernameRepo
 import com.google.common.truth.Truth.assertThat
@@ -58,7 +59,7 @@ class CreateUsernameViewModelTest {
         return CreateUsernameViewModel(
             validateUsername = validate,
             checkAvailability = CheckUsernameAvailabilityUseCase(validate, repo),
-            completeSignUp = CompleteSignUpUseCase(authRepo, repo, userProfileRepo),
+            completeSignUp = CompleteSignUpUseCase(authRepo, repo, userProfileRepo, FakePhoneAuthRepo()),
             signUpSession = signUpSession,
         )
     }

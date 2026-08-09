@@ -159,9 +159,8 @@
     </fragment>
     <fragment
         android:id="@+id/enterCodeFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.auth.phone_auth.enter_code.EnterCodeFragment"
-        android:label="EnterCodeFragment"
-        tools:layout="@layout/fragment_enter_code">
+        android:name="com.andre_max.tiktokclone.presentation.ui.auth.enter_code.EnterCodeFragment"
+        android:label="EnterCodeFragment">
         <!--
             Renamed from `phoneNumber`, which no caller read: the legacy fragment picks the id up
             from a global instead. Firebase needs the verification id, not the number, to build

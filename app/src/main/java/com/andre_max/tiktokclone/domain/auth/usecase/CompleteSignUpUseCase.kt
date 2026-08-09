@@ -6,6 +6,7 @@
 package com.andre_max.tiktokclone.domain.auth.usecase
 
 import com.andre_max.tiktokclone.domain.auth.AuthRepo
+import com.andre_max.tiktokclone.domain.auth.PhoneAuthRepo
 import com.andre_max.tiktokclone.domain.auth.UserProfileRepo
 import com.andre_max.tiktokclone.domain.auth.UsernameRepo
 import com.andre_max.tiktokclone.domain.core.DataError
@@ -31,6 +32,7 @@ class CompleteSignUpUseCase @Inject constructor(
     private val authRepo: AuthRepo,
     private val usernameRepo: UsernameRepo,
     private val userProfileRepo: UserProfileRepo,
+    private val phoneAuthRepo: PhoneAuthRepo,
 ) {
 
     suspend operator fun invoke(
@@ -71,5 +73,9 @@ class CompleteSignUpUseCase @Inject constructor(
             authRepo.signUpWithEmail(credentials.email, credentials.password)
         is SignUpCredentials.Google ->
             authRepo.signInWithGoogle(credentials.idToken)
+        is SignUpCredentials.Phone ->
+            phoneAuthRepo.signInWithCode(credentials.verificationId, credentials.code)
+        SignUpCredentials.AutoVerifiedPhone ->
+            phoneAuthRepo.signInWithAutoVerified()
     }
 }

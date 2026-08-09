@@ -11,6 +11,7 @@ import com.andre_max.tiktokclone.domain.auth.usecase.ValidatePhoneNumberUseCase
 import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
 import com.andre_max.tiktokclone.test_utils.FakePhoneAuthRepo
 import com.google.common.truth.Truth.assertThat
@@ -28,7 +29,7 @@ class BasicPhoneViewModelTest {
 
     private val repo = FakePhoneAuthRepo()
 
-    private fun viewModel() = BasicPhoneViewModel(ValidatePhoneNumberUseCase(), repo)
+    private fun viewModel() = BasicPhoneViewModel(ValidatePhoneNumberUseCase(), repo, SignUpSession())
 
     private fun BasicPhoneViewModel.type(countryCode: String, number: String) {
         onAction(BasicPhoneAction.CountryCodeChanged(countryCode))
