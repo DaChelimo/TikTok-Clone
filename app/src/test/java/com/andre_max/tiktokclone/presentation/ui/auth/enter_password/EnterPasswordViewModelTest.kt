@@ -5,13 +5,16 @@
 
 package com.andre_max.tiktokclone.presentation.ui.auth.enter_password
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.andre_max.tiktokclone.domain.auth.usecase.PasswordError
+import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidatePasswordUseCase
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
 import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import com.andre_max.tiktokclone.test_utils.CoroutineTestRule
+import com.andre_max.tiktokclone.test_utils.FakeAuthRepo
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -30,10 +33,20 @@ class EnterPasswordViewModelTest {
      * [SignUpSession] rather than taking as a property — so the test seeds the session with
      * an address whose local-part is the identity under test.
      */
-    private fun viewModel(identity: String? = null): EnterPasswordViewModel {
-        val session = SignUpSession()
+    private val authRepo = FakeAuthRepo()
+
+    private fun viewModel(
+        identity: String? = null,
+        isLogin: Boolean = false,
+        session: SignUpSession = SignUpSession(),
+    ): EnterPasswordViewModel {
         identity?.let { session.setEmail("$it@example.com") }
-        return EnterPasswordViewModel(ValidatePasswordUseCase(), session)
+        return EnterPasswordViewModel(
+            validatePassword = ValidatePasswordUseCase(),
+            signUpSession = session,
+            authRepo = authRepo,
+            savedStateHandle = SavedStateHandle(mapOf("isLogIn" to isLogin)),
+        )
     }
 
     @Test
@@ -134,7 +147,7 @@ class EnterPasswordViewModelTest {
     @Test
     fun `ContinueClicked hands the credentials to the session for the username screen`() = runTest {
         val session = SignUpSession().apply { setEmail("andrew@example.com") }
-        val viewModel = EnterPasswordViewModel(ValidatePasswordUseCase(), session)
+        val viewModel = viewModel(session = session)
         viewModel.onAction(EnterPasswordAction.PasswordChanged("Passw0rd!"))
 
         viewModel.onAction(EnterPasswordAction.ContinueClicked)
@@ -205,4 +218,69 @@ class EnterPasswordViewModelTest {
                 expectNoEvents()
             }
         }
+
+    // region log-in mode
+
+    @Test
+    fun `log-in does not impose the sign-up password rules`() = runTest {
+        // An account created before these rules existed must still be able to log in; enforcing
+        // today's rules on the log-in field would lock out the earliest users.
+        val viewModel = viewModel(identity = "andrew", isLogin = true)
+
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("old"))
+
+        val state = viewModel.uiState.value
+        assertThat(state.failedRules).isEmpty()
+        assertThat(state.isContinueEnabled).isTrue()
+    }
+
+    @Test
+    fun `log-in still requires something to be typed`() = runTest {
+        val viewModel = viewModel(identity = "andrew", isLogin = true)
+
+        viewModel.onAction(EnterPasswordAction.PasswordChanged(""))
+
+        assertThat(viewModel.uiState.value.isContinueEnabled).isFalse()
+    }
+
+    @Test
+    fun `a successful log-in signs in and goes to the profile`() = runTest {
+        val viewModel = viewModel(identity = "andrew", isLogin = true)
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("old"))
+
+        viewModel.events.test {
+            viewModel.onAction(EnterPasswordAction.ContinueClicked)
+
+            assertThat(awaitItem()).isEqualTo(AuthEvent.NavigateToHome)
+        }
+        assertThat(authRepo.calls)
+            .containsExactly(FakeAuthRepo.Call.SignInWithEmail("andrew@example.com", "old"))
+    }
+
+    @Test
+    fun `a rejected credential shows an error and does not navigate`() = runTest {
+        authRepo.signInError = DataError.Auth.INVALID_CREDENTIALS
+        val viewModel = viewModel(identity = "andrew", isLogin = true)
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("wrong"))
+
+        viewModel.events.test {
+            viewModel.onAction(EnterPasswordAction.ContinueClicked)
+
+            assertThat(awaitItem()).isInstanceOf(AuthEvent.ShowError::class.java)
+        }
+    }
+
+    @Test
+    fun `log-in never signs up`() = runTest {
+        val viewModel = viewModel(identity = "andrew", isLogin = true)
+        viewModel.onAction(EnterPasswordAction.PasswordChanged("old"))
+
+        viewModel.onAction(EnterPasswordAction.ContinueClicked)
+
+        assertThat(authRepo.calls).doesNotContain(
+            FakeAuthRepo.Call.SignUpWithEmail("andrew@example.com", "old"),
+        )
+    }
+
+    // endregion
 }

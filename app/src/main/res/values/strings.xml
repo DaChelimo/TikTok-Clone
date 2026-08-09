@@ -76,6 +76,8 @@
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="log_in_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
     <string name="log_in">Log in</string>
     <string name="sign_up_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s privacy policy.</string>
 

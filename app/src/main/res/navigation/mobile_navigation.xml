@@ -285,8 +285,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.log_in.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/log_in_page">
+        android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_selectBasicSignUpFragment"
             app:destination="@id/selectBasicSignUpFragment" />

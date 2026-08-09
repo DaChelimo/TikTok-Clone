@@ -6,11 +6,19 @@
 package com.andre_max.tiktokclone.presentation.ui.auth.enter_password
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.domain.auth.AuthRepo
+import com.andre_max.tiktokclone.domain.core.DataError
+import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
+import com.andre_max.tiktokclone.presentation.core.UiText
 import com.andre_max.tiktokclone.domain.auth.usecase.ValidatePasswordUseCase
 import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
 import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -19,21 +27,27 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Screen 3.
+ * Screen 3, in both of its modes.
  *
- * [identity] is the email local-part (or username) carried in from the previous screen; it is
- * what makes [ValidatePasswordUseCase]'s `ContainsIdentity` rule (D6) possible. Pass 2 wires it
- * from `SavedStateHandle`; it is a constructor parameter here so ViewModel tests stay free of
- * Android nav plumbing.
+ * **Sign-up** runs the full D6 rule set and hands the credentials to [SignUpSession] for the
+ * create-username screen. **Log-in** deliberately does not: an existing account's password was
+ * accepted under whatever rules applied when it was chosen, and re-imposing today's stricter
+ * ones would lock out exactly the users who signed up earliest. Log-in only requires that
+ * something was typed, and lets the identity provider be the judge.
  */
 @HiltViewModel
 class EnterPasswordViewModel @Inject constructor(
     private val validatePassword: ValidatePasswordUseCase,
     private val signUpSession: SignUpSession,
+    private val authRepo: AuthRepo,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val isLogin: Boolean = savedStateHandle["isLogIn"] ?: false
 
     /**
      * The email local-part collected on screen 2. Read from [SignUpSession] rather than taken as
@@ -62,6 +76,18 @@ class EnterPasswordViewModel @Inject constructor(
     }
 
     private fun onPasswordChanged(password: String) {
+        if (isLogin) {
+            _uiState.update {
+                it.copy(
+                    password = password,
+                    failedRules = persistentListOf(),
+                    hasBeenEdited = true,
+                    isContinueEnabled = password.isNotEmpty(),
+                )
+            }
+            return
+        }
+
         val failedRules = validatePassword(password, identity)
         _uiState.update {
             it.copy(
@@ -79,6 +105,12 @@ class EnterPasswordViewModel @Inject constructor(
      * client-side gate, and this one is reachable again after process death restores the field.
      */
     private fun onContinueClicked() {
+        if (_uiState.value.isLoading) return
+        if (isLogin) {
+            onLogInClicked()
+            return
+        }
+
         val failedRules = validatePassword(_uiState.value.password, identity)
 
         if (failedRules.isEmpty()) {
@@ -104,5 +136,41 @@ class EnterPasswordViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    /**
+     * Wrong password and unknown account are indistinguishable here by design — the data layer
+     * collapses both into [DataError.Auth.INVALID_CREDENTIALS], so this screen cannot tell a
+     * user (or an attacker enumerating addresses) which of the two it was.
+     */
+    private fun onLogInClicked() {
+        val email = signUpSession.email
+        val password = _uiState.value.password
+        if (email == null || password.isEmpty()) {
+            _events.trySend(AuthEvent.NavigateBack)
+            return
+        }
+
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            val result = authRepo.signInWithEmail(email, password)
+            _uiState.update { it.copy(isLoading = false) }
+
+            when (result) {
+                is Result.Success -> {
+                    signUpSession.clear()
+                    _events.trySend(AuthEvent.NavigateToHome)
+                }
+
+                is Result.Error -> _events.trySend(AuthEvent.ShowError(logInErrorText(result.error)))
+            }
+        }
+    }
+
+    private fun logInErrorText(error: DataError.Auth): UiText = when (error) {
+        DataError.Auth.NO_INTERNET -> UiText.Resource(R.string.no_network_connection)
+        DataError.Auth.TOO_MANY_REQUESTS -> UiText.Resource(R.string.too_many_requests)
+        else -> UiText.Resource(R.string.error_occurred_during_log_in)
     }
 }

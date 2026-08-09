@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
+import com.andre_max.tiktokclone.R
 import androidx.navigation.fragment.navArgs
 import com.andre_max.tiktokclone.models.sign_up.EmailBody
 import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
@@ -37,6 +39,7 @@ class EnterPasswordFragment : Fragment() {
             TikTokTheme {
                 EnterPasswordRoute(
                     onNavigateToUsername = ::navigateToCreateUsername,
+                    onNavigateToHome = ::navigateToProfile,
                     onNavigateBack = { findNavController().popBackStack() },
                 )
             }
@@ -54,6 +57,18 @@ class EnterPasswordFragment : Fragment() {
             EnterPasswordFragmentDirections.actionCreatePasswordFragmentToCreateUsernameFragment(
                 null, null, null,
             )
+        )
+    }
+
+    /**
+     * Log-in mode ends here rather than at create-username: the account already exists. Lands on
+     * the profile, matching where the legacy log-in screen went.
+     */
+    private fun navigateToProfile() {
+        findNavController().navigate(
+            R.id.meFragment,
+            null,
+            navOptions { popUpTo = R.id.homeFragment },
         )
     }
 }
