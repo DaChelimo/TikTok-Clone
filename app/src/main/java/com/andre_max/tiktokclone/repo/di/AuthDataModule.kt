@@ -5,6 +5,7 @@
 
 package com.andre_max.tiktokclone.repo.di
 
+import android.app.Application
 import com.andre_max.tiktokclone.domain.auth.AuthRepo
 import com.andre_max.tiktokclone.domain.auth.PhoneAuthRepo
 import com.andre_max.tiktokclone.domain.auth.UserProfileRepo
@@ -12,6 +13,7 @@ import com.andre_max.tiktokclone.domain.auth.UsernameRepo
 import com.andre_max.tiktokclone.repo.network.auth.DefaultAuthRepo
 import com.andre_max.tiktokclone.repo.network.phone.ActivityProvider
 import com.andre_max.tiktokclone.repo.network.phone.DefaultPhoneAuthRepo
+import com.andre_max.tiktokclone.repo.network.phone.ResumedActivityProvider
 import com.andre_max.tiktokclone.repo.network.user.DefaultUserProfileRepo
 import com.andre_max.tiktokclone.repo.network.username.DefaultUsernameRepo
 import dagger.Module
@@ -45,14 +47,13 @@ object AuthDataModule {
     fun provideUserProfileRepo(): UserProfileRepo = DefaultUserProfileRepo()
 
     /**
-     * Firebase's `PhoneAuthOptions.setActivity` needs the resumed `Activity`. Tracking it
-     * (an `Application.ActivityLifecycleCallbacks` registration) is Pass 2's job — the point of
-     * this seam is that `PhoneAuthRepo` in `domain` never learns about it.
+     * Firebase's `PhoneAuthOptions.setActivity` needs the resumed `Activity`. The point of this
+     * seam is that `PhoneAuthRepo` in `domain` never learns about it.
      */
     @Provides
     @Singleton
-    fun provideActivityProvider(): ActivityProvider =
-        ActivityProvider { TODO("Pass 2: track the resumed Activity") }
+    fun provideActivityProvider(application: Application): ActivityProvider =
+        ResumedActivityProvider(application)
 
     @Provides
     @Singleton
