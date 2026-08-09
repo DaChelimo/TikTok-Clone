@@ -22,5 +22,12 @@ class CheckUsernameAvailabilityUseCase @Inject constructor(
      * short-circuit before any repo call and come back as the first [UsernameError]; a failed
      * lookup comes back as [UsernameError.Network].
      */
-    suspend operator fun invoke(username: String): Result<Boolean, UsernameError> = TODO("Pass 2")
+    suspend operator fun invoke(username: String): Result<Boolean, UsernameError> {
+        validate(username).firstOrNull()?.let { return Result.Error(it) }
+
+        return when (val result = repo.isUsernameAvailable(username)) {
+            is Result.Success -> Result.Success(result.data)
+            is Result.Error -> Result.Error(UsernameError.Network(result.error))
+        }
+    }
 }

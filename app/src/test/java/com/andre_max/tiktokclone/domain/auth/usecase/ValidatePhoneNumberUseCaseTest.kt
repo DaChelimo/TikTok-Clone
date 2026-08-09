@@ -70,15 +70,15 @@ class ValidatePhoneNumberUseCaseTest {
     }
 
     @Test
-    fun `fewer than 4 digits returns TooShort`() {
-        val result = validatePhoneNumber("+254")
+    fun `fewer than 10 digits returns TooShort`() {
+        val result = validatePhoneNumber("+254712345")
 
         assertThat(result).isEqualTo(Result.Error(PhoneNumberError.TooShort))
     }
 
     @Test
-    fun `exactly 4 digits is accepted because the lower bound is inclusive`() {
-        val result = validatePhoneNumber("+2541")
+    fun `exactly 10 digits is accepted because the lower bound is inclusive`() {
+        val result = validatePhoneNumber("+2547123456")
 
         assertThat(result).isEqualTo(Result.Success(Unit))
     }

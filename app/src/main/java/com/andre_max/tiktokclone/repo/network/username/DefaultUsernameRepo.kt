@@ -9,9 +9,13 @@ import com.andre_max.tiktokclone.domain.auth.UsernameRepo
 import com.andre_max.tiktokclone.domain.core.DataError
 import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
+import com.andre_max.tiktokclone.domain.core.map
+import com.andre_max.tiktokclone.repo.network.utils.FirePath
+import com.andre_max.tiktokclone.repo.network.utils.safeCall
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 /**
  * Firebase-backed [UsernameRepo]. Every call goes through `safeCall`, so nothing above this
@@ -24,10 +28,16 @@ class DefaultUsernameRepo(
     private val realFire: FirebaseDatabase = Firebase.database,
 ) : UsernameRepo {
 
+    private val firePath = FirePath()
+
     override suspend fun isUsernameAvailable(
         username: String,
-    ): Result<Boolean, DataError.Network> = TODO("Pass 2")
+    ): Result<Boolean, DataError.Network> = safeCall {
+        realFire.getReference(firePath.getTakenUsernames(username)).get().await()?.exists() == true
+    }.map { taken -> !taken }
 
     override suspend fun claimUsername(username: String): EmptyResult<DataError.Network> =
-        TODO("Pass 2")
+        safeCall {
+            realFire.getReference(firePath.getTakenUsernames(username)).setValue(username).await()
+        }.map { }
 }

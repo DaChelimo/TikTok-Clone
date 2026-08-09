@@ -37,7 +37,8 @@ suspend fun <T> safeCall(block: suspend () -> T): Result<T, DataError.Network> =
         Result.Error(e.toNetworkError())
     }
 
-private fun Throwable.toNetworkError(): DataError.Network = when (this) {
+/** Visible beyond this file so other repos (e.g. [com.andre_max.tiktokclone.repo.network.phone.DefaultPhoneAuthRepo], which maps a Firebase callback error rather than a caught exception) can reuse the same mapping instead of duplicating it. */
+internal fun Throwable.toNetworkError(): DataError.Network = when (this) {
     is FirebaseNetworkException -> DataError.Network.NO_INTERNET
     is FirebaseAuthException -> DataError.Network.UNAUTHORIZED
     else -> DataError.Network.UNKNOWN

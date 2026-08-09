@@ -17,7 +17,15 @@ import javax.inject.Inject
 class ValidateUsernameUseCase @Inject constructor() {
 
     /** @return an empty list when valid; otherwise every rule violated, in declaration order. */
-    operator fun invoke(username: String): List<UsernameError> = TODO("Pass 2")
+    operator fun invoke(username: String): List<UsernameError> {
+        if (username.isBlank()) return listOf(UsernameError.Empty)
+
+        return buildList {
+            if (username.length < MIN_LENGTH) add(UsernameError.TooShort)
+            if (username.contains(" ")) add(UsernameError.ContainsSpaces)
+            if (username.length >= MAX_LENGTH) add(UsernameError.TooLong)
+        }
+    }
 
     companion object {
         /** Legacy: `username.length < 4 -> R.string.short_username`. */

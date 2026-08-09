@@ -82,6 +82,7 @@
     <string name="short_username">Include at least 4 characters in your username</string>
     <string name="long_username">Username must be less than 25 characters</string>
     <string name="name_contains_spaces">Username must not contain any spaces</string>
+    <string name="username_check_failed">Couldn\'t check username availability. Kindly try again.</string>
     <string name="hashtags">#Hashtags</string>
     <string name="friends">\@Friends</string>
     <string name="edit_profile">Edit Profile</string>
@@ -112,6 +113,7 @@
     <string name="birthday_day">Day</string>
     <string name="birthday_year">Year</string>
     <string name="phone_number">Phone Number</string>
+    <string name="enter_valid_phone_number">Enter a valid phone number</string>
     <string name="send_code">Send code</string>
     <string name="email_address">Email address</string>
     <string name="hash_tag_name">#%s</string>
