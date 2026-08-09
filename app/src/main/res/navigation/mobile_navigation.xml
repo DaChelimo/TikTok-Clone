@@ -97,8 +97,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.home.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home">
+        android:label="Home">
         <action
             android:id="@+id/action_homeFragment_to_profileWithAccountFragment"
             app:destination="@id/profileWithAccountFragment" />
