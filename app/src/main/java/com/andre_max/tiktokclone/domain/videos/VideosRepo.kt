@@ -10,13 +10,7 @@ import com.andre_max.tiktokclone.domain.core.EmptyResult
 import com.andre_max.tiktokclone.domain.core.Result
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 
-/**
- * Read/like access to the global video collection.
- *
- * Narrower than the legacy `repo.network.videos.VideosRepo` on purpose: saving an uploaded
- * video belongs to the upload slice and will be added here when that slice migrates, with a
- * `Result` return instead of the legacy `onComplete` callback.
- */
+/** Read/like/save access to the global video collection. */
 interface VideosRepo {
 
     /**
@@ -40,5 +34,17 @@ interface VideosRepo {
         videoId: String,
         authorId: String,
         shouldLike: Boolean,
+    ): EmptyResult<DataError.Network>
+
+    /**
+     * Persists an uploaded video: the global `videos/` record (public only), the uploader's
+     * own collection entry (two-way storage), and each tag's count + tag-videos entry.
+     */
+    suspend fun saveVideo(
+        isPrivate: Boolean,
+        videoUrl: String,
+        description: String,
+        tags: Map<String, String>,
+        duration: Long,
     ): EmptyResult<DataError.Network>
 }

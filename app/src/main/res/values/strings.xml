@@ -68,6 +68,9 @@
     <string name="creator_profile">Creator profile</string>
     <string name="share">Share</string>
     <string name="error_something_went_wrong">Something went wrong. Try again later.</string>
+    <string name="video_description">Describe your video&#8230; #hashtags welcome</string>
+    <string name="post_video">Post</string>
+    <string name="uploading_video">Uploading your video&#8230;</string>
 
     <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
     <string name="terms_of_services_email">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>

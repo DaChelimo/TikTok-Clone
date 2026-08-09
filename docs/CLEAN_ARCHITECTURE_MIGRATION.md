@@ -39,7 +39,8 @@ working in that tree) and to [docs/SPEC.md](SPEC.md) (product-level contracts):
 | 6 | Videos/feed slice | ✅ **Done (2026-08-09)** — `HomeFragment` is a Compose shell over a `VerticalPager` feed; comment *data* layer (`domain/comments`, `FirebaseCommentsRepo`) landed here too because the feed screen embeds the comment sheet. `GetFeedBatchUseCase` is the seam the future recommendation model plugs into. | VerticalPager, recomposition, HomeAction, pagination, callbackFlow |
 | 7a | Comments / large_video detail | ✅ **Done (2026-08-09)** — `LargeVideoFragment` is a Compose shell over the shared `components/video/` `VideoPage` + `CommentSheet` (extracted from the feed when this second consumer appeared). | shared components, SavedStateHandle nav args |
 | 7b | Profile | ✅ **Done (2026-08-09)** — one `ProfileViewModel` for own/other profiles; `GetVisibleVideoTypesUseCase` encodes the newly-decided visibility rule; fixed the legacy Liked/Private tab label swap. | SavedStateHandle fallback, HorizontalPager tabs, video-frame thumbnails (coil-video) |
-| 7c | Upload, discover, search | Not started | pattern repetition |
+| 7c | Upload (record → preview → post, gallery picker) | ✅ **Done (2026-08-09)** — `PostVideoUseCase` owns the compress→upload→persist pipeline; camera stays a View inside Compose (`AndroidView` + lifecycle owner); Dexter replaced with the Compose permission launcher on this screen. | AndroidView interop, suspendCancellableCoroutine, MediaStore repos |
+| 7d | Discover, search | Not started | pattern repetition |
 | 8 | Delete `TheResult`, `safeAccess`, `BaseViewModel`, `BaseFragment` | Not started | cleanup once unreferenced |
 
 > **Slice 3 was previously marked done in error.** Until 2026-08-09 `domain/auth/usecase/` held

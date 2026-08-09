@@ -183,8 +183,7 @@
     <fragment
         android:id="@+id/previewVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.preview_video.PreviewVideoFragment"
-        android:label="PreviewVideoFragment"
-        tools:layout="@layout/fragment_preview_video">
+        android:label="PreviewVideoFragment">
         <argument
             android:name="localVideo"
             app:argType="com.andre_max.tiktokclone.models.local.LocalVideo" />
@@ -195,8 +194,7 @@
     <fragment
         android:id="@+id/postVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.post_video.PostVideoFragment"
-        android:label="PostVideoFragment"
-        tools:layout="@layout/fragment_post_video">
+        android:label="PostVideoFragment">
         <argument
             android:name="localVideo"
             app:argType="com.andre_max.tiktokclone.models.local.LocalVideo" />
@@ -220,8 +218,7 @@
     <fragment
         android:id="@+id/recordVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.record.RecordVideoFragment"
-        android:label="RecordVideoFragment"
-        tools:layout="@layout/fragment_record_video">
+        android:label="RecordVideoFragment">
         <action
             android:id="@+id/action_recordVideoFragment_to_createVideoFragment"
             app:destination="@id/selectMediaFragment" />

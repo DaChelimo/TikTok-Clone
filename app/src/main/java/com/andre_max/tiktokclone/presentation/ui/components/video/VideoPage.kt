@@ -246,10 +246,11 @@ private fun RailButton(
 
 /**
  * One ExoPlayer per composed page. Released on dispose; paused whenever [playWhenReady] is
- * false or the app goes to the background.
+ * false or the app goes to the background. Public because the upload preview screen plays a
+ * local file with exactly this lifecycle; [url] accepts remote urls and file paths alike.
  */
 @Composable
-private fun VideoPlayer(
+fun VideoPlayer(
     url: String,
     playWhenReady: Boolean,
     repeatOnEnd: Boolean,

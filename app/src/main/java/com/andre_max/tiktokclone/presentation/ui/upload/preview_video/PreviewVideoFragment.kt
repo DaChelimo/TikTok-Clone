@@ -1,96 +1,101 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.upload.preview_video
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.databinding.FragmentPreviewVideoBinding
-import com.andre_max.tiktokclone.presentation.exoplayer.Player
-import com.andre_max.tiktokclone.utils.BottomNavViewUtils.hideBottomNavBar
+import com.andre_max.tiktokclone.presentation.ui.components.video.VideoPlayer
+import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
+import com.andre_max.tiktokclone.utils.BottomNavViewUtils
 import com.andre_max.tiktokclone.utils.SystemBarColors
 import com.andre_max.tiktokclone.utils.ViewUtils
-import com.andre_max.tiktokclone.utils.architecture.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class PreviewVideoFragment : BaseFragment(R.layout.fragment_preview_video) {
-
-    lateinit var binding: FragmentPreviewVideoBinding
+/**
+ * Looping preview of the just-recorded/selected local video with a Next button into the post
+ * step. No ViewModel: the screen has no state beyond the nav argument.
+ */
+@AndroidEntryPoint
+class PreviewVideoFragment : Fragment() {
 
     private val args by navArgs<PreviewVideoFragmentArgs>()
-    private val localVideo by lazy { args.localVideo }
-    private val player by lazy {
-        Player(
-            simpleExoplayerView = binding.playerView,
-            playBtn = binding.playBtn,
-            context = requireContext(),
-            url = localVideo.filePath,
-            onVideoEnded = {
-                it.restartPlayer()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            TikTokTheme {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                ) {
+                    args.localVideo.filePath?.let { filePath ->
+                        VideoPlayer(
+                            url = filePath,
+                            playWhenReady = true,
+                            repeatOnEnd = true,
+                            onEnded = {},
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            findNavController().navigate(
+                                PreviewVideoFragmentDirections
+                                    .actionPreviewVideoFragmentToPostVideoFragment(args.localVideo),
+                            )
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .navigationBarsPadding()
+                            .padding(16.dp)
+                            .testTag(PreviewVideoTags.NEXT),
+                    ) {
+                        Text(stringResource(R.string.next))
+                    }
+                }
             }
-        )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycle.addObserver(player)
-        player.init()
-    }
-
-    override fun setUpLayout() {
-        binding = FragmentPreviewVideoBinding.bind(requireView())
-    }
-
-    override fun setUpClickListeners() {
-        binding.nextBtn.setOnClickListener {
-            findNavController().navigate(
-                PreviewVideoFragmentDirections
-                    .actionPreviewVideoFragmentToPostVideoFragment(localVideo)
-            )
         }
     }
 
     override fun onResume() {
         super.onResume()
-        player.resumePlayer()
         ViewUtils.changeSystemBars(activity, SystemBarColors.DARK)
         ViewUtils.changeSystemNavigationBarColor(requireActivity(), R.color.dark_black)
         ViewUtils.hideStatusBar(requireActivity())
-        hideBottomNavBar(activity)
+        BottomNavViewUtils.hideBottomNavBar(activity)
     }
+}
 
-    override fun onPause() {
-        super.onPause()
-        player.pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        player.stopPlayer()
-    }
-
+object PreviewVideoTags {
+    const val NEXT = "preview_video_next"
 }

@@ -1,104 +1,81 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.upload.post_video
 
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.net.toUri
+import android.view.ViewGroup
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.databinding.FragmentPostVideoBinding
-import com.andre_max.tiktokclone.models.local.LocalVideo
-import com.andre_max.tiktokclone.models.upload.Progress
 import com.andre_max.tiktokclone.presentation.MainActivity
-import com.andre_max.tiktokclone.utils.ImageUtils
-import com.andre_max.tiktokclone.utils.ResUtils
+import com.andre_max.tiktokclone.presentation.core.UiText
+import com.andre_max.tiktokclone.presentation.core.asString
+import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
 import com.andre_max.tiktokclone.utils.SystemBarColors
 import com.andre_max.tiktokclone.utils.ViewUtils
-import com.andre_max.tiktokclone.utils.architecture.BaseFragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
 
+/** Compose host for the post step. A finished upload lands on the Home tab, as before. */
+@AndroidEntryPoint
+class PostVideoFragment : Fragment() {
 
-class PostVideoFragment : BaseFragment(R.layout.fragment_post_video) {
+    private val viewModel by viewModels<PostVideoViewModel>()
 
-    lateinit var binding: FragmentPostVideoBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            TikTokTheme {
+                val state by viewModel.uiState.collectAsStateWithLifecycle()
+                val snackbarHostState = remember { SnackbarHostState() }
+                var pendingMessage by remember { mutableStateOf<UiText?>(null) }
 
-    private val args by navArgs<PostVideoFragmentArgs>()
-    private val localVideo: LocalVideo by lazy { args.localVideo }
-    override val viewModel by viewModels<PostVideoViewModel>()
+                LaunchedEffect(viewModel) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            PostVideoEvent.NavigateHome -> navigateHome()
+                            is PostVideoEvent.ShowMessage -> pendingMessage = event.message
+                        }
+                    }
+                }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch { loadVideoThumbnail() }
+                val message = pendingMessage?.asString()
+                LaunchedEffect(message) {
+                    message?.let {
+                        snackbarHostState.showSnackbar(it)
+                        pendingMessage = null
+                    }
+                }
 
-        binding.postBtn.setOnClickListener {
-            viewModel.postVideo(requireContext(), localVideo)
+                PostVideoScreen(
+                    state = state,
+                    onAction = viewModel::onAction,
+                    snackbarHostState = snackbarHostState,
+                )
+            }
         }
     }
 
-    private suspend fun loadVideoThumbnail(): Unit = withContext(Dispatchers.IO) {
-        val mediaMetadataRetriever = MediaMetadataRetriever().apply {
-            setDataSource(requireContext(), localVideo.filePath?.toUri())
-        }
-
-        val bitmap = mediaMetadataRetriever.frameAtTime
-        mediaMetadataRetriever.release()
-
-        withContext(Dispatchers.Main) {
-            val requestOptions = RequestOptions()
-            Glide.with(requireContext())
-                .applyDefaultRequestOptions(requestOptions)
-                .addDefaultRequestListener(ImageUtils.getRequestListener(binding.loadingBar) {  })
-                .load(bitmap)
-                .into(binding.videoThumbnail)
-        }
-    }
-
-    override fun setUpLayout() {
-        binding = FragmentPostVideoBinding.bind(requireView()).also {
-            it.lifecycleOwner = viewLifecycleOwner
-            it.viewModel = viewModel
-            it.loadingLayout.uploadStatus = viewModel.uploadStatus
-        }
-    }
-
-    override fun setUpLiveData() {
-        super.setUpLiveData()
-        viewModel.uploadStatus.observe(viewLifecycleOwner) { uploadStatus ->
-            if (uploadStatus == Progress.DONE) // Set the navItem to home
-                (activity as MainActivity).binding.navView.selectedItemId = R.id.homeFragment
-            else if (uploadStatus == Progress.FAILED)
-                ResUtils.showSnackBar(requireView(), R.string.error_occurred_during_video_upload)
-        }
+    private fun navigateHome() {
+        (activity as? MainActivity)?.binding?.navView?.selectedItemId = R.id.homeFragment
     }
 
     override fun onResume() {

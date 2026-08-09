@@ -49,4 +49,27 @@ class FakeVideosRepo : VideosRepo {
         if (shouldLike) likedVideoIds += videoId else likedVideoIds -= videoId
         return Result.Success(Unit)
     }
+
+    data class SaveCall(
+        val isPrivate: Boolean,
+        val videoUrl: String,
+        val description: String,
+        val tags: Map<String, String>,
+        val duration: Long,
+    )
+
+    val saveCalls = mutableListOf<SaveCall>()
+    var saveError: DataError.Network? = null
+
+    override suspend fun saveVideo(
+        isPrivate: Boolean,
+        videoUrl: String,
+        description: String,
+        tags: Map<String, String>,
+        duration: Long,
+    ): EmptyResult<DataError.Network> {
+        saveError?.let { return Result.Error(it) }
+        saveCalls += SaveCall(isPrivate, videoUrl, description, tags, duration)
+        return Result.Success(Unit)
+    }
 }
