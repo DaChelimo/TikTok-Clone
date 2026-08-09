@@ -1,76 +1,73 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.discover
 
-import android.content.Context
-import android.media.MediaMetadataRetriever
-import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.andre_max.tiktokclone.domain.core.fold
+import com.andre_max.tiktokclone.domain.tags.TagsRepo
+import com.andre_max.tiktokclone.domain.tags.usecase.GetTagVideosUseCase
 import com.andre_max.tiktokclone.models.tag.Tag
 import com.andre_max.tiktokclone.models.video.RemoteVideo
-import com.andre_max.tiktokclone.repo.network.tag.DefaultTagRepo
-import com.andre_max.tiktokclone.repo.network.videos.DefaultVideosRepo
-import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
-class DiscoverViewModel : BaseViewModel() {
-    private val tagRepo = DefaultTagRepo()
-    private val videosRepo = DefaultVideosRepo()
-    private val mediaMetadataRetriever = MediaMetadataRetriever()
+data class DiscoverUiState(
+    val tagRows: ImmutableList<DiscoverTagUi> = persistentListOf(),
+    val isLoading: Boolean = false,
+)
 
-    private val _listOfPopularTags = MutableLiveData<List<Tag>>()
-    val listOfPopularTags: LiveData<List<Tag>> = _listOfPopularTags
+/** One discover row: the tag and its videos, filled in as the per-tag fetch lands. */
+data class DiscoverTagUi(
+    val tag: Tag,
+    val videos: ImmutableList<RemoteVideo> = persistentListOf(),
+)
+
+/** Popular tags, each row's videos loaded per tag. */
+@HiltViewModel
+class DiscoverViewModel @Inject constructor(
+    private val tagsRepo: TagsRepo,
+    private val getTagVideos: GetTagVideosUseCase,
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(DiscoverUiState(isLoading = true))
+    val uiState: StateFlow<DiscoverUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _listOfPopularTags.value = tagRepo.fetchPopularTags().tryData()
+            val tags = tagsRepo.fetchPopularTags().fold({ it }, { emptyList() })
+            _uiState.update { state ->
+                state.copy(
+                    tagRows = tags.map { DiscoverTagUi(tag = it) }.toImmutableList(),
+                    isLoading = false,
+                )
+            }
+
+            tags.forEach { tag ->
+                launch {
+                    val videos = getTagVideos(tag.name).fold({ it }, { emptyList() })
+                    _uiState.update { state ->
+                        state.copy(
+                            tagRows = state.tagRows.map { row ->
+                                if (row.tag.name == tag.name) {
+                                    row.copy(videos = videos.toImmutableList())
+                                } else row
+                            }.toImmutableList(),
+                        )
+                    }
+                }
+            }
         }
-    }
-
-    suspend fun getVideoThumbnail(context: Context, remoteVideo: RemoteVideo) =
-        withContext(Dispatchers.IO) {
-            mediaMetadataRetriever.setDataSource(context, remoteVideo.url.toUri())
-            mediaMetadataRetriever.frameAtTime
-        }
-
-    // Get the video ids then map those to actual videos
-    suspend fun fetchVideos(popularTag: Tag): List<RemoteVideo> {
-        val listOfTagVideoIds = tagRepo.fetchTagVideos(popularTag.name).tryData() ?: listOf()
-        val listOfVideo =
-            listOfTagVideoIds.mapNotNull { videoId -> videosRepo.fetchVideo(videoId).tryData() }
-        Timber.d("listOfVideo.size is ${listOfVideo.size}")
-        return listOfVideo
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        mediaMetadataRetriever.release()
     }
 }

@@ -38,8 +38,7 @@
     <fragment
         android:id="@+id/discoverFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.discover.DiscoverFragment"
-        android:label="Discover"
-        tools:layout="@layout/fragment_discover">
+        android:label="Discover">
         <action
             android:id="@+id/action_discoverFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />
@@ -53,8 +52,7 @@
     <fragment
         android:id="@+id/inboxFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.inbox.InboxFragment"
-        android:label="Inbox"
-        tools:layout="@layout/fragment_discover" />
+        android:label="Inbox" />
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.sign_up.SignUpFragment"
@@ -250,8 +248,10 @@
     <fragment
         android:id="@+id/hashtagPageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.selected_tag.SelectedTagFragment"
-        android:label="HashtagPageFragment"
-        tools:layout="@layout/fragment_selected_tag">
+        android:label="HashtagPageFragment">
+        <argument
+            android:name="tagName"
+            app:argType="string" />
         <action
             android:id="@+id/action_hashtagPageFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />

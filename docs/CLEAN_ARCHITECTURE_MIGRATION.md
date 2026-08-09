@@ -40,7 +40,8 @@ working in that tree) and to [docs/SPEC.md](SPEC.md) (product-level contracts):
 | 7a | Comments / large_video detail | ✅ **Done (2026-08-09)** — `LargeVideoFragment` is a Compose shell over the shared `components/video/` `VideoPage` + `CommentSheet` (extracted from the feed when this second consumer appeared). | shared components, SavedStateHandle nav args |
 | 7b | Profile | ✅ **Done (2026-08-09)** — one `ProfileViewModel` for own/other profiles; `GetVisibleVideoTypesUseCase` encodes the newly-decided visibility rule; fixed the legacy Liked/Private tab label swap. | SavedStateHandle fallback, HorizontalPager tabs, video-frame thumbnails (coil-video) |
 | 7c | Upload (record → preview → post, gallery picker) | ✅ **Done (2026-08-09)** — `PostVideoUseCase` owns the compress→upload→persist pipeline; camera stays a View inside Compose (`AndroidView` + lifecycle owner); Dexter replaced with the Compose permission launcher on this screen. | AndroidView interop, suspendCancellableCoroutine, MediaStore repos |
-| 7d | Discover, search | Not started | pattern repetition |
+| 7d | Discover / tags | ✅ **Done (2026-08-09)** — tag rows now actually navigate to the tag page (an empty, unreachable stub in legacy despite the spec describing the behavior); popular-tags query fixed to order by `info/count` descending (legacy ordered by a nonexistent child, ascending). | multi-repo use case (GetTagVideos), spec-vs-code reconciliation |
+| 7e | Search | Not started | pattern repetition |
 | 8 | Delete `TheResult`, `safeAccess`, `BaseViewModel`, `BaseFragment` | Not started | cleanup once unreferenced |
 
 > **Slice 3 was previously marked done in error.** Until 2026-08-09 `domain/auth/usecase/` held

@@ -48,12 +48,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.decode.VideoFrameDecoder
-import coil.request.ImageRequest
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
-import com.andre_max.tiktokclone.utils.TimeUtils
+import com.andre_max.tiktokclone.presentation.ui.components.video.VideoThumbnail
 import kotlinx.coroutines.launch
 
 /**
@@ -221,35 +219,6 @@ private fun VideoGrid(
         items(videos, key = { it.videoId }) { video ->
             VideoThumbnail(video = video, onClick = { onAction(ProfileAction.VideoClicked(video)) })
         }
-    }
-}
-
-@Composable
-fun VideoThumbnail(video: RemoteVideo, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .aspectRatio(9f / 16f)
-            .padding(1.dp)
-            .background(Color.DarkGray)
-            .clickable(onClick = onClick),
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(video.url)
-                .decoderFactory(VideoFrameDecoder.Factory())
-                .build(),
-            contentDescription = video.description,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-        )
-        Text(
-            text = TimeUtils.convertTimeToDisplayTime(video.duration),
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(4.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.labelSmall,
-        )
     }
 }
 
