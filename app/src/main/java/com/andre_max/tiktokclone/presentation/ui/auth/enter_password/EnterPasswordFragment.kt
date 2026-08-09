@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.andre_max.tiktokclone.R
 import androidx.navigation.fragment.navArgs
-import com.andre_max.tiktokclone.models.sign_up.EmailBody
 import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,9 +53,7 @@ class EnterPasswordFragment : Fragment() {
      */
     private fun navigateToCreateUsername() {
         findNavController().navigate(
-            EnterPasswordFragmentDirections.actionCreatePasswordFragmentToCreateUsernameFragment(
-                null, null, null,
-            )
+            EnterPasswordFragmentDirections.actionCreatePasswordFragmentToCreateUsernameFragment()
         )
     }
 

@@ -40,7 +40,7 @@ class SignUpFragment : Fragment() {
                     onNavigateToUsername = {
                         findNavController().navigate(
                             SignUpFragmentDirections
-                                .actionSignUpFragmentToCreateUsernameFragment(null, null, null)
+                                .actionSignUpFragmentToCreateUsernameFragment()
                         )
                     },
                     onNavigateBack = { findNavController().popBackStack() },

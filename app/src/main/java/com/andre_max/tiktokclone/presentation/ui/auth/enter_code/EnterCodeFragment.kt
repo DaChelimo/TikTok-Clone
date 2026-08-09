@@ -35,7 +35,7 @@ class EnterCodeFragment : Fragment() {
                     onNavigateToUsername = {
                         findNavController().navigate(
                             EnterCodeFragmentDirections
-                                .actionEnterCodeFragmentToCreateUsernameFragment(null, null, null)
+                                .actionEnterCodeFragmentToCreateUsernameFragment()
                         )
                     },
                     onNavigateToHome = {

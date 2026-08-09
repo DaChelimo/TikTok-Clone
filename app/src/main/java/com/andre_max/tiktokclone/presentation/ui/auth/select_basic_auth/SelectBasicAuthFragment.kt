@@ -73,7 +73,7 @@ class SelectBasicAuthFragment : Fragment() {
     private fun navigateToUsername() {
         findNavController().navigate(
             SelectBasicAuthFragmentDirections
-                .actionSelectBasicSignUpFragmentToCreateUsernameFragment(null, null, null)
+                .actionSelectBasicSignUpFragmentToCreateUsernameFragment()
         )
     }
 }
