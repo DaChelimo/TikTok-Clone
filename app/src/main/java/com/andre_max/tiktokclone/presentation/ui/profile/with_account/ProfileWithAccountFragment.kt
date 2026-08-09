@@ -26,13 +26,16 @@ package com.andre_max.tiktokclone.presentation.ui.profile.with_account
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.andre_max.tiktokclone.*
 import com.andre_max.tiktokclone.databinding.FragmentProfileWithAccountBinding
+import com.andre_max.tiktokclone.domain.auth.AuthRepo
 import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.presentation.ui.profile.with_account.tab.ProfileVideoTab
 import com.andre_max.tiktokclone.utils.BottomNavViewUtils.showBottomNavBar
@@ -43,9 +46,16 @@ import com.andre_max.tiktokclone.utils.architecture.BaseFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ProfileWithAccountFragment : BaseFragment(R.layout.fragment_profile_with_account) {
+
+    @Inject
+    lateinit var authRepo: AuthRepo
+
 
     private lateinit var binding: FragmentProfileWithAccountBinding
 
@@ -112,7 +122,23 @@ class ProfileWithAccountFragment : BaseFragment(R.layout.fragment_profile_with_a
             binding.editProfileBtn.setOnClickListener {
                 // TODO: Navigate to EditeProfileFragment
             }
+            // Only offered on your own profile — the menu is visible on everyone's.
+            binding.menuIcon.setOnClickListener { confirmSignOut() }
         }
+    }
+
+    private fun confirmSignOut() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.sign_out)
+            .setMessage(R.string.sign_out_confirmation)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.sign_out) { _, _ ->
+                authRepo.signOut()
+                // MeFragment re-checks the session in onResume and swaps this fragment out, so
+                // popping back to it is all this needs to do.
+                findNavController().popBackStack()
+            }
+            .show()
     }
 
     override fun onStart() {

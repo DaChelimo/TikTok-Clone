@@ -92,6 +92,8 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="send_invite">Send invite</string>
     <string name="open_menu">Open menu</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_confirmation">You\'ll need to sign in again to post or comment.</string>
     <string name="following">Following</string>
     <string name="followers">Followers</string>
     <string name="likes">Likes</string>
