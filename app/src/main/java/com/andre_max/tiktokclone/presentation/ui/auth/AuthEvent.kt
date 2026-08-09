@@ -22,12 +22,22 @@ sealed interface AuthEvent {
     /** Password accepted — on to picking a username. */
     data object NavigateToUsername : AuthEvent
 
-    /**
-     * Verification SMS requested. The enter-code screen itself is out of scope this phase (D2),
-     * so this is where screen 5 ends.
-     */
+    /** Verification SMS requested — on to entering the code. */
     data class NavigateToVerificationCode(val verificationId: String) : AuthEvent
 
     /** Account fully created. */
     data object NavigateToHome : AuthEvent
+
+    /** Sign-up landing — the user chose phone/email over a social provider. */
+    data object NavigateToAge : AuthEvent
+
+    /** Sign-up landing — the user already has an account. */
+    data object NavigateToLogIn : AuthEvent
+
+    /**
+     * Ask the host to start the Google sign-in Activity. An event rather than something the
+     * ViewModel does itself: launching it needs an `ActivityResultLauncher`, which only the
+     * composition owns.
+     */
+    data object LaunchGoogleSignIn : AuthEvent
 }

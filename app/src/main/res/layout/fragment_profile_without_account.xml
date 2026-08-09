@@ -121,18 +121,6 @@
         <!--        tools:layout_editor_absoluteY="16dp" />-->
 
         <include
-            android:id="@+id/sign_up_page"
-            layout="@layout/sign_up_page"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="50dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <include
             android:id="@+id/log_in_page"
             layout="@layout/log_in_page"
             android:layout_width="0dp"

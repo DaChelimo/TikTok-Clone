@@ -1,62 +1,85 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.auth.sign_up
 
-import androidx.lifecycle.LiveData
-import com.andre_max.tiktokclone.repo.network.auth.AuthRepo
-import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import timber.log.Timber
+import androidx.lifecycle.ViewModel
+import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.domain.auth.usecase.SignUpCredentials
+import com.andre_max.tiktokclone.presentation.core.UiText
+import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.presentation.ui.auth.SignUpSession
+import com.andre_max.tiktokclone.repo.di.SocialAuthModule
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 
-class SignUpViewModel : BaseViewModel() {
+/**
+ * Screen 7 — the sign-up landing.
+ *
+ * Google sign-in stops at the ID token: the account is not created here, it is created on the
+ * create-username screen like every other path, so this ViewModel's job ends at putting
+ * [SignUpCredentials.Google] into [SignUpSession]. That is what removes the old fragment's
+ * `viewModel.googleAuthRepo.doGoogleAuth(...)` reach-through — the Fragment no longer holds a
+ * repo at all.
+ */
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val signUpSession: SignUpSession,
+    @Named(SocialAuthModule.GOOGLE_WEB_CLIENT_ID) val googleWebClientId: String?,
+    @Named(SocialAuthModule.IS_FACEBOOK_ENABLED) isFacebookEnabled: Boolean,
+) : ViewModel() {
 
-    private val authRepo = AuthRepo()
-    val googleAuthRepo = authRepo.GoogleAuthRepo()
-    val facebookAuthRepo = authRepo.FacebookAuthRepo()
+    private val _uiState = MutableStateFlow(
+        SignUpUiState(
+            isGoogleEnabled = googleWebClientId != null,
+            isFacebookEnabled = isFacebookEnabled,
+        ),
+    )
+    val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
-    val liveCredential: LiveData<AuthCredential>
-        get() = authRepo.liveCredential
+    private val _events = Channel<AuthEvent>(Channel.BUFFERED)
+    val events: Flow<AuthEvent> = _events.receiveAsFlow()
 
-    // If the user uses google sign in, this will have a value
-    val googleAccount: GoogleSignInAccount?
-        get() = authRepo.liveGoogleAccount.value
-
-    private val mAuthListener = FirebaseAuth.AuthStateListener { p0 ->
-        if (p0.currentUser != null) Timber.i("Sign in succeeded") else Timber.i("Sign in failed")
+    fun onAction(action: SignUpAction) {
+        when (action) {
+            SignUpAction.UsePhoneOrEmailClicked -> _events.trySend(AuthEvent.NavigateToAge)
+            SignUpAction.LogInClicked -> _events.trySend(AuthEvent.NavigateToLogIn)
+            SignUpAction.CloseClicked -> _events.trySend(AuthEvent.NavigateBack)
+            SignUpAction.GoogleClicked -> onGoogleClicked()
+            is SignUpAction.GoogleTokenReceived -> onGoogleTokenReceived(action.idToken)
+        }
     }
 
-    init {
-        Firebase.auth.addAuthStateListener(mAuthListener)
+    private fun onGoogleClicked() {
+        if (!_uiState.value.isGoogleEnabled) return
+        _uiState.update { it.copy(isSigningIn = true) }
+        _events.trySend(AuthEvent.LaunchGoogleSignIn)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Firebase.auth.removeAuthStateListener(mAuthListener)
+    private fun onGoogleTokenReceived(idToken: String?) {
+        _uiState.update { it.copy(isSigningIn = false) }
+
+        // Null covers both a cancelled chooser and a completed flow that returned no token.
+        // Neither is worth an error message: the user either backed out deliberately, or is
+        // about to see the same screen and can retry.
+        if (idToken == null) return
+
+        signUpSession.setCredentials(SignUpCredentials.Google(idToken))
+        _events.trySend(AuthEvent.NavigateToUsername)
+    }
+
+    fun onGoogleSignInFailed() {
+        _uiState.update { it.copy(isSigningIn = false) }
+        _events.trySend(AuthEvent.ShowError(UiText.Resource(R.string.error_occurred_during_sign_up)))
     }
 }

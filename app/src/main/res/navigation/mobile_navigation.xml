@@ -64,8 +64,7 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.sign_up.SignUpFragment"
-        android:label="SignUpFragment"
-        tools:layout="@layout/sign_up_page">
+        android:label="SignUpFragment">
         <action
             android:id="@+id/action_signUpFragment_to_ageFragment"
             app:destination="@id/ageFragment" />

@@ -72,6 +72,7 @@
     <string name="sign_up_for_tiktok">Sign up for TikTok</string>
     <string name="close_page">Close page</string>
     <string name="sign_up_description_text">Create a profile, follow other accounts, make your own videos, and more.</string>
+    <string name="provider_not_configured">Not available yet</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="already_have_an_account">Already have an account?</string>
