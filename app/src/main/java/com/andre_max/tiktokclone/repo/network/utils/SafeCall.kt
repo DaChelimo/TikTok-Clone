@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import java.io.IOException
+import java.net.SocketTimeoutException
 import timber.log.Timber
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -42,10 +44,25 @@ suspend fun <T> safeCall(block: suspend () -> T): Result<T, DataError.Network> =
         Result.Error(e.toNetworkError())
     }
 
-/** Visible beyond this file so other repos (e.g. [com.andre_max.tiktokclone.repo.network.phone.DefaultPhoneAuthRepo], which maps a Firebase callback error rather than a caught exception) can reuse the same mapping instead of duplicating it. */
+/**
+ * Visible beyond this file so other repos (e.g. [com.andre_max.tiktokclone.repo.network.phone.DefaultPhoneAuthRepo], which maps a Firebase callback error rather than a caught exception) can reuse the same mapping instead of duplicating it.
+ *
+ * Order matters in the plain-http branches: [HttpException] and [java.net.SocketTimeoutException]
+ * are both [IOException]s, so the broad `is IOException` arm has to come last or it would swallow
+ * them and report every failed request as "no internet".
+ */
 internal fun Throwable.toNetworkError(): DataError.Network = when (this) {
     is FirebaseNetworkException -> DataError.Network.NO_INTERNET
     is FirebaseAuthException -> DataError.Network.UNAUTHORIZED
+    is HttpException -> when (code) {
+        401, 403 -> DataError.Network.UNAUTHORIZED
+        404 -> DataError.Network.NOT_FOUND
+        408 -> DataError.Network.TIMEOUT
+        in 500..599 -> DataError.Network.SERVER
+        else -> DataError.Network.UNKNOWN
+    }
+    is SocketTimeoutException -> DataError.Network.TIMEOUT
+    is IOException -> DataError.Network.NO_INTERNET
     else -> DataError.Network.UNKNOWN
 }
 

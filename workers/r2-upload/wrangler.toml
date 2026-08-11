@@ -1,0 +1,11 @@
+name = "tiktok-clone-r2-upload"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# Non-secret config. The two R2 credentials are NOT here on purpose — set them with
+# `wrangler secret put`, so they never land in git (see README).
+[vars]
+FIREBASE_PROJECT_ID = "tiktok-clone-for-fun"
+R2_BUCKET = "tiktok-clone-videos"
+R2_ACCOUNT_ID = "REPLACE_WITH_YOUR_CLOUDFLARE_ACCOUNT_ID"
+PUBLIC_BASE_URL = "https://REPLACE_WITH_YOUR_PUBLIC_BUCKET_DOMAIN"

@@ -31,6 +31,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs.kotlin'
     id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
     id 'dagger.hilt.android.plugin'
 }
 
@@ -83,6 +84,9 @@ android {
 
         // Google
         it.buildConfigField 'String', 'GOOGLE_WEB_CLIENT_ID', GOOGLE_WEB_CLIENT_ID
+
+        // Cloudflare Worker that mints presigned R2 upload urls (workers/r2-upload)
+        it.buildConfigField 'String', 'R2_WORKER_BASE_URL', R2_WORKER_BASE_URL
     }
 
     buildFeatures {
@@ -152,6 +156,13 @@ dependencies {
 
     // ExoPlayer
     implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
+
+    // Video storage lives in Cloudflare R2, not Firebase Storage (R2 charges no egress, and
+    // Firebase Storage would force the project onto the Blaze billing plan). OkHttp performs the
+    // presign handshake + upload PUT; kotlinx-serialization parses the Worker's json.
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
 
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'

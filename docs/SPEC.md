@@ -20,9 +20,14 @@ search, inbox (notifications), and settings.
 
 - **Language**: Kotlin. **Async**: Coroutines + Flow.
 - **DI**: Hilt.
-- **Backend**: Firebase — Realtime Database (`repo/network/*`), Storage (video/image
-  upload), Auth (email, Google, Facebook; Twitter integration is dead — see §7), Crashlytics,
-  Analytics, Cloud Messaging.
+- **Backend**: Firebase — Realtime Database (`repo/network/*`), Auth (email, Google, Facebook;
+  Twitter integration is dead — see §7), Crashlytics, Analytics, Cloud Messaging.
+- **Video file storage**: Cloudflare R2, not Firebase Storage (moved 2026-08-09). R2 charges no
+  egress — the dominant cost of a video feed — and keeps the Firebase project off the Blaze
+  billing plan. Uploads go through the `workers/r2-upload` Cloudflare Worker, which verifies the
+  caller's Firebase ID token and returns a presigned PUT url; `R2VideoStorageRepo` then uploads
+  device→R2 directly. Firebase Storage's SDK and `FirebaseVideoStorageRepo` are still present but
+  unreferenced, pending a dedicated deletion step (§9 rule 2).
 - **UI**: Jetpack Compose + `StateFlow` + `UiState` on every screen (migration completed
   2026-08-09). Fragments remain only as thin `ComposeView` shells inside the XML nav graph;
   Groupie/DataBinding/Dexter/Glide are gone (Coil handles images, including video-frame
