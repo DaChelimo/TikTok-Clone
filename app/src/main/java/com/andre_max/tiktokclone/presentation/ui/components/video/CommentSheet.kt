@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.presentation.ui.theme.TikTokColors
 import com.andre_max.tiktokclone.utils.NumbersUtils
 
 /** The comment sheet over a video — live thread, comment-likes, and the send box. */
@@ -54,6 +57,7 @@ fun CommentSheet(
         onDismissRequest = { onAction(CommentSheetAction.Close) },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
         modifier = Modifier.testTag(VideoPageTags.COMMENT_SHEET),
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier = Modifier
@@ -88,14 +92,30 @@ fun CommentSheet(
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // Reference comment sheet: the input is a rounded light-gray pill.
                 TextField(
                     value = sheet.draft,
                     onValueChange = { onAction(CommentSheetAction.DraftChanged(it)) },
                     modifier = Modifier
                         .weight(1f)
+                        .clip(RoundedCornerShape(24.dp))
                         .testTag(VideoPageTags.COMMENT_INPUT),
-                    placeholder = { Text(stringResource(R.string.add_comment_hint)) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.add_comment_hint),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
                     enabled = isSignedIn,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                    ),
                 )
                 IconButton(
                     onClick = { onAction(CommentSheetAction.Send) },
@@ -151,7 +171,7 @@ private fun CommentRow(
                     painter = painterResource(R.drawable.heart),
                     contentDescription = stringResource(R.string.like_video),
                     modifier = Modifier.size(16.dp),
-                    tint = if (commentUi.isLiked) Color.Red else Color.Gray,
+                    tint = if (commentUi.isLiked) TikTokColors.Red else Color.Gray,
                 )
             }
             Text(

@@ -59,7 +59,17 @@
          rule labels it also tints. This is the same hue darkened to 4.1:1. -->
     <color name="check_green">#00875A</color>
 
-    <color name="pinkBtnBackground">#FF0051</color>
-    <color name="grey_button_background">#E1DCDC</color>
+    <!-- TikTok brand red from the reference screens (docs/designs/screens): primary CTAs,
+         Follow button, selected chips. -->
+    <color name="pinkBtnBackground">#FE2C55</color>
+    <color name="grey_button_background">#F1F1F2</color>
     <color name="super_light_grey">#F6F6F6</color>
+
+    <!-- Near-black ink + secondary ink used for text on the white reference screens. -->
+    <color name="tiktok_text_primary">#161823</color>
+    <color name="tiktok_text_secondary">#80161823</color>
+    <!-- Unselected bottom-nav icon on a white bar. -->
+    <color name="nav_unselected_on_white">#A6161823</color>
+    <!-- Unselected bottom-nav icon on the black feed bar. -->
+    <color name="nav_unselected_on_dark">#B3FFFFFF</color>
 </resources>

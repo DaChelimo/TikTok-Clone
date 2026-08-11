@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,7 +70,11 @@ fun SettingsScreen(
     state: SettingsUiState,
     onAction: (SettingsAction) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         Text(
             text = stringResource(R.string.settings),
             modifier = Modifier
@@ -76,6 +82,7 @@ fun SettingsScreen(
                 .padding(16.dp),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
         )
 
         Row(
@@ -92,6 +99,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.show_liked_videos_description),
                     style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Switch(

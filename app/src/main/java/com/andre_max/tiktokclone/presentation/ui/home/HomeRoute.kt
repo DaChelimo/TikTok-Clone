@@ -26,6 +26,7 @@ import com.andre_max.tiktokclone.presentation.core.asString
 fun HomeRoute(
     onNavigateToProfile: (String) -> Unit,
     onCommentSheetVisibilityChanged: (Boolean) -> Unit,
+    onSearchClick: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,5 +57,6 @@ fun HomeRoute(
         state = state,
         onAction = viewModel::onAction,
         snackbarHostState = snackbarHostState,
+        onSearchClick = onSearchClick,
     )
 }

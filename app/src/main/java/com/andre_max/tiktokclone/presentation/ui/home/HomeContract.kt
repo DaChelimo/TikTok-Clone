@@ -43,4 +43,5 @@ sealed interface HomeEvent {
  */
 object HomeScreenTags {
     const val FEED = "home_feed"
+    const val SEARCH = "home_search"
 }

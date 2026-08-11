@@ -52,6 +52,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.presentation.ui.theme.TikTokColors
 import com.andre_max.tiktokclone.utils.NumbersUtils
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -188,7 +189,7 @@ private fun ActionRail(
             icon = R.drawable.heart,
             label = NumbersUtils.formatCount(item.likeCount.toInt()),
             contentDescription = stringResource(R.string.like_video),
-            tint = if (item.isLiked) Color.Red else Color.White,
+            tint = if (item.isLiked) TikTokColors.Red else Color.White,
             testTag = VideoPageTags.LIKE,
             onClick = { onAction(VideoPageAction.LikeToggled(videoId)) },
         )

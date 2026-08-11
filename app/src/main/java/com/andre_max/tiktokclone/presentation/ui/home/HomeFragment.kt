@@ -14,6 +14,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.andre_max.tiktokclone.R
+import com.andre_max.tiktokclone.presentation.MainActivity
 import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
 import com.andre_max.tiktokclone.utils.BottomNavViewUtils
 import com.andre_max.tiktokclone.utils.SystemBarColors
@@ -42,6 +44,12 @@ class HomeFragment : Fragment() {
                     onCommentSheetVisibilityChanged = { isVisible ->
                         if (isVisible) BottomNavViewUtils.hideBottomNavBar(activity)
                         else BottomNavViewUtils.showBottomNavBar(activity)
+                    },
+                    onSearchClick = {
+                        // Discover hosts search; selecting the tab keeps back-stack behavior
+                        // identical to a bottom-nav tap.
+                        (activity as? MainActivity)?.binding?.navView?.selectedItemId =
+                            R.id.discoverFragment
                     },
                 )
             }

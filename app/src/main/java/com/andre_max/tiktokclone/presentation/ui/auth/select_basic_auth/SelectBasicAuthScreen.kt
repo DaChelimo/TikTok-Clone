@@ -14,8 +14,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,18 +70,31 @@ fun SelectBasicAuthScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(SelectBasicAuthScreenTags.TAB_ROW),
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            indicator = { tabPositions ->
+                // Reference screen 34: the Phone|Email indicator is near-black, not red.
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            },
         ) {
             Tab(
                 selected = pagerState.currentPage == 0,
                 onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                 modifier = Modifier.testTag(SelectBasicAuthScreenTags.PHONE_TAB),
                 text = { Text(stringResource(R.string.phone_number)) },
+                selectedContentColor = MaterialTheme.colorScheme.onSurface,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Tab(
                 selected = pagerState.currentPage == 1,
                 onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                 modifier = Modifier.testTag(SelectBasicAuthScreenTags.EMAIL_TAB),
                 text = { Text(stringResource(R.string.email_address)) },
+                selectedContentColor = MaterialTheme.colorScheme.onSurface,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 

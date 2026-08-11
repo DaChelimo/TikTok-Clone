@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +23,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,17 +48,37 @@ fun PostVideoScreen(
     onAction: (PostVideoAction) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row {
+                // Reference post screen: a borderless description area on white, with the
+                // 9:16 cover preview to its right — not a filled Material text field.
                 TextField(
                     value = state.description,
                     onValueChange = { onAction(PostVideoAction.DescriptionChanged(it)) },
                     modifier = Modifier
                         .weight(1f)
                         .testTag(PostVideoScreenTags.DESCRIPTION),
-                    placeholder = { Text(stringResource(R.string.video_description)) },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.video_description),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
                     enabled = state.uploadStatus != Progress.ACTIVE,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -69,6 +92,7 @@ fun PostVideoScreen(
                     modifier = Modifier
                         .width(84.dp)
                         .aspectRatio(9f / 16f)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(Color.DarkGray),
                     contentScale = ContentScale.Crop,
                 )
@@ -82,6 +106,7 @@ fun PostVideoScreen(
                     .fillMaxWidth()
                     .testTag(PostVideoScreenTags.POST),
                 enabled = state.uploadStatus != Progress.ACTIVE,
+                shape = RoundedCornerShape(4.dp),
             ) {
                 Text(stringResource(R.string.post_video))
             }

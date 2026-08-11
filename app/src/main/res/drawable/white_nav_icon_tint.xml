@@ -25,7 +25,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_checked="true" android:color="@color/pinkBtnBackground"/>
-    <item android:color="@color/light_white"/>
+    <item android:state_checked="true" android:color="@android:color/white"/>
+    <item android:color="@color/nav_unselected_on_dark"/>
 
 </selector>

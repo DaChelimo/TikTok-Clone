@@ -5,9 +5,12 @@
 
 package com.andre_max.tiktokclone.presentation.ui.profile.without_account
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,7 +31,9 @@ import com.andre_max.tiktokclone.R
 @Composable
 fun ProfileWithoutAccountScreen(onSignUpClicked: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
@@ -36,13 +41,16 @@ fun ProfileWithoutAccountScreen(onSignUpClicked: () -> Unit) {
             painter = painterResource(R.drawable.ic_perm_identity),
             contentDescription = null,
             modifier = Modifier.size(96.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = onSignUpClicked,
             modifier = Modifier
                 .padding(horizontal = 32.dp)
+                .fillMaxWidth()
                 .testTag(ProfileWithoutAccountTags.SIGN_UP),
+            shape = RoundedCornerShape(4.dp),
         ) {
             Text(
                 text = stringResource(R.string.sign_up_for_an_account),

@@ -106,6 +106,7 @@
     <string name="sign_out">Sign out</string>
     <string name="sign_out_confirmation">You\'ll need to sign in again to post or comment.</string>
     <string name="following">Following</string>
+    <string name="for_you">For You</string>
     <string name="followers">Followers</string>
     <string name="likes">Likes</string>
     <string name="add_to_favourites">Add to favourites</string>

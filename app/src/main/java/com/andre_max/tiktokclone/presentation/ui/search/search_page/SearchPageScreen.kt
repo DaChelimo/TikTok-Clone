@@ -18,11 +18,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -52,17 +54,42 @@ fun SearchPageScreen(
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         TextField(
             value = state.query,
             onValueChange = { onAction(SearchPageAction.QueryChanged(it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
+                .clip(RoundedCornerShape(4.dp))
                 .focusRequester(focusRequester)
                 .testTag(SearchPageTags.INPUT),
-            placeholder = { Text(stringResource(R.string.search)) },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.search),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp),
+                )
+            },
             singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ),
         )
 
         LazyColumn(modifier = Modifier.testTag(SearchPageTags.SUGGESTION_LIST)) {

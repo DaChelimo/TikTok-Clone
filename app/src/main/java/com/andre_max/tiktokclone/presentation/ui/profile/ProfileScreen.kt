@@ -33,6 +33,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -58,6 +60,7 @@ import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
 import com.andre_max.tiktokclone.presentation.ui.components.video.VideoThumbnail
+import com.andre_max.tiktokclone.utils.NumbersUtils
 import kotlinx.coroutines.launch
 
 /**
@@ -71,7 +74,11 @@ fun ProfileScreen(
     state: ProfileUiState,
     onAction: (ProfileAction) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
         ProfileHeader(state = state, onAction = onAction)
         ProfileTabs(state = state, onAction = onAction)
     }
@@ -188,13 +195,14 @@ private fun ProfileHeader(
 private fun CountColumn(count: Int, label: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = count.toString(),
+            text = NumbersUtils.formatCount(count),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
         Text(
             text = stringResource(label),
             style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -214,15 +222,27 @@ private fun ProfileTabs(
         if (pagerState.currentPage >= state.tabs.size) pagerState.scrollToPage(0)
     }
 
+    val selectedIndex = pagerState.currentPage.coerceAtMost(state.tabs.size - 1)
     TabRow(
-        selectedTabIndex = pagerState.currentPage.coerceAtMost(state.tabs.size - 1),
+        selectedTabIndex = selectedIndex,
         modifier = Modifier.testTag(ProfileScreenTags.TAB_ROW),
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        indicator = { tabPositions ->
+            // The reference profile uses a short near-black indicator, not the primary red.
+            TabRowDefaults.SecondaryIndicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        },
     ) {
         state.tabs.forEachIndexed { index, tab ->
             Tab(
                 selected = pagerState.currentPage == index,
                 onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                 text = { Text(stringResource(tab.videoType.labelRes())) },
+                selectedContentColor = MaterialTheme.colorScheme.onSurface,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
