@@ -50,11 +50,12 @@ object BottomNavViewUtils {
      */
     @SuppressLint("ResourceType")
     fun changeNavBarColor(activity: Activity?, systemBarColors: SystemBarColors) {
-        val navView = (activity as MainActivity).binding.navView
+        val navView = (activity as? MainActivity)?.binding?.navView ?: return
 
+        // The feed's bar is pure black (reference screen 25); light screens get a white bar.
         val backgroundRes =
             if (systemBarColors == SystemBarColors.WHITE) android.R.color.white
-            else R.color.dark_black
+            else android.R.color.black
 
         val iconRes =
             if (systemBarColors == SystemBarColors.WHITE) R.drawable.dark_nav_icon_tint
@@ -62,7 +63,8 @@ object BottomNavViewUtils {
 
         val iconTint = ResourcesCompat.getColorStateList(activity.resources, iconRes, null)
 
-        navView.setBackgroundColor(backgroundRes)
+        // setBackgroundColor expects an ARGB int, not a resource id — resolve first.
+        navView.setBackgroundColor(ResUtils.getResColor(activity, backgroundRes))
         navView.itemIconTintList = iconTint
         navView.itemTextColor = iconTint
     }

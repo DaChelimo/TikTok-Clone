@@ -30,17 +30,25 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
+    id 'dagger.hilt.android.plugin'
 }
 
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    // AGP 8 requires namespace here instead of the manifest's package attribute.
+    namespace "com.andre_max.tiktokclone"
+
+    // Compose 1.7.0 requires compiling against API 34; raised from 31 on 2026-07-25.
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.andre_max.tiktokclone"
-        minSdkVersion 17
-        targetSdkVersion 30
+        // Compose requires minSdk 21; raised from 17 on 2026-07-25 when the Compose
+        // migration made the old value unbuildable.
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode 1
         versionName "0.1.0"
 
@@ -77,29 +85,27 @@ android {
         // Google
         it.buildConfigField 'String', 'GOOGLE_WEB_CLIENT_ID', GOOGLE_WEB_CLIENT_ID
 
-        // Twitter
-        it.buildConfigField 'String', 'TWITTER_CONSUMER_KEY', twitter_consumer_key
-        it.buildConfigField 'String', 'TWITTER_CONSUMER_SECRET', twitter_consumer_secret
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        // Cloudflare Worker that mints presigned R2 upload urls (workers/r2-upload)
+        it.buildConfigField 'String', 'R2_WORKER_BASE_URL', R2_WORKER_BASE_URL
     }
 
     buildFeatures {
-        dataBinding true
+        // dataBinding retired with the last data-binding layout (slice 8, 2026-08-09).
+        // viewBinding stays: MainActivity still binds activity_main (bottom nav host).
         viewBinding true
+        compose true
+        buildConfig true
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+        // Note: -Xallow-result-return-type was removed in Kotlin 2.0 (returning kotlin.Result is allowed by default).
     }
 
     testOptions {
@@ -110,16 +116,17 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
 
     // Video Compressor
 //    implementation 'com.github.AbedElazizShe:LightCompressor:0.7.3'
@@ -128,109 +135,149 @@ dependencies {
     implementation 'com.github.Andre-max:VideoCompressor:0.1.0-alpha'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:18.0.3'
-    implementation 'com.google.firebase:firebase-database-ktx:19.7.0'
-//    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
-    implementation 'com.google.firebase:firebase-messaging:21.1.0'
-    implementation 'com.google.firebase:firebase-auth-ktx:20.0.4'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.4.1'
-    implementation 'com.google.firebase:firebase-storage-ktx:19.2.2'
+    implementation platform('com.google.firebase:firebase-bom:30.0.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+//    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     // Auth libraries
-    implementation 'com.twitter.sdk.android:twitter-core:3.0.0'
-    implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    // Twitter auth was removed entirely (2026-07-25): Twitter Kit SDK is EOL and jcenter is dead.
+    // To restore it, use Firebase Auth's OAuthProvider ("twitter.com") — no Twitter SDK needed.
+    // See docs/plans/ONBOARDING_MIGRATION.md.
+    implementation 'com.facebook.android:facebook-android-sdk:13.1.0'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     // Country picker
-    implementation 'com.hbb20:ccp:2.4.7'
+    implementation 'com.hbb20:ccp:2.6.0'
 
     // ExoPlayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
+
+    // Video storage lives in Cloudflare R2, not Firebase Storage (R2 charges no egress, and
+    // Firebase Storage would force the project onto the Blaze billing plan). OkHttp performs the
+    // presign handshake + upload PUT; kotlinx-serialization parses the Worker's json.
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
 
     // Timber
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    // CircleImageView
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-    // Groupie
-    implementation 'com.xwray:groupie:2.8.1'
-    implementation 'com.xwray:groupie-viewbinding:2.8.1'
-
-    // Edit CodeView
-    implementation 'com.bigbangbutton:editcodeview:1.0.6'
-
-    // Dexter
-    implementation 'com.karumi:dexter:6.2.2'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1'
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
-
-    // Glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    kapt 'com.github.bumptech.glide:compiler:4.11.0'
-
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
     // CameraView
-    implementation 'com.otaliastudios:cameraview:2.6.4'
+    implementation 'com.otaliastudios:cameraview:2.7.2'
 
     // Sdp
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
 
+    // androidx.test 1.4 / espresso 3.4 call android.hardware.input.InputManager.getInstance(),
+    // removed in newer platforms — on a current emulator every instrumented test dies in
+    // Espresso.onIdle() with NoSuchMethodException before a single assertion runs. These versions
+    // are the first that use the supported API. Only the androidTest configs are bumped; the JVM
+    // suites stay on 1.4.0/1.1.3 for Robolectric 4.7.3.
+    def espresso_version = '3.7.0'
+    def androidx_test_junit_version = '1.3.0'
+    def androidx_test_core_version = '1.7.0'
+
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation "com.google.truth:truth:1.1.2"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    testImplementation "com.google.truth:truth:1.1.3"
+    androidTestImplementation "androidx.test.ext:junit:$androidx_test_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    // Truth is used by the Compose screen tests in androidTest, not just the JVM suites.
+    androidTestImplementation "com.google.truth:truth:1.1.3"
 
     // SwipeToRefresh
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // ViewModel
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2"
+
+    // Compose
+    def compose_ui_version = '1.7.0'
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.material:material:$compose_ui_version"
+    implementation "androidx.compose.material3:material3:1.2.1"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation "androidx.activity:activity-compose:1.9.0"
+    implementation "androidx.compose.foundation:foundation:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+
+    // Lifecycle-aware Compose state collection (mandated by presentation/AGENTS.md)
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.8.2"
+
+    // Hilt + Compose navigation (hiltViewModel() inside a Route composable)
+    implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
+
+    // Immutable collections for UiState (mandated by presentation/AGENTS.md)
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
+
+    // Async images in Compose (avatars); Glide stays for the remaining legacy View screens
+    implementation "io.coil-kt:coil-compose:2.6.0"
+    // First-frame video thumbnails in the profile grids (what Glide.load(videoUrl) did)
+    implementation "io.coil-kt:coil-video:2.6.0"
+
+    // Turbine (StateFlow/Flow assertions) and MockK (Firebase boundary mocking)
+    testImplementation "app.cash.turbine:turbine:1.1.0"
+    testImplementation "io.mockk:mockk:1.13.11"
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:4.13.2"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "org.robolectric:robolectric:4.5.1"
-    testImplementation "androidx.test:core-ktx:1.3.0"
-    testImplementation "androidx.test.ext:junit:1.1.2"
-    testImplementation "com.google.truth:truth:1.1.2"
+    testImplementation "org.robolectric:robolectric:4.7.3"
+    testImplementation "androidx.test:core-ktx:1.4.0"
+    testImplementation "androidx.test.ext:junit:1.1.3"
+    testImplementation "com.google.truth:truth:1.1.3"
 
     // Instrumented testing
-    implementation "androidx.test:core:1.3.0"
-    implementation "androidx.test.espresso:espresso-idling-resource:3.3.0"
-    debugImplementation "androidx.fragment:fragment-testing:1.3.3"
+    // These two are `implementation`, so they ship inside the app APK. Left at 1.4.0/3.4.0 they
+    // baked an old androidx.test.internal.platform.reflect.ReflectiveMethod into base.apk, which
+    // the newer Espresso in the test APK then failed to call (NoSuchMethodError in onIdle). Keep
+    // them in lockstep with the androidTest versions above.
+    implementation "androidx.test:core:$androidx_test_core_version"
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
+    debugImplementation "androidx.fragment:fragment-testing:1.4.1"
     androidTestImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.3.0"
+    androidTestImplementation "androidx.test.ext:junit:$androidx_test_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    // espresso-contrib -> accessibility-test-framework:3.1 drags in the *fat*
+    // org.checkerframework:checker:3.1.1, which repackages every class that
+    // org.checkerframework:checker-qual (pulled in by guava/truth) already provides. Left alone,
+    // :app:checkDebugAndroidTestDuplicateClasses fails and no instrumented test can run at all.
+    // checker-qual is the annotations-only artifact everything else expects, so drop the fat one.
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:$espresso_version") {
+        exclude group: 'org.checkerframework', module: 'checker'
+    }
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
 
     // Hilt
-    implementation 'com.google.dagger:hilt-android:2.33-beta'
-    kapt 'com.google.dagger:hilt-compiler:2.33-beta'
-
-    // Hilt ViewModel
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    kapt 'com.google.dagger:hilt-compiler:2.51.1'
 
     // For instrumentation tests
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.33-beta'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.33-beta'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.51.1'
 
     // For local unit tests
-    testImplementation 'com.google.dagger:hilt-android-testing:2.33-beta'
-    kaptTest 'com.google.dagger:hilt-compiler:2.33-beta'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    kaptTest 'com.google.dagger:hilt-compiler:2.51.1'
 }

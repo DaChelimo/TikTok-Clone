@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Agent/tool local state
+.claude/settings.local.json
+firebase-debug.log

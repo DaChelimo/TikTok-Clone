@@ -27,13 +27,13 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
     <string name="successfully_signed_up">You have successfully signed up</string>
     <string name="error_occurred_during_sign_up">Error occurred while signing up. Kindly try again.</string>
     <string name="error_occurred_during_log_in">Error occurred while logging in. Kindly try again.</string>
     <string name="error_occurred_during_video_upload">Error occurred while uploading video. Kindly try again.</string>
     <string name="too_many_requests">Too many attempts. Try again later.</string>
     <string name="no_network_connection">No network connection. Try again later.</string>
+    <string name="email_already_in_use">That email already has an account. Try logging in instead.</string>
 
 
     <string name="gmail_com">\@gmail.com</string>
@@ -48,12 +48,6 @@
 
     <string name="facebook_app_id">***</string>
     <string name="fb_login_protocol_scheme">***</string>
-
-    <!-- Twitter consumer key and secret -->
-    <string name="twitter_consumer_key" translatable="false">***</string>
-    <string name="twitter_consumer_secret" translatable="false">***</string>
-    <string name="continue_with_twitter">Continue with Twitter</string>
-
 
     <string name="user_too_young">You are too young to have an account. Thanks for trying.</string>
     <string name="enter_valid_year">Enter a valid year to proceed.</string>
@@ -70,6 +64,17 @@
     <string name="cancel">Cancel</string>
     <string name="author_username">\@%s</string>
     <string name="empty_comment_error">You cannot send an empty comment</string>
+    <string name="no_description">#NoDescription</string>
+    <string name="creator_profile">Creator profile</string>
+    <string name="share">Share</string>
+    <string name="error_something_went_wrong">Something went wrong. Try again later.</string>
+    <string name="video_description">Describe your video&#8230; #hashtags welcome</string>
+    <string name="post_video">Post</string>
+    <string name="uploading_video">Uploading your video&#8230;</string>
+    <string name="settings">Settings</string>
+    <string name="show_liked_videos">Show liked videos</string>
+    <string name="show_liked_videos_description">Let others see the Liked tab on your profile</string>
+    <string name="inbox_placeholder">Welcome to my inbox. Notifications you receive will be displayed here.</string>
 
     <string name="terms_of_services_phone">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy. If you sign up with SMS, SMS fees may apply.</string>
     <string name="terms_of_services_email">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
@@ -78,9 +83,12 @@
     <string name="sign_up_for_tiktok">Sign up for TikTok</string>
     <string name="close_page">Close page</string>
     <string name="sign_up_description_text">Create a profile, follow other accounts, make your own videos, and more.</string>
+    <string name="provider_not_configured">Not available yet</string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="log_in_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s Privacy Policy.</string>
     <string name="log_in">Log in</string>
     <string name="sign_up_tos">By continuing, you agree to TikTok\'s Terms of Use and confirm that you have read TikTok\'s privacy policy.</string>
 
@@ -89,12 +97,16 @@
     <string name="short_username">Include at least 4 characters in your username</string>
     <string name="long_username">Username must be less than 25 characters</string>
     <string name="name_contains_spaces">Username must not contain any spaces</string>
+    <string name="username_check_failed">Couldn\'t check username availability. Kindly try again.</string>
     <string name="hashtags">#Hashtags</string>
     <string name="friends">\@Friends</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="send_invite">Send invite</string>
     <string name="open_menu">Open menu</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_confirmation">You\'ll need to sign in again to post or comment.</string>
     <string name="following">Following</string>
+    <string name="for_you">For You</string>
     <string name="followers">Followers</string>
     <string name="likes">Likes</string>
     <string name="add_to_favourites">Add to favourites</string>
@@ -112,11 +124,19 @@
     <string name="sign_up">Sign up</string>
     <string name="when_is_your_birthday">When\'s your birthday?</string>
     <string name="your_birthday_won_t_be_shown_publicly">Your birthday won\'t be shown publicly</string>
+    <string name="birthday">Birthday</string>
+    <string name="birthday_cannot_be_in_the_future">Your birthday can\'t be in the future.</string>
+    <string name="birthday_picker">Birthday picker</string>
+    <string name="birthday_month">Month</string>
+    <string name="birthday_day">Day</string>
+    <string name="birthday_year">Year</string>
     <string name="phone_number">Phone Number</string>
+    <string name="enter_valid_phone_number">Enter a valid phone number</string>
     <string name="send_code">Send code</string>
     <string name="email_address">Email address</string>
     <string name="hash_tag_name">#%s</string>
     <string name="error_during_account_creation">Error occurred while creating account. Kindly try again.</string>
+    <string name="enter_6_digit_code">Enter 6-digit code</string>
     <string name="code_invalid">Code is invalid. Enter the valid code</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>
@@ -176,5 +196,31 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="add_comment">Add comment...</string>
 
+    <!-- Screen 2 — basic email (docs/designs/onboarding/02-basic-email.png) -->
+    <string name="email_required">Enter your email address</string>
+    <string name="continue_action">Continue</string>
+    <string name="email_privacy_notice">Your email address may be used to connect you to people you may know, improve ads, and more, depending on your settings.</string>
+    <string name="learn_more">Learn more</string>
+    <string name="yahoo_com">\@yahoo.com</string>
+    <string name="clear_email_address">Clear email address</string>
+
+    <!-- Screen 3 — create password (docs/designs/onboarding/03-enter-password.png) -->
+    <string name="clear_password">Clear password</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="password_requirements_title">Your password must have at least:</string>
+    <string name="password_rule_min_length">8 characters</string>
+    <string name="password_rule_max_length">20 characters at most</string>
+    <string name="password_rule_digit">1 number</string>
+    <string name="password_rule_special_character">1 special character (Example: # ? ! $ &amp; @)</string>
+    <string name="password_rule_uppercase">1 uppercase letter</string>
+    <string name="password_rule_lowercase">1 lowercase letter</string>
+    <string name="password_rule_no_identity">Nothing from your email address or name</string>
+    <string name="password_rule_met">Requirement met</string>
+    <string name="password_rule_unmet">Requirement not met</string>
+    <string name="password_strength_label">Password strength:</string>
+    <string name="password_strength_weak">Weak</string>
+    <string name="password_strength_medium">Medium</string>
+    <string name="password_strength_strong">Strong</string>
 
 </resources>

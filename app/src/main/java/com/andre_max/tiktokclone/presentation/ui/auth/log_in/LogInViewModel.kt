@@ -1,89 +1,99 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.auth.log_in
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.models.succeeded
-import com.andre_max.tiktokclone.repo.network.auth.AuthRepo
-import com.andre_max.tiktokclone.utils.architecture.BaseViewModel
-import com.google.firebase.auth.AuthCredential
-import com.twitter.sdk.android.core.Callback
-import com.twitter.sdk.android.core.Result
-import com.twitter.sdk.android.core.TwitterException
-import com.twitter.sdk.android.core.TwitterSession
+import com.andre_max.tiktokclone.domain.auth.AuthRepo
+import com.andre_max.tiktokclone.domain.core.DataError
+import com.andre_max.tiktokclone.domain.core.Result
+import com.andre_max.tiktokclone.presentation.core.UiText
+import com.andre_max.tiktokclone.presentation.ui.auth.AuthEvent
+import com.andre_max.tiktokclone.repo.di.SocialAuthModule
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-class LogInViewModel : BaseViewModel() {
+/**
+ * The log-in landing.
+ *
+ * Mirrors `SignUpViewModel` but is not shared with it: Google here *completes* the sign-in
+ * (the account and profile already exist, so there is nothing to collect), whereas on sign-up
+ * the same token is only parked for the create-username screen. Folding the two together would
+ * take a boolean that changes what the class does rather than how it looks.
+ */
+@HiltViewModel
+class LogInViewModel @Inject constructor(
+    private val authRepo: AuthRepo,
+    @Named(SocialAuthModule.GOOGLE_WEB_CLIENT_ID) val googleWebClientId: String?,
+    @Named(SocialAuthModule.IS_FACEBOOK_ENABLED) isFacebookEnabled: Boolean,
+) : ViewModel() {
 
-    private val authRepo = AuthRepo()
-    val googleAuthRepo = authRepo.GoogleAuthRepo()
-    val twitterAuthRepo = authRepo.TwitterAuthRepo()
-    val facebookAuthRepo = authRepo.FacebookAuthRepo()
+    private val _uiState = MutableStateFlow(
+        LogInUiState(
+            isGoogleEnabled = googleWebClientId != null,
+            isFacebookEnabled = isFacebookEnabled,
+        ),
+    )
+    val uiState: StateFlow<LogInUiState> = _uiState.asStateFlow()
 
-    private val _navigateToMyProfile = MutableLiveData(false)
-    val navigateToMyProfile: LiveData<Boolean> = _navigateToMyProfile.distinctUntilChanged()
+    private val _events = Channel<AuthEvent>(Channel.BUFFERED)
+    val events: Flow<AuthEvent> = _events.receiveAsFlow()
 
-    private val liveCredentialObserver: (AuthCredential?) -> Unit = { credential ->
-        credential?.let {
-            viewModelScope.launch {
-                val result = authRepo.signInWithCredential(credential)
-                if (!result.succeeded)
-                    showMessage(R.string.error_occurred_during_log_in)
+    fun onAction(action: LogInAction) {
+        when (action) {
+            LogInAction.UsePhoneOrEmailClicked -> _events.trySend(AuthEvent.NavigateToSelectAuth)
+            LogInAction.SignUpClicked, LogInAction.CloseClicked ->
+                _events.trySend(AuthEvent.NavigateBack)
 
-                _navigateToMyProfile.value = result.succeeded
+            LogInAction.GoogleClicked -> onGoogleClicked()
+            is LogInAction.GoogleTokenReceived -> onGoogleTokenReceived(action.idToken)
+        }
+    }
+
+    private fun onGoogleClicked() {
+        if (!_uiState.value.isGoogleEnabled || _uiState.value.isSigningIn) return
+        _uiState.update { it.copy(isSigningIn = true) }
+        _events.trySend(AuthEvent.LaunchGoogleSignIn)
+    }
+
+    private fun onGoogleTokenReceived(idToken: String?) {
+        if (idToken == null) {
+            _uiState.update { it.copy(isSigningIn = false) }
+            return
+        }
+
+        viewModelScope.launch {
+            val result = authRepo.signInWithGoogle(idToken)
+            _uiState.update { it.copy(isSigningIn = false) }
+
+            when (result) {
+                is Result.Success -> _events.trySend(AuthEvent.NavigateToHome)
+                is Result.Error -> _events.trySend(AuthEvent.ShowError(errorText(result.error)))
             }
         }
     }
 
-    val twitterCallback = object : Callback<TwitterSession>() {
-        override fun success(result: Result<TwitterSession>?) {
-            Timber.d("Twitter sign in successful")
-            showMessage(R.string.successfully_signed_up)
-        }
-
-        override fun failure(exception: TwitterException?) {
-            Timber.e(exception)
-            showMessage(R.string.error_occurred_during_sign_up)
-        }
+    fun onGoogleSignInUnavailable() {
+        _uiState.update { it.copy(isSigningIn = false) }
+        _events.trySend(AuthEvent.ShowError(UiText.Resource(R.string.error_occurred_during_log_in)))
     }
 
-    init {
-        authRepo.liveCredential.observeForever(liveCredentialObserver)
-    }
-
-    fun resetNavigateToMyProfile() {
-        _navigateToMyProfile.value = false
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        authRepo.liveCredential.removeObserver(liveCredentialObserver)
+    private fun errorText(error: DataError.Auth): UiText = when (error) {
+        DataError.Auth.NO_INTERNET -> UiText.Resource(R.string.no_network_connection)
+        DataError.Auth.TOO_MANY_REQUESTS -> UiText.Resource(R.string.too_many_requests)
+        else -> UiText.Resource(R.string.error_occurred_during_log_in)
     }
 }

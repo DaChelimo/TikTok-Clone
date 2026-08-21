@@ -28,7 +28,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_black">
+    android:background="@android:color/white">
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -42,7 +42,7 @@
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="@dimen/_45sdp"
-        android:background="@drawable/transparent_bottom_nav_bar"
+        android:background="@android:color/white"
         android:visibility="visible"
         app:elevation="@dimen/_6sdp"
         app:itemIconTint="@drawable/white_nav_icon_tint"

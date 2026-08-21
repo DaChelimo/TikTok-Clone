@@ -55,7 +55,14 @@ object ViewUtils {
         activity?.let {
             setUpStatusBarAndNavigationBar(activity)
 
+            // Keep the bottom nav in the same palette — before this, only Home ever recolored
+            // it (to DARK), so returning to any light tab kept the feed's dark bar.
+            BottomNavViewUtils.changeNavBarColor(activity, systemBarColors)
+
             if (systemBarColors == SystemBarColors.WHITE) {
+                // Home hides the status bar for the immersive feed; a light screen must bring
+                // it back or it renders as a black band above the white surface.
+                showStatusAndNavBar(activity)
                 changeStatusBarIcons(activity, isWhiteIcons = false)
                 changeStatusBarColor(activity, android.R.color.white)
                 changeSystemNavigationBarColor(activity, android.R.color.white)

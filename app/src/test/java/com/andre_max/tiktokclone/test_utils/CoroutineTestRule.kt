@@ -33,7 +33,14 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 @ExperimentalCoroutinesApi
-class CoroutineTestRule(private val testCoroutineDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()): TestWatcher() {
+/**
+ * Binds `Dispatchers.Main` to a [TestCoroutineDispatcher] for the duration of a test.
+ *
+ * [testCoroutineDispatcher] is exposed so a test can run its own body on the *same* dispatcher
+ * — `runBlockingTest { }` otherwise creates a second one with its own clock, and a `delay`
+ * inside `viewModelScope` then never advances no matter how long the test body waits.
+ */
+class CoroutineTestRule(val testCoroutineDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()): TestWatcher() {
 
     override fun starting(description: Description?) {
         super.starting(description)

@@ -31,6 +31,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.presentation.ui.auth.sign_up.SignUpFragment
+import com.andre_max.tiktokclone.presentation.ui.auth.sign_up.SignUpFragmentDirections
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify

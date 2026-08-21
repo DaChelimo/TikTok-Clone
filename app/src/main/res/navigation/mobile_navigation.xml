@@ -30,22 +30,14 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/profileWithoutAccountFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.profile.without_account.ProfileWithoutAccountFragment"
-        android:label="Sign up"
-        tools:layout="@layout/fragment_profile_without_account" />
-
-    <fragment
         android:id="@+id/inbox_fragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.inbox.InboxFragment"
-        android:label="Inbox"
-        tools:layout="@layout/fragment_inbox" />
+        android:label="Inbox" />
 
     <fragment
         android:id="@+id/discoverFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.discover.DiscoverFragment"
-        android:label="Discover"
-        tools:layout="@layout/fragment_discover">
+        android:label="Discover">
         <action
             android:id="@+id/action_discoverFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />
@@ -59,13 +51,11 @@
     <fragment
         android:id="@+id/inboxFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.inbox.InboxFragment"
-        android:label="Inbox"
-        tools:layout="@layout/fragment_discover" />
+        android:label="Inbox" />
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.sign_up.SignUpFragment"
-        android:label="SignUpFragment"
-        tools:layout="@layout/sign_up_page">
+        android:label="SignUpFragment">
         <action
             android:id="@+id/action_signUpFragment_to_ageFragment"
             app:destination="@id/ageFragment" />
@@ -82,38 +72,23 @@
     <fragment
         android:id="@+id/ageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.age_verification.AgeFragment"
-        android:label="Age Fragment"
-        tools:layout="@layout/fragment_age">
+        android:label="Age Fragment">
         <action
             android:id="@+id/action_ageFragment_to_selectBasicSignUpFragment"
             app:destination="@id/selectBasicSignUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/createUsernameFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.auth.create_username.CreateUsernameFragment"
-        android:label="fragment_create_username"
-        tools:layout="@layout/fragment_create_username">
+        android:name="com.andre_max.tiktokclone.presentation.ui.auth.username.CreateUsernameFragment"
+        android:label="fragment_create_username">
         <action
             android:id="@+id/action_createUsernameFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
-        <argument
-            android:name="credential"
-            app:argType="com.google.firebase.auth.AuthCredential"
-            app:nullable="true" />
-        <argument
-            android:name="googleBody"
-            app:argType="com.andre_max.tiktokclone.models.sign_up.GoogleBody"
-            app:nullable="true" />
-        <argument
-            android:name="emailBody"
-            app:argType="com.andre_max.tiktokclone.models.sign_up.EmailBody"
-            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.home.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home">
+        android:label="Home">
         <action
             android:id="@+id/action_homeFragment_to_profileWithAccountFragment"
             app:destination="@id/profileWithAccountFragment" />
@@ -130,8 +105,7 @@
     <fragment
         android:id="@+id/selectBasicSignUpFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.select_basic_auth.SelectBasicAuthFragment"
-        android:label="SelectBasicSignUpFragment"
-        tools:layout="@layout/fragment_select_basic_sign_up">
+        android:label="SelectBasicSignUpFragment">
         <action
             android:id="@+id/action_selectBasicSignUpFragment_to_createPasswordFragment"
             app:destination="@id/createPasswordFragment" />
@@ -148,9 +122,8 @@
     </fragment>
     <fragment
         android:id="@+id/createPasswordFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.auth.email_auth.enter_password.EnterPasswordFragment"
-        android:label="fragment_create_password"
-        tools:layout="@layout/fragment_create_password">
+        android:name="com.andre_max.tiktokclone.presentation.ui.auth.enter_password.EnterPasswordFragment"
+        android:label="EnterPasswordFragment">
         <action
             android:id="@+id/action_createPasswordFragment_to_createUsernameFragment"
             app:destination="@id/createUsernameFragment" />
@@ -164,11 +137,15 @@
     </fragment>
     <fragment
         android:id="@+id/enterCodeFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.auth.phone_auth.enter_code.EnterCodeFragment"
-        android:label="EnterCodeFragment"
-        tools:layout="@layout/fragment_enter_code">
+        android:name="com.andre_max.tiktokclone.presentation.ui.auth.enter_code.EnterCodeFragment"
+        android:label="EnterCodeFragment">
+        <!--
+            Renamed from `phoneNumber`, which no caller read: the legacy fragment picks the id up
+            from a global instead. Firebase needs the verification id, not the number, to build
+            the credential.
+        -->
         <argument
-            android:name="phoneNumber"
+            android:name="verificationId"
             app:argType="string" />
         <action
             android:id="@+id/action_enterCodeFragment_to_createUsernameFragment"
@@ -181,20 +158,25 @@
     <fragment
         android:id="@+id/meFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.profile.MeFragment"
-        android:label="MeFragment"
-        tools:layout="@layout/fragment_me">
+        android:label="MeFragment">
         <action
             android:id="@+id/action_meFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />
         <action
             android:id="@+id/action_meFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_meFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.andre_max.tiktokclone.presentation.ui.settings.SettingsFragment"
+        android:label="Settings" />
     <fragment
         android:id="@+id/largeVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.large_video.LargeVideoFragment"
-        android:label="LargeVideoFragment"
-        tools:layout="@layout/large_video_layout">
+        android:label="LargeVideoFragment">
         <argument
             android:name="remoteVideo"
             app:argType="com.andre_max.tiktokclone.models.video.RemoteVideo" />
@@ -205,8 +187,7 @@
     <fragment
         android:id="@+id/previewVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.preview_video.PreviewVideoFragment"
-        android:label="PreviewVideoFragment"
-        tools:layout="@layout/fragment_preview_video">
+        android:label="PreviewVideoFragment">
         <argument
             android:name="localVideo"
             app:argType="com.andre_max.tiktokclone.models.local.LocalVideo" />
@@ -217,8 +198,7 @@
     <fragment
         android:id="@+id/postVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.post_video.PostVideoFragment"
-        android:label="PostVideoFragment"
-        tools:layout="@layout/fragment_post_video">
+        android:label="PostVideoFragment">
         <argument
             android:name="localVideo"
             app:argType="com.andre_max.tiktokclone.models.local.LocalVideo" />
@@ -230,8 +210,7 @@
     <fragment
         android:id="@+id/profileWithAccountFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.profile.with_account.ProfileWithAccountFragment"
-        android:label="ProfileWithAccountFragment"
-        tools:layout="@layout/fragment_profile_with_account">
+        android:label="ProfileWithAccountFragment">
 
         <argument
             android:name="uid"
@@ -243,8 +222,7 @@
     <fragment
         android:id="@+id/recordVideoFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.upload.record.RecordVideoFragment"
-        android:label="RecordVideoFragment"
-        tools:layout="@layout/fragment_record_video">
+        android:label="RecordVideoFragment">
         <action
             android:id="@+id/action_recordVideoFragment_to_createVideoFragment"
             app:destination="@id/selectMediaFragment" />
@@ -255,29 +233,18 @@
     <fragment
         android:id="@+id/searchPageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.search.search_page.SearchPageFragment"
-        android:label="SearchPageFragment"
-        tools:layout="@layout/fragment_search_page">
+        android:label="SearchPageFragment">
         <action
             android:id="@+id/action_searchPageFragment_to_profileWithAccountFragment"
             app:destination="@id/profileWithAccountFragment" />
-        <action
-            android:id="@+id/action_searchPageFragment_to_searchResultsFragment"
-            app:destination="@id/searchResultsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchResultsFragment"
-        android:name="com.andre_max.tiktokclone.presentation.ui.search.search_results.SearchResultsFragment"
-        android:label="SearchResultsFragment"
-        tools:layout="@layout/fragment_search_results">
-        <action
-            android:id="@+id/action_searchResultsFragment_to_largeVideoFragment"
-            app:destination="@id/largeVideoFragment" />
     </fragment>
     <fragment
         android:id="@+id/hashtagPageFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.selected_tag.SelectedTagFragment"
-        android:label="HashtagPageFragment"
-        tools:layout="@layout/fragment_selected_tag">
+        android:label="HashtagPageFragment">
+        <argument
+            android:name="tagName"
+            app:argType="string" />
         <action
             android:id="@+id/action_hashtagPageFragment_to_largeVideoFragment"
             app:destination="@id/largeVideoFragment" />
@@ -285,8 +252,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.andre_max.tiktokclone.presentation.ui.auth.log_in.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/log_in_page">
+        android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_selectBasicSignUpFragment"
             app:destination="@id/selectBasicSignUpFragment" />

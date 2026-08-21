@@ -1,25 +1,6 @@
 /*
  * MIT License
- *
- * Copyright (c) 2021 Andre-max
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Copyright (c) 2021 Andrew Chelimo
  */
 
 package com.andre_max.tiktokclone.presentation.ui.auth.age_verification
@@ -28,49 +9,49 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.andre_max.tiktokclone.R
-import com.andre_max.tiktokclone.databinding.FragmentAgeBinding
-import com.andre_max.tiktokclone.models.CustomDate
-import com.andre_max.tiktokclone.utils.ResUtils.showSnackBar
-import java.util.*
+import com.andre_max.tiktokclone.presentation.ui.theme.TikTokTheme
+import com.andre_max.tiktokclone.utils.BottomNavViewUtils
+import dagger.hilt.android.AndroidEntryPoint
 
-class AgeFragment : Fragment(R.layout.fragment_age) {
+/** Compose host for screen 1. Navigation callbacks only — all logic lives in [AgeViewModel]. */
+@AndroidEntryPoint
+class AgeFragment : Fragment() {
 
-    lateinit var binding: FragmentAgeBinding
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = FragmentAgeBinding.bind(view)
-
-        binding.backBtn.setOnClickListener { findNavController().popBackStack() }
-
-        binding.datePicker2.init(2018, 1, 23, dateChangedLambda)
-        binding.datePicker2.maxDate = System.currentTimeMillis()
-
-        val year = Calendar.getInstance(Locale.getDefault()).let {
-            it.time = Date()
-            it.get(Calendar.YEAR)
-        }
-
-        binding.signUpBtn.setOnClickListener {
-            when {
-                date.year > year - 9 -> showSnackBar(requireView(), R.string.user_too_young)
-                date.year < year - 150 -> showSnackBar(requireView(), R.string.enter_valid_year)
-                else -> findNavController()
-                    .navigate(AgeFragmentDirections.actionAgeFragmentToSelectBasicSignUpFragment())
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+            TikTokTheme {
+                AgeRoute(
+                    onNavigateToSelectAuth = {
+                        findNavController().navigate(
+                            AgeFragmentDirections
+                                .actionAgeFragmentToSelectBasicSignUpFragment()
+                        )
+                    },
+                    onNavigateBack = { findNavController().popBackStack() },
+                )
             }
         }
     }
 
-    private val date = CustomDate(23, 1, 2018)
-
-    private val dateChangedLambda =
-        DatePicker.OnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
-            date.date = dayOfMonth
-            date.month = monthOfYear
-            date.year = year
-        }
+    // SignUpFragment hid the nav bar before navigating here, but an activity recreation
+    // re-inflates activity_main with navView VISIBLE, overlaying the wheel picker.
+    //
+    // This must NOT run in onViewCreated: activity_main hosts the NavHost via the legacy
+    // <fragment> tag, so on process-death restore this fragment's view is created *inside*
+    // ActivityMainBinding.inflate(), i.e. before MainActivity.binding is assigned — reading
+    // the lateinit there throws UninitializedPropertyAccessException and crash-loops launch.
+    // onStart is driven by the host activity's own lifecycle, so binding always exists by then.
+    override fun onStart() {
+        super.onStart()
+        BottomNavViewUtils.hideBottomNavBar(activity)
+    }
 }
