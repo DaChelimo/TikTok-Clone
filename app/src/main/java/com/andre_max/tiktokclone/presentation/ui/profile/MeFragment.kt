@@ -68,6 +68,8 @@ class MeFragment : Fragment() {
                                 .navigate(R.id.action_meFragment_to_settingsFragment)
                         },
                         onSignedOut = { currentUid = null },
+                        // Unreachable here: the back button only renders on other users' profiles.
+                        onNavigateBack = {},
                         viewModel = hiltViewModel(key = "profile-$uid"),
                     )
                 }

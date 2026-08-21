@@ -22,6 +22,7 @@ data class ProfileUiState(
 data class ProfileTabUi(
     val videoType: VideoType,
     val videos: ImmutableList<RemoteVideo> = persistentListOf(),
+    val isLoading: Boolean = true,
 )
 
 sealed interface ProfileAction {

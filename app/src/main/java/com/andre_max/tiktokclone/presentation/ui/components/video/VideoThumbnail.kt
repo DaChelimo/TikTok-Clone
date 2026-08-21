@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +27,9 @@ import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.utils.TimeUtils
+
+/** Corner radius shared with [com.andre_max.tiktokclone.presentation.ui.components.common.VideoThumbnailShimmerShape]. */
+private val ThumbnailShape = RoundedCornerShape(4.dp)
 
 /**
  * A 9:16 first-frame thumbnail with a duration badge — the grid/row cell used by profile,
@@ -40,6 +45,7 @@ fun VideoThumbnail(
         modifier = modifier
             .aspectRatio(9f / 16f)
             .padding(1.dp)
+            .clip(ThumbnailShape)
             .background(Color.DarkGray)
             .clickable(onClick = onClick),
     ) {
@@ -47,6 +53,7 @@ fun VideoThumbnail(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(video.url)
                 .decoderFactory(VideoFrameDecoder.Factory())
+                .crossfade(true)
                 .build(),
             contentDescription = video.description,
             modifier = Modifier.fillMaxSize(),

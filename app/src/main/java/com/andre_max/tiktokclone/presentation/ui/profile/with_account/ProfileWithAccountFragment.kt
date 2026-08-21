@@ -45,6 +45,7 @@ class ProfileWithAccountFragment : Fragment() {
                     // Unreachable here: the menu only renders on the own profile (Me tab).
                     onNavigateToSettings = {},
                     onSignedOut = { findNavController().popBackStack() },
+                    onNavigateBack = { findNavController().popBackStack() },
                 )
             }
         }
@@ -57,6 +58,7 @@ class ProfileWithAccountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        BottomNavViewUtils.showBottomNavBar(activity)
+        // Full screen: another user's profile isn't a bottom-nav destination.
+        BottomNavViewUtils.hideBottomNavBar(activity)
     }
 }

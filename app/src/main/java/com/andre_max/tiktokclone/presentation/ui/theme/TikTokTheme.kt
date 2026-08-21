@@ -69,6 +69,7 @@ fun TikTokTheme(
 ) {
     MaterialTheme(
         colorScheme = LightColors,
+        typography = TikTokTypography,
         content = content,
     )
 }

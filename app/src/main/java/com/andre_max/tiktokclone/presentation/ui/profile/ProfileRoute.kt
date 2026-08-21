@@ -18,6 +18,7 @@ fun ProfileRoute(
     onNavigateToVideo: (RemoteVideo) -> Unit,
     onNavigateToSettings: () -> Unit,
     onSignedOut: () -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -32,5 +33,5 @@ fun ProfileRoute(
         }
     }
 
-    ProfileScreen(state = state, onAction = viewModel::onAction)
+    ProfileScreen(state = state, onAction = viewModel::onAction, onNavigateBack = onNavigateBack)
 }

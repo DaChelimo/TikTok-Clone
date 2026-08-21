@@ -96,8 +96,11 @@ class ProfileViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 tabs = state.tabs.map { tab ->
-                    if (tab.videoType == videoType) tab.copy(videos = videos.toImmutableList())
-                    else tab
+                    if (tab.videoType == videoType) {
+                        tab.copy(videos = videos.toImmutableList(), isLoading = false)
+                    } else {
+                        tab
+                    }
                 }.toImmutableList(),
             )
         }

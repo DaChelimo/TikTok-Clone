@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,6 +58,8 @@ import coil.compose.AsyncImage
 import com.andre_max.tiktokclone.R
 import com.andre_max.tiktokclone.models.video.RemoteVideo
 import com.andre_max.tiktokclone.models.video.VideoType
+import com.andre_max.tiktokclone.presentation.ui.components.common.ShimmerBox
+import com.andre_max.tiktokclone.presentation.ui.components.common.VideoThumbnailShimmerShape
 import com.andre_max.tiktokclone.presentation.ui.components.video.VideoThumbnail
 import com.andre_max.tiktokclone.utils.NumbersUtils
 import kotlinx.coroutines.launch
@@ -73,13 +74,14 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     state: ProfileUiState,
     onAction: (ProfileAction) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        ProfileHeader(state = state, onAction = onAction)
+        ProfileHeader(state = state, onAction = onAction, onNavigateBack = onNavigateBack)
         ProfileTabs(state = state, onAction = onAction)
     }
 
@@ -107,6 +109,7 @@ fun ProfileScreen(
 private fun ProfileHeader(
     state: ProfileUiState,
     onAction: (ProfileAction) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -146,7 +149,14 @@ private fun ProfileHeader(
                 }
             }
         } else {
-            Spacer(modifier = Modifier.height(48.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow_back),
+                        contentDescription = stringResource(R.string.back_button),
+                    )
+                }
+            }
         }
 
         AsyncImage(
@@ -248,9 +258,37 @@ private fun ProfileTabs(
     }
 
     HorizontalPager(state = pagerState) { page ->
-        VideoGrid(videos = state.tabs[page].videos, onAction = onAction)
+        val tab = state.tabs[page]
+        if (tab.isLoading) {
+            ShimmerVideoGrid()
+        } else {
+            VideoGrid(videos = tab.videos, onAction = onAction)
+        }
     }
 }
+
+/** Placeholder grid shown while a tab's videos are still loading. */
+@Composable
+private fun ShimmerVideoGrid() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(ProfileScreenTags.VIDEO_GRID),
+        userScrollEnabled = false,
+    ) {
+        items(SHIMMER_TILE_COUNT) {
+            ShimmerBox(
+                modifier = Modifier
+                    .aspectRatio(9f / 16f)
+                    .padding(1.dp),
+                shape = VideoThumbnailShimmerShape,
+            )
+        }
+    }
+}
+
+private const val SHIMMER_TILE_COUNT = 12
 
 @Composable
 private fun VideoGrid(
