@@ -1,81 +1,89 @@
 # TikTok-Clone
-A beautifully designed replica of the famous and trending TikTok app
 
-## Installation
-Clone this repository and import into **Android Studio**
-```bash
-git clone git@github.com:Andre_Max/TikTok-Clone.git
-```
+A TikTok-style short-form video Android app: sign up, record or upload vertical videos with
+tags and a description, and scroll an endless feed with like/comment/share/follow. Built solo
+as a from-scratch Clean Architecture + Jetpack Compose app on a Firebase + Cloudflare backend.
 
-## Build variants
-Use the Android Studio *Build Variants* button to choose between **production** and **staging** flavors combined with debug and release build types
+## Tech stack
 
+**Language & async**
+- Kotlin
+- Coroutines + Flow (`StateFlow`/`UiState` on every screen)
 
-## Generating signed APK
-From Android Studio:
-1. ***Build*** menu
-2. ***Generate Signed APK...***
-3. Fill in the keystore information *(you only need to do this once manually and then let Android Studio remember it)*
+**UI**
+- Jetpack Compose end-to-end — every screen, including camera capture (`AndroidView` interop)
+- Coil (images + video-frame thumbnails)
+- ExoPlayer (video playback)
+- CameraView (video capture) + a custom `VideoCompressor` for upload compression
 
+**Architecture**
+- Clean Architecture, three layers with dependencies enforced inward:
+  `presentation → domain ← repo`
+- `domain`: pure Kotlin, zero Android/Firebase imports — use cases + a typed `Result`/`DataError`
+  error model
+- `repo`: the only layer allowed to see both a DTO and a domain model
+- Hilt for dependency injection
 
-Before every commit, make sure you run the following bash script:
+**Backend**
+- Firebase: Realtime Database, Auth (email, Google, Facebook), Crashlytics, Analytics, Cloud
+  Messaging
+- Cloudflare R2 + a Cloudflare Worker for video file storage — chosen over Firebase Storage to
+  avoid egress costs (the dominant cost of a video feed) and to keep the Firebase project off
+  the Blaze billing plan; the Worker verifies the caller's Firebase ID token and returns a
+  presigned upload URL, so the device uploads directly to R2
 
-```shell script
-./codeAnalysis
-```
+**Testing**
+- JUnit + Truth for domain/use-case logic (TDD: red → green → refactor)
+- MockK for the Firebase/Android boundary in the repo layer
+- Compose screens are tested as stateless functions of `UiState` — no ViewModel or Hilt needed
 
-To test code coverage, run the following bash script:
+## Architecture & migration story
 
-```shell script
-./coverage
-```
+The app started as Fragment/LiveData/Groupie/DataBinding MVVM and was migrated to Clean
+Architecture + Compose as a **strangler-fig migration**: old and new systems coexisted
+side-by-side, one full vertical feature slice at a time (auth, then feed, then comments, then
+profile, upload, discover, search, inbox/settings), with the app kept compiling and running at
+every single step. Legacy code for a slice was only deleted once nothing referenced it anymore
+— never as a drive-by cleanup mid-feature. The migration finished with a dedicated deletion
+pass that removed the last of the legacy foundation (`BaseFragment`/`BaseViewModel`, Groupie,
+DataBinding, Dexter, Glide) once every screen was confirmed Compose-only.
 
-If you have Fastlane installed, you can run the develop lane:
+Notable things this migration caught and fixed along the way, rather than just relocating:
+- A tag page that legacy code never actually wired navigation to (unreachable, despite being
+  described in the product spec)
+- A popular-tags query silently ordering by a field that didn't exist
+- A user-search query bounded on the wrong field, so it always returned nothing
+- A comment-like tap whose click handler was accidentally a no-op
+- A share intent missing a MIME type, which could throw at runtime
 
-```shell script
-fastlane branch conf:debug
-```
+## Features
 
-## Tech-stack
+| Surface | Status |
+| --- | --- |
+| **Auth** | Sign-up (age gate → phone/email → password or SMS code → username with debounced availability check) and log-in, both fully in Compose. Account creation happens atomically on the final step — an abandoned sign-up can't leave a half-created account behind, with rollback on failure. Credentials never travel as nav arguments. |
+| **Feed** | Endless vertical-pager video feed (ExoPlayer), paginated in batches with dedupe against overlapping query windows. Tap to play/pause, double-tap to like, optimistic like/follow with automatic revert on failure. In-feed comment sheet with live updates. |
+| **Upload** | Record via in-app camera or pick from gallery → preview → compress → upload → post, as one typed pipeline with a real failure state instead of a silently-cancelled coroutine. |
+| **Comments** | Live comment thread with like, reachable from the feed and from a standalone video-detail screen that shares the same components. |
+| **Profile** | Own and other-user profiles behind one ViewModel. Public/Liked/Private video tabs, with a visibility rule (owner-only private, opt-in liked-tab visibility) enforced by a dedicated use case rather than left to the UI. |
+| **Discover / tags** | Tag rows with video previews → tag detail grid → video detail, with tag popularity actually ranked by count. |
+| **Search** | Debounced username search against a correctly-indexed Firebase query. |
+| **Settings** | Reachable settings screen (previously an unreachable stub) with the liked-videos visibility toggle. |
 
-* Tech-stack
-    * [Kotlin](https://kotlinlang.org/) - a cross-platform, statically typed, general-purpose programming language with type inference.
-    * [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - perform background operations.
-    * [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html) - handle the stream of data asynchronously that executes sequentially.
-    * [Hilt](https://dagger.dev/hilt/) - an opinionated dependency injection library for Android.
-    * [Firebase](https://firebase.google.com/) - a Google-backed application development software for user authentication and remote storage.
-    * [Exoplayer](https://exoplayer.dev/) - an application level media player for Android.
-    * [Jetpack](https://developer.android.com/jetpack)
-        * [Room](https://developer.android.com/topic/libraries/architecture/room) - a persistence library provides an abstraction layer over SQLite.
-        * [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - is an observable data holder.
-        * [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle) - perform action when lifecycle state changes.
-        * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - store and manage UI-related data in a lifecycle conscious way.
-    * [Stetho](http://facebook.github.io/stetho/) - application debugging tool.
-    * [Timber](https://github.com/JakeWharton/timber) - a highly extensible android logger.
-    * [Leak Canary](https://github.com/square/leakcanary) - a memory leak detection library for Android.
+## Roadmap
 
-* Architecture
-    * MVVM - Model View View Model
-* Tests
-    * [Unit Tests](https://en.wikipedia.org/wiki/Unit_testing) ([JUnit](https://junit.org/junit4/)) - a simple framework to write repeatable tests.
-    * [MockK](https://github.com/mockk) - mocking library for Kotlin
-    * [Truth](https://truth.dev/) - Fluent Assertion-Library
-    * [Espresso](https://developer.android.com/training/testing/espresso) - An Android testing framework for writing concise, beautiful, and reliable Android UI tests.
-* Gradle
-    * [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) - For reference purposes, here's an [article explaining the migration](https://medium.com/@evanschepsiror/migrating-to-kotlin-dsl-4ee0d6d5c977).
-    * Plugins
-        * [Ktlint](https://github.com/JLLeitschuh/ktlint-gradle) - creates convenient tasks in your Gradle project that run ktlint checks or do code auto format.
-        * [Detekt](https://github.com/detekt/detekt) - a static code analysis tool for the Kotlin programming language.
-        * [Spotless](https://github.com/diffplug/spotless) - format java, groovy, markdown and license headers using gradle.
-        * [jacoco](https://github.com/jacoco/jacoco) - a Code Coverage Library
-* CI/CD
-    * Github Actions
-    * [Fastlane](https://fastlane.tools)
+**In progress / near-term**
+- Complete Google and Facebook sign-in provider configuration (both are implemented in code,
+  currently disabled pending config)
+- Reply-to-comment UI (the data model already supports replies; no screen renders them yet)
+- Room-backed offline/cache reads, so a failed network refresh degrades to stale-but-visible
+  data instead of an error state
 
-
-## Dependencies
-
-All the dependencies (external libraries) are defined in the single place - Gradle `buildSrc` folder. This approach allows to easily manage dependencies and use the same dependency version across all modules.
+**Upcoming / needs product definition first**
+- A real notifications/inbox system (currently a placeholder — no notification model exists
+  yet; needs product decisions on what generates a notification and how it's stored, before
+  there's anything to build)
+- A ranked feed recommendation model (the batch-fetch use case is already structured as the
+  seam this plugs into; today's feed is unranked, dedupe-only)
 
 ## License
 ```
