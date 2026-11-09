@@ -8,7 +8,6 @@ as a from-scratch Clean Architecture + Jetpack Compose app on a Firebase backend
 
 **Language**
 - Kotlin
-- XML (for some UI Screens.... currently migrating them to Compose incrementally)
 
 **UI**
 - Jetpack Compose end-to-end — every screen, including camera capture (`AndroidView` interop)
