@@ -2,13 +2,13 @@
 
 A TikTok-style short-form video Android app: sign up, record or upload vertical videos with
 tags and a description, and scroll an endless feed with like/comment/share/follow. Built solo
-as a from-scratch Clean Architecture + Jetpack Compose app on a Firebase + Cloudflare backend.
+as a from-scratch Clean Architecture + Jetpack Compose app on a Firebase backend.
 
 ## Tech stack
 
-**Language & async**
+**Language**
 - Kotlin
-- Coroutines + Flow (`StateFlow`/`UiState` on every screen)
+- XML (for some UI Screens.... currently migrating them to Compose incrementally)
 
 **UI**
 - Jetpack Compose end-to-end — every screen, including camera capture (`AndroidView` interop)
